@@ -56,17 +56,6 @@ F 3 "~" H 6900 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R3
-U 1 1 545BD4B1
-P 5350 3200
-F 0 "R3" V 5430 3200 40  0000 C CNN
-F 1 "2.2k" V 5357 3201 40  0000 C CNN
-F 2 "~" V 5280 3200 30  0000 C CNN
-F 3 "~" H 5350 3200 30  0000 C CNN
-	1    5350 3200
-	0    -1   -1   0   
-$EndComp
-$Comp
 L GND #PWR?
 U 1 1 545BD57A
 P 5600 3300
@@ -96,10 +85,6 @@ Wire Wire Line
 	5850 3200 5600 3200
 Wire Wire Line
 	5850 3300 5600 3300
-Wire Wire Line
-	5100 3200 5100 3400
-Wire Wire Line
-	5100 3400 5850 3400
 Wire Wire Line
 	5850 3600 5500 3600
 Wire Wire Line
@@ -138,6 +123,55 @@ F 3 "" H 6400 4900 60  0000 C CNN
 	1    6400 4900
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	7950 3150 8100 3150
+Wire Wire Line
+	7950 3250 8100 3250
+Wire Wire Line
+	8100 3250 8100 3300
+Wire Wire Line
+	7950 2750 8900 2750
+Wire Wire Line
+	7950 2650 8900 2650
+Text HLabel 5150 2800 0    60   Input ~ 0
+Open collector/open drain 
+Wire Wire Line
+	7950 2950 9150 2950
+Wire Wire Line
+	9150 2950 9150 2050
+Wire Wire Line
+	9150 2050 3750 2050
+Wire Wire Line
+	3750 2050 3750 3100
+Wire Wire Line
+	3750 3100 5850 3100
+Text HLabel 8900 2650 2    60   Input ~ 0
+RX
+Text HLabel 8900 2750 2    60   Input ~ 0
+TX
+Wire Wire Line
+	4900 3400 5850 3400
+Text HLabel 4900 3400 0    60   Input ~ 0
+SPI Clock pin
+Wire Wire Line
+	4700 3500 5850 3500
+Text HLabel 4700 3500 0    60   Input ~ 0
+SPI chip select
+$Comp
+L +3.3V #PWR?
+U 1 1 545BDEF8
+P 5150 3000
+F 0 "#PWR?" H 5150 2960 30  0001 C CNN
+F 1 "+3.3V" H 5150 3110 30  0000 C CNN
+F 2 "" H 5150 3000 60  0000 C CNN
+F 3 "" H 5150 3000 60  0000 C CNN
+	1    5150 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7950 3850 8950 3850
+Text HLabel 8950 3850 2    60   Input ~ 0
+Antenna inpu
 $Comp
 L R R2
 U 1 1 545BDA82
@@ -151,23 +185,25 @@ F 3 "~" H 8350 3150 30  0000 C CNN
 $EndComp
 $Comp
 L R R1
-U 1 1 545BDA91
-P 8350 3300
-F 0 "R1" V 8430 3300 40  0000 C CNN
-F 1 "2.2k" V 8357 3301 40  0000 C CNN
-F 2 "~" V 8280 3300 30  0000 C CNN
-F 3 "~" H 8350 3300 30  0000 C CNN
-	1    8350 3300
+U 1 1 545BDFEF
+P 8350 3050
+F 0 "R1" V 8430 3050 40  0000 C CNN
+F 1 "2.2k" V 8357 3051 40  0000 C CNN
+F 2 "~" V 8280 3050 30  0000 C CNN
+F 3 "~" H 8350 3050 30  0000 C CNN
+	1    8350 3050
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	7950 3150 8100 3150
+	7950 3050 8100 3050
 Wire Wire Line
-	7950 3250 8100 3250
+	8600 3050 9300 3050
 Wire Wire Line
-	8100 3250 8100 3300
-Wire Wire Line
-	7950 2750 8900 2750
-Wire Wire Line
-	7950 2650 8900 2650
+	8600 3150 9300 3150
+Text HLabel 9150 2800 2    60   Input ~ 0
+micro Push Pull output
+Text HLabel 9300 3050 2    60   Input ~ 0
+Connect to microcontroller I2C_DIO
+Text HLabel 9300 3150 2    60   Input ~ 0
+Connect to microcontroller I2C_CLK 
 $EndSCHEMATC
