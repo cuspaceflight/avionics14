@@ -88,7 +88,7 @@ static state_t do_state_standby(instance_data_t *data)
 
 /* Adam had a separate state in here which was effectively in between the standby and first stage being fired. 
  * It read in the current system time and stored this before moving to the next state.
- * I've put this in the previous body of code as it didn't seem like this intermediate state was doing anything else at all.
+ * I've put this in the previous body of code as it didn't seem like this intermediate state was doing anything else.
  */
 
 static state_t do_state_first_stage_fired(instance_data_t *data)
@@ -97,13 +97,13 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 	if(data->state.a < BURNOUT_ACCELERATION)
 		{
 		pyro_fire_separation(); /* THIS FUNCTION IS NOT YET DEFINED - DOESN'T EXIST IN MARTLET 2 AND WILL NEED TO BE ADDED */
-		data->t_launch = chTimeNow() ; /* to sort out the time delay in the next state */
+		data->t_separation = chTimeNow() ; /* to sort out the time delay in the next state - need to edit the struct data to have t_separation */
         return STATE_SEPARATED;
 		}
     else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) /* need the time mentioned earlier in this step */
         {
 		pyro_fire_separation();  /* THIS FUNCTION IS NOT YET DEFINED - DOESN'T EXIST IN MARTLET 2 AND WILL NEED TO BE ADDED */
-		data->t_launch = chTimeNow() ; /* to sort out the time delay in the next state */
+		data->t_separation = chTimeNow() ; /* to sort out the time delay in the next state - need to edit the struct data to have t_separation */
 		return STATE_SEPARATED;
 		}
     else
@@ -114,7 +114,7 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 /* Delay before launching second stage */
 static state_t do_state_time_delay(instance_data_t *data)
 {
-	if(chTimeElapsedSince(data->t_launch) > AGREED_TIME_DELAY) /* AGREED_TIME_DELAY will need defining properly. Included at top of file. */
+	if(chTimeElapsedSince(data->t_separation) > AGREED_TIME_DELAY) /* AGREED_TIME_DELAY will need defining properly. Included at top of file. */
         {
 		pyro_fire_second_stage(); /* THIS FUNCTION IS NOT YET DEFINED - DOESN'T EXIST IN MARTLET 2 AND WILL NEED TO BE ADDED */
 		return STATE_SECOND_STAGE_FIRED;
@@ -190,6 +190,7 @@ msg_t mission_thread(void* arg)
     instance_data_t data;
     data.t_launch = -1;
     data.t_apogee = -1;
+	data.t_separation = -1;
 
     chRegSetThreadName("Mission");
 
