@@ -40,7 +40,7 @@ static state_t do_state_landed_bottom(instance_data_t *data);
 
 
 /* Must redefine this enumeration because we are using different states
- * Can most likely just be put in the header file but I've left it here for now
+ * I've put it in the header file as a comment, but have left it here for now.
  */
 
 typedef enum {
