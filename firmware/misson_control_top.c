@@ -162,7 +162,7 @@ static state_t do_state_drogue_parachute_fired(instance_data_t *data)
 		return STATE_MAIN_PARACHUTE_FIRED_TOP;
 	}
     else
-        return STATE_DROGUE_DESCENT;
+        return STATE_DROGUE_PARACHUTE_FIRED;
 }
 
 static state_t do_state_main_parachute_fired_top(instance_data_t *data)
