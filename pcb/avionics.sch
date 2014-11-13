@@ -1,4 +1,6 @@
 EESchema Schematic File Version 2
+LIBS:irf7910
+LIBS:FDN304P
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,13 +31,15 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-EELAYER 24 0
+LIBS:resistor
+LIBS:avionics-cache
+EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 1 5
 Title "Avionics Board M14"
-Date "06 Nov 2014"
+Date "13 nov 2014"
 Rev "1"
 Comp "CU Spaceflight"
 Comment1 ""
