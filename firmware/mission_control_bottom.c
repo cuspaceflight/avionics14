@@ -1,21 +1,26 @@
 /* Mission Control Plan - BOTTOM STAGE	
  *
  * The states that are being used are for the top stage are as follows: 
- * standby, first_stage_fired, separated, time_delay, second_stage_fired (which occurs after a delay of one second following separation),
- * coasting, apogee, drogue_parachute_fired, main_parachute_fired_top, landed_top
+ * standby, first_stage_fired, separated, time_delay, second_stage_fired 
+ * (which occurs after a delay of one second following separation),
+ * coasting, apogee, drogue_parachute_fired, main_parachute_fired_top, 
+ * landed_top
  *
  * The states for the bottom stage are as follows:
- * standby, first_stage_rocket, separated, main_parachute_fired_bottom, landed_bottom
+ * standby, first_stage_rocket, separated, main_parachute_fired_bottom, 
+ * landed_bottom
  *
  */
  
  
-/* Header files below are just lifted from m2 code, but obviously this depends on how we're implementing everything.
- * Most likely quite similar though... Will need to modify symbolic constants and some functions (eg pyro stuff) 
+/* Header files below are just lifted from m2 code, but obviously this depends 
+ * on how we're implementing everything.
+ * Most likely quite similar though... 
+ * Will need to modify symbolic constants and some functions (eg pyro stuff) 
  */
  
 #include <math.h>
-#include "mission.h"
+#include "mission_control_bottom.h"
 #include "state_estimation.h"
 #include "pyro.h"
 #include "microsd.h"
@@ -43,14 +48,11 @@ static state_t do_state_landed_bottom(instance_data_t *data);
  * I've put it in the header file as a comment, but have left it here for now.
  */
 
-typedef enum {
-  STATE_STANDBY = 0, STATE_FIRST_STAGE_FIRED, STATE_SEPARATED, STATE_TIME_DELAY, /* time delay is optional */
-	STATE_MAIN_PARACHUTE_FIRED_BOTTOM, STATE_LANDED_BOTTOM, NUM_STATES  
-} state_t;
 
 state_func_t* const state_table[NUM_STATES] = {
-    do_state_standby, do_state_first_stage_fired, do_state_separated, do_state_time_delay,
-    do_state_main_parachute_fired_bottom, do_state_landed_bottom
+    do_state_standby, do_state_first_stage_fired, do_state_separated, 
+    do_state_time_delay, do_state_main_parachute_fired_bottom, 
+    do_state_landed_bottom
 };
 
 
@@ -65,45 +67,58 @@ static state_t do_state_standby(instance_data_t *data)
     if(chTimeNow() < 10000)
         return STATE_STANDBY;
     else if(data->state.v > IGNITION_VELOCITY)
-		{
-		  data->t_launch = chTimeNow() ;
-      return STATE_FIRST_STAGE_FIRED;
-		}
+    {
+        data->t_launch = chTimeNow() ;
+        return STATE_FIRST_STAGE_FIRED;
+    }
     else
-      return STATE_STANDBY;
+        return STATE_STANDBY;
 }
 
-/* Adam had a separate state in here which was effectively in between the standby and first stage being fired. 
- * It read in the current system time and stored this before moving to the next state.
- * I've put this in the previous body of code as it didn't seem like this intermediate state was doing anything else.
+/* Adam had a separate state in here which was effectively in between the 
+ * standby and first stage being fired. 
+ * It read in the current system time and stored this before moving to the next
+ * state.
+ * I've put this in the previous body of code as it didn't seem like this 
+ * intermediate state was doing anything else.
  */
 
 static state_t do_state_first_stage_fired(instance_data_t *data)
 {
     state_estimation_trust_barometer = 0;
 	if(data->state.a < BURNOUT_ACCELERATION)
-		{
-		  data->t_separation = chTimeNow() ; /* to sort out the time delay in the next state - will need to add t_separation to struct data */
-      return STATE_SEPARATED;
-		}
-    else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) /* need the time mentioned earlier in this step */
+	{
+        data->t_separation = chTimeNow() ; 
+        return STATE_SEPARATED;
+	}
+    else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) 
     {
-			data->t_separation = chTimeNow() ; /* to sort out the time delay in the next state */
-		  return STATE_SEPARATED;
-		}
+        data->t_separation = chTimeNow() ; 
+        return STATE_SEPARATED;
+	}
     else
+<<<<<<< HEAD
+        return STATE_TIME_DELAY;
+=======
       return STATE_FIRST_STAGE_FIRED;
+>>>>>>> origin/master
 }
 
 
-/* Delay before launching second stage - not sure if we need this at all for the bottom rocket */
+/* Delay before launching parachute */
 static state_t do_state_time_delay(instance_data_t *data)
 {
-	if(chTimeElapsedSince(data->t_separation) > AGREED_TIME_DELAY) /* AGREED_TIME_DELAY will need defining properly. Included at top of file. */
+	/* AGREED_TIME_DELAY will need defining properly. Included at top of file.*/
+    if(chTimeElapsedSince(data->t_separation) > AGREED_TIME_DELAY) 
     {
-			pyro_fire_main();												/* check this is functional */
-			return STATE_MAIN_PARACHUTE_FIRED_BOTTOM;
-		}
+	    pyro_fire_main();						/* check this is functional */
+	    return STATE_MAIN_PARACHUTE_FIRED_BOTTOM;
+	}
+	else if (data->state.h < MAIN_DEPLOY_ALTITUDE) /* edit this constant */
+	{
+		pyro_fire_main();                     /* check this is functional */
+        return STATE_MAIN_PARACHUTE_FIRED_BOTTOM
+	}
     else
         return STATE_TIME_DELAY;
 }
@@ -112,7 +127,9 @@ static state_t do_state_time_delay(instance_data_t *data)
 static state_t do_state_main_parachute_fired_bottom(instance_data_t *data)
 {
     state_estimation_trust_barometer = 1;
-    if(chTimeElapsedSince(data->t_separation) > LANDED_TIMER) /* May be better to use an altitude/velocity check for this rather than a time check */
+    /* May be better to use an altitude/velocity check for this rather 
+     * than a time check */
+    if(chTimeElapsedSince(data->t_separation) > LANDED_TIMER) 
         return STATE_LANDED_BOTTOM;
     else
         return STATE_MAIN_PARACHUTE_FIRED_BOTTOM;
