@@ -52,13 +52,7 @@ static state_t do_state_apogee(instance_data_t *data);
 static state_t do_state_drogue_parachute_fired(instance_data_t *data);
 static state_t do_state_main_parachute_fired_top(instance_data_t *data);
 static state_t do_state_landed_top(instance_data_t *data);
-/*static state_t do_state_main_parachute_fired_bottom(instance_data_t *data);
- *static state_t do_state_landed_bottom(instance_data_t *data);
- */
 
-/* Must redefine this enumeration because we are using different states
- * I've put it in the header file as a comment, but have left it here for now.
- */
 
 state_func_t* const state_table[NUM_STATES] = {
     do_state_standby, do_state_first_stage_fired, do_state_separated, 
@@ -66,7 +60,6 @@ state_func_t* const state_table[NUM_STATES] = {
     do_state_apogee, do_state_drogue_parachute_fired, 
     do_state_main_parachute_fired_top, do_state_landed_top
 };
-
 
 
 state_t run_state(state_t cur_state, instance_data_t *data) {
