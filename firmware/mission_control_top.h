@@ -2,8 +2,8 @@
  * Mission Control Top Board: Header
  */
 
-#ifndef MISSION_H
-#define MISSION_H
+#ifndef MISSION_CONTROL_TOP_H
+#define MISSION_CONTROL_TOP_H
 
 #include "ch.h"
 #include "state_estimation.h"
@@ -26,4 +26,4 @@ typedef struct instance_data instance_data_t;
 
 msg_t mission_thread(void *arg);
 
-#endif /* MISSION_H */
+#endif /* MISSION_CONTROL_TOP_H */
