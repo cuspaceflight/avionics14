@@ -92,7 +92,7 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 		  return STATE_SEPARATED;
 		}
     else
-      return STATE_TIME_DELAY;
+      return STATE_FIRST_STAGE_FIRED;
 }
 
 
