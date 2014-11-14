@@ -44,11 +44,6 @@ static state_t do_state_main_parachute_fired_bottom(instance_data_t *data);
 static state_t do_state_landed_bottom(instance_data_t *data);
 
 
-/* Must redefine this enumeration because we are using different states
- * I've put it in the header file as a comment, but have left it here for now.
- */
-
-
 state_func_t* const state_table[NUM_STATES] = {
     do_state_standby, do_state_first_stage_fired, do_state_separated, 
     do_state_time_delay, do_state_main_parachute_fired_bottom, 
@@ -56,10 +51,9 @@ state_func_t* const state_table[NUM_STATES] = {
 };
 
 
-
 state_t run_state(state_t cur_state, instance_data_t *data) {
     return state_table[cur_state](data);
-};
+}
 
 static state_t do_state_standby(instance_data_t *data)
 {
@@ -86,22 +80,19 @@ static state_t do_state_standby(instance_data_t *data)
 static state_t do_state_first_stage_fired(instance_data_t *data)
 {
     state_estimation_trust_barometer = 0;
-	if(data->state.a < BURNOUT_ACCELERATION)
-	{
+    if(data->state.a < BURNOUT_ACCELERATION)
+    {
         data->t_separation = chTimeNow() ; 
         return STATE_SEPARATED;
-	}
+    }
     else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) 
     {
         data->t_separation = chTimeNow() ; 
         return STATE_SEPARATED;
-	}
+    }
     else
-<<<<<<< HEAD
-        return STATE_TIME_DELAY;
-=======
-      return STATE_FIRST_STAGE_FIRED;
->>>>>>> origin/master
+        return STATE_FIRST_STAGE_FIRED;
+
 }
 
 
@@ -111,14 +102,14 @@ static state_t do_state_time_delay(instance_data_t *data)
 	/* AGREED_TIME_DELAY will need defining properly. Included at top of file.*/
     if(chTimeElapsedSince(data->t_separation) > AGREED_TIME_DELAY) 
     {
-	    pyro_fire_main();						/* check this is functional */
-	    return STATE_MAIN_PARACHUTE_FIRED_BOTTOM;
-	}
-	else if (data->state.h < MAIN_DEPLOY_ALTITUDE) /* edit this constant */
-	{
-		pyro_fire_main();                     /* check this is functional */
+        pyro_fire_main();						/* check this is functional */
+	return STATE_MAIN_PARACHUTE_FIRED_BOTTOM;
+    }
+    else if (data->state.h < MAIN_DEPLOY_ALTITUDE) /* edit this constant */
+    {
+	pyro_fire_main();                     /* check this is functional */
         return STATE_MAIN_PARACHUTE_FIRED_BOTTOM
-	}
+    }
     else
         return STATE_TIME_DELAY;
 }
@@ -151,7 +142,7 @@ msg_t mission_thread(void* arg)
     instance_data_t data;
     data.t_launch = -1;
     data.t_apogee = -1;
-	  data.t_separation = -1;
+    data.t_separation = -1;
 
     chRegSetThreadName("Mission");
 
@@ -165,7 +156,7 @@ msg_t mission_thread(void* arg)
         /* Log changes in state */
         if(new_state != cur_state) {
             microsd_log_s32(CHAN_SM_MISSION,
-                            (int32_t)cur_state, (int32_t)new_state);
+            (int32_t)cur_state, (int32_t)new_state);
             cur_state = new_state;
             SBP_SEND(0x30, new_state);
         }
