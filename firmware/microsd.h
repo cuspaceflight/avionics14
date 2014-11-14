@@ -13,6 +13,15 @@ void microsd_card_try_init(FATFS* fs);
  */
 void microsd_card_deinit(void);
 
+/* Open file on file system. For now, exact same signature as the FatFS one
+ * because we need to be able to specify mode and see error results...
+ * TODO: limit error modes (to OK, ERR, (EXIST)) and open modes (to READ,WRITE)
+ */
+FRESULT microsd_open_file(FIL* fp, const TCHAR* path, BYTE mode);
+
+/* Closes file on file system. */
+bool_t microsd_close_file(FIL* fp);
+
 /* Assumes sd is connected and mounted, file is open
  * (possibly needs some indicator that it isn't, ie. in the return value)
  * <fp> is the file to be written to

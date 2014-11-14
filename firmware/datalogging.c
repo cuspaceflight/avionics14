@@ -2,8 +2,8 @@
 #include "microsd.h"
 #include "datalogging.h"
 
-static void microsd_mem_init(void);
-static bool_t microsd_open_file(FIL* fp);
+static void mem_init(void);
+static bool_t open_file(FIL* fp);
 
 /* 1st TODO:
  * We need to define our protocol here.
@@ -25,34 +25,35 @@ static bool_t microsd_open_file(FIL* fp);
  *    it is faster. A way to do that would be using a write buffer (16kb cache
  *    in m2).
  * 4) Suppose we now have a pointer to a buffer filled with loggable data.
- *    (this is where we differ slightly from m2 due to the shared sd driver)
- *    We need to INITIALISE the sd card through the driver
- *    then OPEN a file according to some naming scheme (log<number>) IN HERE!!!
- *    then WRITE to the file through the driver.
+ *    Use the functions in microsd.
+ *      a) We need to INITIALISE the sd card through the driver
+ *      b) then OPEN a file according to some naming scheme (log<number>)
+ *      c) then WRITE to the file through the driver.
  */
 
-static void microsd_mem_init(void) {}
+static void mem_init(void) {}
 
 /* TODO: looks for/creates suitable log file to write to.
+ * Create new log file for each write? So we don't get one superlong file.
  */
-static bool_t microsd_open_file(FIL* fp) {}
+static bool_t open_file(FIL* fp) {}
 
 
 /*** TOOODOOO: LOGGING FUNCTIONS TO BE USED BY SENSORS ***/
-void microsd_log_c(uint8_t channel, const char* data) {}
+void log_c(uint8_t channel, const char* data) {}
 
-void microsd_log_s64(uint8_t channel, int64_t data) {}
+void log_s64(uint8_t channel, int64_t data) {}
 
-void microsd_log_s32(uint8_t channel, int32_t data_a, int32_t data_b) {}
+void log_s32(uint8_t channel, int32_t data_a, int32_t data_b) {}
 
-void microsd_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
+void log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
 int16_t data_c, int16_t data_d) {}
 
-void microsd_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
+void log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
 uint16_t data_c, uint16_t data_d) {}
 
-void microsd_log_f(uint8_t channel, float data_a, float data_b) {}
+void log_f(uint8_t channel, float data_a, float data_b) {}
 
 /* the function that makes it all happen
  */
-msg_t microsd_thread(void* arg) {}
+msg_t datalog_thread(void* arg) {}
