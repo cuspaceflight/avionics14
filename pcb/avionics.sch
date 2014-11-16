@@ -29,6 +29,8 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:alpha_trx433s
+LIBS:a2235-h
 EELAYER 24 0
 EELAYER END
 $Descr A4 11693 8268
