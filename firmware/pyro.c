@@ -115,7 +115,7 @@ void pyro_fire_drogue()
     int i;
     for(i=0; i<50; i++) 
     {  
-        pyro_fire(GPIOE_PYRO_DROGUE, 9)
+        pyro_fire(GPIOE_PYRO_DROGUE, 9) ;
         if(!pyro_continuity(GPIOE_PYRO_DROGUE))
             break;
     }
@@ -127,7 +127,7 @@ void pyro_fire_main()
     int i;
     for(i=0; i<50; i++) 
     {  
-        pyro_fire(GPIOE_PYRO_MAIN, 9)
+        pyro_fire(GPIOE_PYRO_MAIN, 9) ;
         if(!pyro_continuity(GPIOE_PYRO_MAIN))
             break;
     }
@@ -139,7 +139,7 @@ void pyro_fire_separation()
     int i;
     for(i=0; i<50; i++) 
     {  
-        pyro_fire(GPIOE_PYRO_SEPARATION, 9)
+        pyro_fire(GPIOE_PYRO_SEPARATION, 9) ;
         if(!pyro_continuity(GPIOE_PYRO_SEPARATION))
             break;
     }
@@ -151,7 +151,7 @@ void pyro_fire_second_stage()
     int i;
     for(i=0; i<50; i++) 
     {  
-        pyro_fire(GPIOE_PYRO_SECOND_STAGE, 9)
+        pyro_fire(GPIOE_PYRO_SECOND_STAGE, 9) ;
         if(!pyro_continuity(GPIOE_PYRO_SECOND_STAGE))
             break;
     }
