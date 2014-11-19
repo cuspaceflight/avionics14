@@ -46,9 +46,9 @@
  * The pad will be high if the e-match is not present
  */
 
-bool_t pyro_continuity(pyro_channel channel)
+bool_t pyro_continuity(uint8_t pad)
 {
-    if((palReadPad(pyro_channel channel) == PAL_LOW)
+    if((palReadPad(GPIOE, pad) == PAL_LOW)
         return TRUE ;
     else
         return FALSE ;
@@ -169,7 +169,7 @@ void pyro_fire_second_stage()
  
     while(TRUE) 
     {
-        if(pyro_continuities()) 
+        if(pyro_continuity_check()) 
         {
             palSetPad(GPIOA, GPIOA_LED_PYROS);
             chThdSleepMilliseconds(10);
