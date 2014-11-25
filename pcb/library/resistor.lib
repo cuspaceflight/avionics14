@@ -1,0 +1,18 @@
+EESchema-LIBRARY Version 2.3  Date: 13/11/2014 16:31:45
+#encoding utf-8
+#
+# RESISTOR
+#
+DEF ~RESISTOR R 0 0 N N 1 F N
+F0 "R" 120 90 60 H V C CNN
+F1 "RESISTOR" 0 -150 60 H I C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+P 10 0 1 0  -105 0  -90 50  -65 -50  -40 50  -15 -50  10 50  35 -50  60 50  85 -50  105 0 N
+X ~ ~ -225 0 118 R 50 50 1 1 P
+X ~ ~ 225 0 118 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library
