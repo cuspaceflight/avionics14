@@ -26,7 +26,7 @@ config_t conf = {
 
 bool read_int(SDFILE* file, char buffer[], const char* format, int* attrib)
 {
-    SDRESULT res = microsd_fgets(buffer, BUFFER_SIZE, file);
+    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
     return res == SD_OK && sscanf(buffer, format, attrib) == 1;
 }
 
@@ -37,7 +37,7 @@ bool read_int(SDFILE* file, char buffer[], const char* format, int* attrib)
 
 bool read_float(SDFILE* file, char buffer[], const char* format, float* attrib)
 {
-    SDRESULT res = microsd_fgets(buffer, BUFFER_SIZE, file);
+    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
     return res == SD_OK && sscanf(buffer, format, attrib) == 1;
 }
 
@@ -49,7 +49,7 @@ bool read_float(SDFILE* file, char buffer[], const char* format, float* attrib)
 
 bool read_bool(SDFILE* file, char buffer[], const char* format, bool* attrib)
 {
-    SDRESULT res = microsd_fgets(buffer, BUFFER_SIZE, file);
+    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
     int int_result = 0;
 
     if (res == SD_OK && sscanf(buffer, format, &int_result) == 1)

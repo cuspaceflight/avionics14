@@ -1,5 +1,7 @@
 /* This is an abstracted "device driver" for the micro sd card and file system,
  * pretty much acts as an access layer.
+ *
+ * TODO: make sure not built with unicode, otherwise TCHAR will be 2 bytes
  */
 
 // ----------------------------------------------------------------------------
@@ -49,6 +51,6 @@ SDRESULT microsd_write(SDFILE* fp, const void* buff, unsigned int btw);
 SDRESULT microsd_read(SDFILE* fp, void* buf, unsigned int btr);
 
 /* Assumes sd is connected and mounted, file is open.
- * Reads at most <size> bytes from <fp> to <buf>, stopping at newlines/EOF.
+ * Reads at most <size> chars from <fp> to <buf>, stopping at newlines/EOF.
  */
-SDRESULT microsd_gets(SDFILE* fp, void* buf, unsigned int size);
+SDRESULT microsd_gets(SDFILE* fp, char* buf, int size);
