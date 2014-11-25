@@ -1,54 +1,54 @@
 /* This is an abstracted "device driver" for the micro sd card and file system,
- * mostly acting as a file system access layer
- * (based on the ChibiOS SDC driver).
- *
- * It would be nice to have this module be the only dependency on SDC driver
- * and FatFS, ie. full encapsulation. Currently, it is only FIL that requires
- * users of this module to include ff.h, but that should be fixable ...
+ * pretty much acts as an access layer.
  */
 
-/* Literally FRESULT, with irrelevant (?) error states grouped into one */
+// ----------------------------------------------------------------------------
+
+/* Purely to hide dependencies to ff.h in here */
+
 typedef enum {
-    SD_OK,
-    SD_NO_FILE,
-    SD_EXIST,
-    SD_ERR
+    SD_OK,         // all is good
+    SD_NO_FILE,    // couldn't find the file
+    SD_EXIST,      // file already exists (when opened in CREATE_NEW mode)
+    SD_EOF,        // reached end of file (when reading)
+    SD_ERR         // some kind of error!!! this may need expansion
 } SDRESULT;
 
 typedef enum {
-    SD_READ,
-    SD_WRITE,
-    SD_CREATE_NEW
+    SD_READ,       // open file for reading
+    SD_WRITE,      // open file for writing
+    SD_CREATE_NEW  // create file and open it (return SD_EXIST if it exists)
 } SDMODE;
 
-/* Connect to sd card, mount file system
- * (keeps trying until it succeeds ... implement time out?)
- */
+typedef FIL SDFILE;
+
+// ----------------------------------------------------------------------------
+
+/* File system/SD card functions */
+
+/* Connect to sd card, mount file system. Implement timeout? */
 void microsd_card_try_init(void);
 
-/* Unmount file system, disconnect sd, assumes no open files.
- */
+/* Unmount file system, disconnect sd, assumes no open files. */
 void microsd_card_deinit(void);
 
-/* Open file on file system. For now, exact same signature as the FatFS one
- * because we need to be able to specify mode and see error results...
- */
-SDRESULT microsd_open_file(FIL* fp, const char* path, SDMODE mode);
+/* Open file in path <path> and opening mode <mode> to file object <fp>. */
+SDRESULT microsd_open_file(SDFILE* fp, const char* path, SDMODE mode);
 
-/* Closes file on file system. */
-SDRESULT microsd_close_file(FIL* fp);
+/* Close file object <fp>. */
+SDRESULT microsd_close_file(SDFILE* fp);
 
-/* Assumes sd is connected and mounted, file is open
- * (possibly needs some indicator that it isn't, ie. in the return value)
- * <fp> is the file to be written to
- * <buff> is the buffer containing the data to be written
- * <btw> is the number of bytes to write. TODO: possibly smaller type?
+/* Assumes sd is connected and mounted, file is open.
+ * Writes at most <btw> bytes from <buff> to <fp>.
  */
-SDRESULT microsd_write(FIL* fp, const void* buff, unsigned int btw);
+SDRESULT microsd_write(SDFILE* fp, const void* buff, unsigned int btw);
 
-/* Assumes sd is connected and mounted, file is open
- * <fp> is the file being read from
- * <buf> is the buffer to write to
- * <btr> is the max number of bytes to read. TODO: possibly smaller type?
+/* Assumes sd is connected and mounted, file is open.
+ * Reads at most <btr> bytes from <fp> to <buf>
  */
-SDRESULT microsd_read(FIL* fp, void* buf, unsigned int btr);
+SDRESULT microsd_read(SDFILE* fp, void* buf, unsigned int btr);
+
+/* Assumes sd is connected and mounted, file is open.
+ * Reads at most <size> bytes from <fp> to <buf>, stopping at newlines/EOF.
+ */
+SDRESULT microsd_gets(SDFILE* fp, void* buf, unsigned int size);
