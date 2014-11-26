@@ -1,5 +1,5 @@
 EESchema Schematic File Version 2
-LIBS:irf7910
+LIBS:IRF7910
 LIBS:FDN304P
 LIBS:power
 LIBS:device
@@ -39,7 +39,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 5
 Title ""
-Date "13 nov 2014"
+Date "26 nov 2014"
 Rev ""
 Comp ""
 Comment1 ""
