@@ -87,7 +87,7 @@ bool config_init(void)
     // TODO: set location to whatever fits, how to determine this?
 
     SDFILE file;
-    bool success;
+    bool success = false;
 
     // initialise sd, mount file system
     microsd_card_try_init();
@@ -96,10 +96,10 @@ bool config_init(void)
     SDRESULT open = microsd_open_file(&file, "/path/to/config.txt", SD_READ);
 
     // success if the file was opened succesfully and the config read correctly
-    success = open == SD_OK && read_config(&file);
-
-    // close the config file
-    microsd_close_file(&file);
+    if (open == SD_OK) {
+        success = read_config(&file);
+        microsd_close_file(&file);
+    }
 
     // unmount file system, deinitialise sd
     microsd_card_deinit();
