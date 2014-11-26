@@ -32,12 +32,13 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:resistor
+LIBS:uSD_holder
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 5
+Sheet 4 6
 Title ""
 Date "26 nov 2014"
 Rev ""

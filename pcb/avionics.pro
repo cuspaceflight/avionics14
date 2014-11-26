@@ -1,6 +1,6 @@
-update=26/11/2014 15:35:18
+update=26/11/2014 21:43:38
 version=1
-last_client=kicad
+last_client=eeschema
 [cvpcb]
 version=1
 NetIExt=net
@@ -25,6 +25,8 @@ SolderMaskMinWidth=0.000000000000
 DrawSegmentWidth=0.200000000000
 BoardOutlineThickness=0.100000000000
 ModuleOutlineThickness=0.150000000000
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=../../../../../../Program Files (x86)/KiCad/share/library/custom;library
@@ -67,5 +69,4 @@ LibName30=atmel
 LibName31=contrib
 LibName32=valves
 LibName33=resistor
-[general]
-version=1
+LibName34=uSD_holder

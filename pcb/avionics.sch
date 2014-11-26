@@ -32,12 +32,13 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:resistor
+LIBS:uSD_holder
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title "Avionics Board M14"
 Date "26 nov 2014"
 Rev "1"
@@ -69,17 +70,6 @@ Text Notes 600  900  0    250  ~ 0
 Avionics Project Michalmas 2014
 Text Notes 650  1150 0    60   ~ 0
 Each team has a subsheet below which can contain further subsheets and should expose hierarchical labels for input/output connections.
-$Comp
-L GND #PWR?
-U 1 1 545BA0DA
-P 1000 4400
-F 0 "#PWR?" H 1000 4400 30  0001 C CNN
-F 1 "GND" H 1000 4330 30  0001 C CNN
-F 2 "" H 1000 4400 60  0000 C CNN
-F 3 "" H 1000 4400 60  0000 C CNN
-	1    1000 4400
-	1    0    0    -1  
-$EndComp
 $Comp
 L +3.3V #PWR?
 U 1 1 545BA0EE
@@ -122,4 +112,15 @@ Wire Notes Line
 	11000 1300 11000 4100
 Wire Notes Line
 	11000 4100 600  4100
+$Comp
+L GND #PWR?
+U 1 1 54764B30
+P 1000 4400
+F 0 "#PWR?" H 1000 4400 30  0001 C CNN
+F 1 "GND" H 1000 4330 30  0001 C CNN
+F 2 "" H 1000 4400 60  0000 C CNN
+F 3 "" H 1000 4400 60  0000 C CNN
+	1    1000 4400
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
