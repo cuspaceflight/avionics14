@@ -1,45 +1,93 @@
+#include <stdbool.h>
 #include "microsd.h"
 #include "hal.h"
 #include "ff.h"
 
 /* TODO: Connect the sd, mount the file system
- * btw, static is C's answer to the private modifier */
-static bool_t microsd_card_init(FATFS* fs) {
-    return FALSE;
-}
-
-/* TODO: Try initialising the sd until it works.
- * Something something error handling/timeout
  */
-void microsd_card_try_init(FATFS* fs) {}
+static bool microsd_card_init(FATFS* fs)
+{
+    // connect the sd
 
-/* TODO: Unmount the file system, disconnect the SD.
- */
-void microsd_card_deinit(void) {}
+    // mount the file system
+    FRESULT res = f_mount(0, fs);
 
-/* TODO: open file in <path> to <fp>.
- * Probably need to find a way to make this generic enough to be useful for
- * either reading or writing, but not support as many modes/error states as
- * the FatFS one does.
- */
-FRESULT microsd_open_file(FIL* fp, const TCHAR* path, BYTE mode) {
-    return 1;
-}
-
-/* TODO: close file in <fp>.
- */
-bool_t microsd_close_file(FIL* fp) {
     return false;
 }
 
-/* TODO: Write <btw> bytes from <buf> to <fp>.
+/* TODO: Try initialising the sd until it works.
+ * We keep a statically allocated FATFS in here, which is the one that is used
+ * for all file system purposes.
+ * Something something error handling/timeout
  */
-bool_t microsd_write(FIL* fp, const void* buf, UINT btw) {
-    return FALSE;
+void microsd_card_try_init(void)
+{
+    static FATFS fs;
+    while (!microsd_card_init(fs)) {
+        // do something
+    };
 }
 
-/* TODO: Read <btr> bytes from <fp> to <buf>.
+/* TODO: Unmount the file system, disconnect the SD.
  */
-bool_t microsd_read(FIL* fp, void* buf, UINT btr) {
-    return FALSE;
+void microsd_card_deinit(void)
+{
+    // unmount file system
+    FRESULT res = f_mount(0, NULL);
+
+    // disconnect sd
+}
+
+
+/* open file in <path> to <fp>.
+ */
+SDRESULT microsd_open_file(SDFILE* fp, const char* path, SDMODE mode)
+{
+    // default open mode is read only
+    BYTE bmode =
+        mode == SD_WRITE ? FR_WRITE :
+        mode == SD_CREATE_NEW ? FR_CREATE_NEW :
+        FR_READ;
+
+    FRESULT res = f_open(fp, (TCHAR*)path, bmode);
+    return res == FR_OK      ? SD_OK :
+           res == FR_NO_FILE ? SD_NO_FILE :
+           res == FR_EXIST   ? SD_EXIST :
+                               SD_ERR;
+}
+
+/* close file in <fp>.
+ */
+SDRESULT microsd_close_file(SDFILE* fp)
+{
+    return f_close(fp) == FR_OK ? SD_OK : SD_ERR;
+}
+
+/* Write <btw> bytes from <buf> to <fp>.
+ * Number of bytes written is currently not used for anything ...
+ */
+SDRESULT microsd_write(SDFILE* fp, const void* buf, unsigned int btw)
+{
+    unsigned int bytes_written;
+    FRESULT res = f_write(fp, buf, btw, &bytes_written);
+    return res == FR_OK ? SD_OK : SD_ERR;
+}
+
+/* Read <btr> bytes from <fp> to <buf>.
+ * Number of bytes read is currently not used for anything ...
+ */
+SDRESULT microsd_read(SDFILE* fp, void* buf, unsigned int btr)
+{
+    unsigned int bytes_read;
+    FRESULT res = f_read(fp, buf, btr, &bytes_read);
+    return res == FR_OK ? SD_OK : SD_ERR;
+}
+
+
+SDRESULT microsd_gets(SDFILE* fp, char* buf, int size)
+{
+    TCHAR* res = f_gets((TCHAR*)buf, size, fp);
+    return res != NULL ? SD_OK :
+           f_eof(fp)   ? SD_EOF :
+                         SD_ERR;
 }

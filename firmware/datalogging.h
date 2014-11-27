@@ -17,5 +17,8 @@ uint16_t data_c, uint16_t data_d);
 
 void log_f(uint8_t channel, float data_a, float data_b);
 
+/* error logging - is that a thing? */
+void log_err(uint8_t channel, const char* data);
+
 /* micro sd logging thread */
 msg_t datalogging_thread(void* arg);
