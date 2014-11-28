@@ -1,4 +1,4 @@
-update=26/11/2014 21:43:38
+update=28/11/2014 21:02:59
 version=1
 last_client=eeschema
 [cvpcb]
@@ -70,3 +70,4 @@ LibName31=contrib
 LibName32=valves
 LibName33=resistor
 LibName34=uSD_holder
+LibName35=tvsd
