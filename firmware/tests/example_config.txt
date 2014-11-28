@@ -1,4 +1,0 @@
-ignition_velocity=3.4
-burnout_acceleration=7.3453
-burnout_timer=459
-pyro_drogue_body_1=1
