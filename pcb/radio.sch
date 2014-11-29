@@ -34,14 +34,15 @@ LIBS:valves
 LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
+LIBS:FG6943010R
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 6
+Sheet 2 7
 Title ""
-Date "28 nov 2014"
+Date "29 nov 2014"
 Rev ""
 Comp ""
 Comment1 ""

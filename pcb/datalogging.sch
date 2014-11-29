@@ -34,14 +34,15 @@ LIBS:valves
 LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
+LIBS:FG6943010R
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 6
+Sheet 3 7
 Title ""
-Date "28 nov 2014"
+Date "29 nov 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -75,5 +76,14 @@ F6 "~PY1_CHK" O R 3350 1500 60
 F7 "~PY2_CHK" O R 3350 1700 60 
 F8 "~PY3_CHK" O R 3350 1900 60 
 F9 "~PY4_CHK" O R 3350 2100 60 
+$EndSheet
+$Sheet
+S 6500 1300 900  950 
+U 5478FE09
+F0 "Indicators" 50
+F1 "Indicators.sch" 50
+F2 "PY_OK" I L 6500 1550 60 
+F3 "IMU_OK" I L 6500 1700 60 
+F4 "RADIO_OK" I L 6500 1850 60 
 $EndSheet
 $EndSCHEMATC

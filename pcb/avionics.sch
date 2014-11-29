@@ -34,14 +34,15 @@ LIBS:valves
 LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
+LIBS:FG6943010R
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 6
+Sheet 1 7
 Title "Avionics Board M14"
-Date "28 nov 2014"
+Date "29 nov 2014"
 Rev "1"
 Comp "CU Spaceflight"
 Comment1 ""
@@ -72,10 +73,10 @@ Avionics Project Michalmas 2014
 Text Notes 650  1150 0    60   ~ 0
 Each team has a subsheet below which can contain further subsheets and should expose hierarchical labels for input/output connections.
 $Comp
-L +3.3V #PWR?
+L +3.3V #PWR01
 U 1 1 545BA0EE
 P 850 4400
-F 0 "#PWR?" H 850 4360 30  0001 C CNN
+F 0 "#PWR01" H 850 4360 30  0001 C CNN
 F 1 "+3.3V" H 850 4510 30  0000 C CNN
 F 2 "" H 850 4400 60  0000 C CNN
 F 3 "" H 850 4400 60  0000 C CNN
@@ -83,10 +84,10 @@ F 3 "" H 850 4400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +BATT #PWR?
+L +BATT #PWR02
 U 1 1 545BA102
 P 700 4400
-F 0 "#PWR?" H 700 4350 20  0001 C CNN
+F 0 "#PWR02" H 700 4350 20  0001 C CNN
 F 1 "+BATT" H 700 4500 30  0000 C CNN
 F 2 "" H 700 4400 60  0000 C CNN
 F 3 "" H 700 4400 60  0000 C CNN
@@ -114,10 +115,10 @@ Wire Notes Line
 Wire Notes Line
 	11000 4100 600  4100
 $Comp
-L GND #PWR?
+L GND #PWR03
 U 1 1 54764B30
 P 1000 4400
-F 0 "#PWR?" H 1000 4400 30  0001 C CNN
+F 0 "#PWR03" H 1000 4400 30  0001 C CNN
 F 1 "GND" H 1000 4330 30  0001 C CNN
 F 2 "" H 1000 4400 60  0000 C CNN
 F 3 "" H 1000 4400 60  0000 C CNN

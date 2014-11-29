@@ -34,14 +34,15 @@ LIBS:valves
 LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
+LIBS:FG6943010R
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 6
+Sheet 4 7
 Title ""
-Date "28 nov 2014"
+Date "29 nov 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -50,10 +51,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L +3.3V #PWR?
+L +3.3V #PWR04
 U 1 1 54764AE2
 P 5400 2550
-F 0 "#PWR?" H 5400 2510 30  0001 C CNN
+F 0 "#PWR04" H 5400 2510 30  0001 C CNN
 F 1 "+3.3V" H 5400 2660 30  0000 C CNN
 F 2 "" H 5400 2550 60  0000 C CNN
 F 3 "" H 5400 2550 60  0000 C CNN
@@ -61,10 +62,10 @@ F 3 "" H 5400 2550 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR?
+L GND #PWR05
 U 1 1 54764C20
 P 5400 4050
-F 0 "#PWR?" H 5400 4050 30  0001 C CNN
+F 0 "#PWR05" H 5400 4050 30  0001 C CNN
 F 1 "GND" H 5400 3980 30  0001 C CNN
 F 2 "" H 5400 4050 60  0000 C CNN
 F 3 "" H 5400 4050 60  0000 C CNN
