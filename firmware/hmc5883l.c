@@ -94,15 +94,15 @@ static bool_t hmc5883l_init(uint8_t *buf, int8_t *buf_data)
 static void hmc5883l_field_convert(int8_t *buf_data, float *field)
 {
     int16_t temp ;
-	
-    temp = (buf_data[0] << 8 | buf_data[1] );
-    field[0] = (float) temp * counts_to_Tesla;
-	
-    temp = (buf_data[2] << 8 | buf_data[3] );
-    field[1] = (float) temp * counts_to_Tesla;	
+    int i;
     
-    temp = (buf_data[4] << 8 | buf_data[5] ) ;
-    field[2] = (float) temp * counts_to_Tesla;
+    for (i =0; i<6 i+=2)
+    {
+    	int j = i/2 ;
+    	temp = (int16_t(buf_data[i]) << 8) | (uint16_t(buf_data[i+1])) ;
+    	field [j] = (float (temp)) * counts_to_Tesla;
+    }
+    
 }
 
 /* 
