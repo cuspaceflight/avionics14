@@ -2,6 +2,11 @@
 * Translational State estimation and sensor fusion
 * Avionics14
 * 2014 Raphael Taylor-Davies, Cambridge University Spaceflight
+*
+* Pressure calibration, next state covariance matrix
+* calculation and tuning constants taken from Martlet 2
+* Written by Adam Greig, Cambridge University Spaceflight
+*
 */
 
 #include "translation_kalman.h"
@@ -46,11 +51,11 @@ float state_estimation_p2a_zero_lapse(float p, int b);
 * Predicted State generated using SUVAT
 *
 * Next covariance matrix generated using method copied from Marlet 2
-*
+* Written by Adam Greig
 */
 void translation_kalman_prediction_step(translational_state_t* state) {
 	//This will be computed in firmware but set at 1 ms for now for simplicity
-	float dt = 1; 
+	float dt = 1;
 	float dt2 = dt * dt;
 	float dt3 = dt * dt2;
 	float dt4 = dt * dt3;
@@ -113,10 +118,10 @@ void translation_kalman_prediction_step(translational_state_t* state) {
 * Pressure Update Equations
 *
 * Pressure only effects y axis so extract this first
-* 
+*
 * x = current_state[1]
 *
-* As the pressure reading gives us altitude H = [1, 0, 0] 
+* As the pressure reading gives us altitude H = [1, 0, 0]
 *
 * The covariance matrix P is a 3x3 matrix
 *
@@ -190,8 +195,8 @@ void translation_kalman_new_pressure(float pressure) {
 *
 * Each axis is independent so we handle them separately
 *
-* x = current_state[i] 
-* Z = accel[i] 
+* x = current_state[i]
+* Z = accel[i]
 * for i = 0,1,2
 *
 * As the accel reading gives us acceleration H = [0, 0, 1]
@@ -245,11 +250,6 @@ void translation_kalman_new_accel(const float* accel) {
 		x[2] += k[2] * error;
 	}
 }
-
-
-
-
-
 
 float state_estimation_pressure_to_altitude(float pressure)
 {
