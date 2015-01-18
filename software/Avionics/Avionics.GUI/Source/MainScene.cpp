@@ -10,9 +10,11 @@ extern "C" {
 #include <time_utils.h>
 #include <mission.h>
 #include <translation_kalman.h>
+#include <quest_estimator.h>
+#include <math_utils.h>
 }
 
-#define RUN_SIMULATION
+//#define RUN_SIMULATION
 
 MainScene::MainScene() : simulation_index_(0), data_input_(nullptr), simulation_time_(0), packet_timestep_correction_(0) {
 	state_3d_renderer_ = new State3DRenderer();
@@ -22,6 +24,23 @@ MainScene::MainScene() : simulation_index_(0), data_input_(nullptr), simulation_
 	state_detail_view_ = new StateDetailView();
 	addView(state_detail_view_);
 	state_detail_view_->release();
+
+	// Reference vectors rotated by (x,y,z) (35, -37, -180) degrees in that order
+	float mag[3] = { 0.345186916322074, -0.819152044288992, -0.458078509796326 };
+	float accel[3] = { 0.492978006498827, 0.573576436351046, -0.654203910697022 };
+
+	quest_estimator_new_accel(accel);
+	quest_estimator_new_mag(mag);
+	float q[4];
+	quest_estimator_update(q);
+
+	float xyz[3];
+	quat_to_euler(q, xyz);
+
+	for (int i = 0; i < 3; i++)
+		xyz[i] *= 180.0f / PI;
+
+	FTLOG("Quest returned: (%f %f %f)", xyz[0], xyz[1], xyz[2]);
 
 #ifdef RUN_SIMULATION
 	loadFromBinaryFile("log_00021.bin");
@@ -176,6 +195,8 @@ void MainScene::loadFromBinaryFile(const char* file) {
 			++simulation_index_;
 		}
 		FTAssert(simulation_index_ != num_samples_, "No ignition state found!");
+
+		//simulation_index_ = 0;
 
 		accel_bias_measurements[0] = (int16_t)(totals[0] / num_accel_samples);
 		accel_bias_measurements[1] = (int16_t)(totals[1] / num_accel_samples);

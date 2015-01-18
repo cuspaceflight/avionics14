@@ -79,13 +79,16 @@
   <ItemGroup>
     <ClCompile Include="Source\logging.c" />
     <ClCompile Include="Source\mission.c" />
+    <ClCompile Include="Source\quest_estimator.c" />
     <ClCompile Include="Source\state_estimate.c" />
     <ClCompile Include="Source\telemetry.c" />
     <ClCompile Include="Source\translation_kalman.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\logging.h" />
+    <ClInclude Include="Source\math_utils.h" />
     <ClInclude Include="Source\mission.h" />
+    <ClInclude Include="Source\quest_estimator.h" />
     <ClInclude Include="Source\state_estimate.h" />
     <ClInclude Include="Source\telemetry.h" />
     <ClInclude Include="Source\time_utils.h" />
