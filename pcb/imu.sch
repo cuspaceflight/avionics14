@@ -35,6 +35,7 @@ LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
 LIBS:FG6943010R
+LIBS:buzzer
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
@@ -42,7 +43,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 7 7
 Title ""
-Date "29 nov 2014"
+Date "23 jan 2015"
 Rev ""
 Comp ""
 Comment1 ""

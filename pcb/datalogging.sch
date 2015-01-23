@@ -35,6 +35,7 @@ LIBS:resistor
 LIBS:uSD_holder
 LIBS:tvsd
 LIBS:FG6943010R
+LIBS:buzzer
 LIBS:avionics-cache
 EELAYER 27 0
 EELAYER END
@@ -42,7 +43,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 7
 Title ""
-Date "29 nov 2014"
+Date "23 jan 2015"
 Rev ""
 Comp ""
 Comment1 ""
@@ -78,7 +79,7 @@ F8 "~PY3_CHK" O R 3350 1900 60
 F9 "~PY4_CHK" O R 3350 2100 60 
 $EndSheet
 $Sheet
-S 6150 1500 1150 650 
+S 6150 1500 1150 850 
 U 5478FE09
 F0 "Indicators" 50
 F1 "Indicators.sch" 50
@@ -88,5 +89,6 @@ F4 "RADIO_OK" I L 6150 2000 60
 F5 "~PY_OK" I R 7300 1600 60 
 F6 "~IMU_OK" I R 7300 1800 60 
 F7 "~RADIO_OK" I R 7300 2000 60 
+F8 "BUZZER" I L 6150 2200 60 
 $EndSheet
 $EndSCHEMATC

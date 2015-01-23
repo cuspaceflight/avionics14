@@ -1,4 +1,4 @@
-update=29/11/2014 00:22:19
+update=23/1/2015 19:46:49
 version=1
 last_client=eeschema
 [cvpcb]
@@ -72,3 +72,4 @@ LibName33=resistor
 LibName34=uSD_holder
 LibName35=tvsd
 LibName36=FG6943010R
+LibName37=buzzer
