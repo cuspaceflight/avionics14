@@ -26,8 +26,8 @@ config_t conf = {
 
 bool read_int(SDFILE* file, char buffer[], const char* format, int* attrib)
 {
-    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
-    return res == SD_OK && sscanf(buffer, format, attrib) == 1;
+    SDRESULT res = microsd_gets(file, buffer, BUFFER_SIZE);
+    return res == SD_OK && sscanf(buffer, format, attrib) == 1 && *attrib > 0;
 }
 
 
@@ -37,8 +37,8 @@ bool read_int(SDFILE* file, char buffer[], const char* format, int* attrib)
 
 bool read_float(SDFILE* file, char buffer[], const char* format, float* attrib)
 {
-    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
-    return res == SD_OK && sscanf(buffer, format, attrib) == 1;
+    SDRESULT res = microsd_gets(file, buffer, BUFFER_SIZE);
+    return res == SD_OK && sscanf(buffer, format, attrib) == 1 && *attrib > 0;
 }
 
 
@@ -49,7 +49,7 @@ bool read_float(SDFILE* file, char buffer[], const char* format, float* attrib)
 
 bool read_bool(SDFILE* file, char buffer[], const char* format, bool* attrib)
 {
-    SDRESULT res = microsd_fgets(file, buffer, BUFFER_SIZE);
+    SDRESULT res = microsd_gets(file, buffer, BUFFER_SIZE);
     int int_result = 0;
 
     if (res == SD_OK && sscanf(buffer, format, &int_result) == 1)
@@ -82,7 +82,7 @@ bool read_config(SDFILE* file)
 
 /* Initialises config. Returns false if some error occurred.
  */
-bool config_init(void)
+bool config_init(const char* path)
 {
     // TODO: set location to whatever fits, how to determine this?
 
@@ -93,7 +93,7 @@ bool config_init(void)
     microsd_card_try_init();
 
     // open config file with path <hardcoded>
-    SDRESULT open = microsd_open_file(&file, "/path/to/config.txt", SD_READ);
+    SDRESULT open = microsd_open_file(&file, path, SD_READ);
 
     // success if the file was opened succesfully and the config read correctly
     if (open == SD_OK) {

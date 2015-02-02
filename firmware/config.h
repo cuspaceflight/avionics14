@@ -34,6 +34,6 @@ extern config_t conf;
 #define BURNOUT_TIMER        (conf.burnout_timer)
 #define PYRO_DROGUE_BODY_1   (conf.pyro_drogue_body_1)
 
-/* Read config from the file on the sd card.
+/* Read config from the file on the sd card specified by <path>.
  * If none/error occurred, return false, if succeeded return true. */
-bool config_init(void);
+bool config_init(const char* path);

@@ -1,0 +1,22 @@
+EESchema-LIBRARY Version 2.3  Date: 28/11/2014 21:02:27
+#encoding utf-8
+#
+# TVSD
+#
+DEF TVSD D 0 0 N N 1 F N
+F0 "D" 120 -10 60 H V C CNN
+F1 "TVSD" -90 0 60 V V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+P 2 0 1 0  -40 0  -40 -20 N
+P 2 0 1 0  0 -80  0 -70 N
+P 2 0 1 0  0 80  0 70 N
+P 3 0 1 0  0 0  40 0  40 20 N
+P 8 0 1 0  0 0  40 70  -40 70  0 0  -40 -70  40 -70  0 0  -40 0 F
+X ~ ~ 0 -200 118 U 50 50 1 1 P
+X ~ ~ 0 200 118 D 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library

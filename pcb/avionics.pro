@@ -1,4 +1,4 @@
-update=26/11/2014 21:43:38
+update=23/1/2015 19:46:49
 version=1
 last_client=eeschema
 [cvpcb]
@@ -70,3 +70,6 @@ LibName31=contrib
 LibName32=valves
 LibName33=resistor
 LibName34=uSD_holder
+LibName35=tvsd
+LibName36=FG6943010R
+LibName37=buzzer
