@@ -1,0 +1,10 @@
+ignition_velocity=3.4
+burnout_acceleration=7.3453
+burnout_timer=459
+pyro_drogue_body_1=1
+
+
+The config format requires strict ordering (hardcoded in config.c), newline
+delimitered, no whitespace.
+Comments can go underneath the config (like this) since a succesful reading
+won't care about the rest of the file.

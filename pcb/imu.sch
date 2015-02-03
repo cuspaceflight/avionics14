@@ -1,4 +1,6 @@
 EESchema Schematic File Version 2
+LIBS:IRF7910
+LIBS:FDN304P
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,13 +31,19 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-EELAYER 24 0
+LIBS:resistor
+LIBS:uSD_holder
+LIBS:tvsd
+LIBS:FG6943010R
+LIBS:buzzer
+LIBS:avionics-cache
+EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 4
+Sheet 7 7
 Title ""
-Date ""
+Date "23 jan 2015"
 Rev ""
 Comp ""
 Comment1 ""

@@ -54,7 +54,8 @@ static state_t do_state_main_parachute_fired_top(instance_data_t *data);
 static state_t do_state_landed_top(instance_data_t *data);
 
 
-state_func_t* const state_table[NUM_STATES] = {
+state_func_t* const state_table[NUM_STATES] = 
+{
     do_state_standby, do_state_first_stage_fired, do_state_separated, 
     do_state_time_delay, do_state_second_stage_fired, do_state_coasting, 
     do_state_apogee, do_state_drogue_parachute_fired, 
@@ -62,11 +63,13 @@ state_func_t* const state_table[NUM_STATES] = {
 };
 
 
-state_t run_state(state_t cur_state, instance_data_t *data) {
+state_t run_state(state_t cur_state, instance_data_t *data) 
+{
     return state_table[cur_state](data);
 }
 
-static state_t do_state_standby(instance_data_t *data){
+static state_t do_state_standby(instance_data_t *data)
+{
     state_estimation_trust_barometer = 1;
     if(chTimeNow() < 10000)
         return STATE_STANDBY;
@@ -87,32 +90,29 @@ static state_t do_state_standby(instance_data_t *data){
  * intermediate state was doing anything else.
  */
 
-static state_t do_state_first_stage_fired(instance_data_t *data) {
-       
+
+static state_t do_state_first_stage_fired(instance_data_t *data)
+{
     state_estimation_trust_barometer = 0;
     if(data->state.a < BURNOUT_ACCELERATION)
     {
-	pyro_fire_separation(); /* THIS FUNCTION IS NOT YET DEFINED  */
-	
-	/* to sort out the time delay in the next state - need to edit the 
-        struct data to have t_separation */
-        data->t_separation = chTimeNow() ; 
+        data->t_separation = chTimeNow() ; /* to sort out time delay later */
         return STATE_SEPARATED;
     }
-       /* need the time mentioned earlier in this step */
     else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) 
     {
-        pyro_fire_separation();  /* THIS FUNCTION IS NOT YET DEFINED */
-        
-        /* to sort out the time delay in the next state - need to edit the 
-        struct data to have t_separation */
-        data->t_separation = chTimeNow() ; 
+        data->t_separation = chTimeNow() ; /* to sort out time delay later */
         return STATE_SEPARATED;
     }
     else
         return STATE_FIRST_STAGE_FIRED;
+
 }
 
+static state_t do_state_separated(instance_data_t *data)
+{
+    return STATE_TIME_DELAY;
+}
 
 /* Delay before launching second stage */
 static state_t do_state_time_delay(instance_data_t *data)

@@ -1,2 +1,4 @@
 firmware/build/
 firmware/.dep/
+*.o
+*.exe
