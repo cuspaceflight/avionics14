@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:FDN304P
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,16 +30,17 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:alpha_trx433s
-LIBS:a2235-h
-LIBS:quarter_wave_ant
-LIBS:rfm69w
+LIBS:resistor
+LIBS:uSD_holder
+LIBS:tvsd
+LIBS:FG6943010R
+LIBS:buzzer
 LIBS:avionics-cache
 EELAYER 24 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 4
+Sheet 2 7
 Title ""
 Date "6 nov 2014"
 Rev ""
@@ -63,142 +65,6 @@ Text HLabel 6900 1350 2    60   Input ~ 0
 RX
 Text HLabel 6900 1450 2    60   Output ~ 0
 TX
-$Comp
-L VCC #PWR05
-U 1 1 5468C061
-P 5000 5300
-F 0 "#PWR05" H 5000 5400 30  0001 C CNN
-F 1 "VCC" H 5000 5400 30  0000 C CNN
-F 2 "" H 5000 5300 60  0000 C CNN
-F 3 "" H 5000 5300 60  0000 C CNN
-	1    5000 5300
-	1    0    0    -1  
-$EndComp
-Text Notes 2900 4950 0    60   ~ 0
-Transmitter Module\n
-Text HLabel 4350 5350 2    60   Input ~ 0
-RADIO_CLK
-Text HLabel 4350 5450 2    60   Input ~ 0
-RADIO_MOSI
-Text HLabel 4350 5250 2    60   Input ~ 0
-RADIO_CS
-Text HLabel 2000 5250 0    60   Output ~ 0
-RADIO_MISO
-Text HLabel 2000 5350 0    60   Output ~ 0
-RADIO_IRQ
-Text HLabel 2000 5550 0    60   Input ~ 0
-RADIO_FFIT
-$Comp
-L VCC #PWR06
-U 1 1 547504F8
-P 1100 4600
-F 0 "#PWR06" H 1100 4700 30  0001 C CNN
-F 1 "VCC" H 1100 4700 30  0000 C CNN
-F 2 "" H 1100 4600 60  0000 C CNN
-F 3 "" H 1100 4600 60  0000 C CNN
-	1    1100 4600
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 54750940
-P 1300 5050
-F 0 "R?" V 1380 5050 40  0000 C CNN
-F 1 "10k" V 1307 5051 40  0000 C CNN
-F 2 "" V 1230 5050 30  0000 C CNN
-F 3 "" H 1300 5050 30  0000 C CNN
-	1    1300 5050
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 54750952
-P 1100 5050
-F 0 "R?" V 1180 5050 40  0000 C CNN
-F 1 "10k" V 1107 5051 40  0000 C CNN
-F 2 "" V 1030 5050 30  0000 C CNN
-F 3 "" H 1100 5050 30  0000 C CNN
-	1    1100 5050
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 5475095D
-P 900 5050
-F 0 "R?" V 980 5050 40  0000 C CNN
-F 1 "10k" V 907 5051 40  0000 C CNN
-F 2 "" V 830 5050 30  0000 C CNN
-F 3 "" H 900 5050 30  0000 C CNN
-	1    900  5050
-	1    0    0    -1  
-$EndComp
-NoConn ~ 4200 5550
-$Comp
-L alpha_trx433s U?
-U 1 1 5468BFE4
-P 3400 6000
-F 0 "U?" H 3400 6000 60  0000 C CNN
-F 1 "alpha_trx433s" H 3400 6000 60  0000 C CNN
-F 2 "" H 3400 6000 60  0000 C CNN
-F 3 "" H 3400 6000 60  0000 C CNN
-	1    3400 6000
-	1    0    0    -1  
-$EndComp
-$Comp
-L quarter_wave_ant ANT1
-U 1 1 5478DD8E
-P 5300 5700
-F 0 "ANT1" H 5725 5700 60  0000 C CNN
-F 1 "quarter_wave_ant" H 5700 5650 60  0000 C CNN
-F 2 "" H 5700 5650 60  0000 C CNN
-F 3 "" H 5700 5650 60  0000 C CNN
-	1    5300 5700
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR07
-U 1 1 5478DE6B
-P 5300 6600
-F 0 "#PWR07" H 5300 6600 30  0001 C CNN
-F 1 "GND" H 5300 6530 30  0001 C CNN
-F 2 "" H 5300 6600 60  0000 C CNN
-F 3 "" H 5300 6600 60  0000 C CNN
-	1    5300 6600
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C?
-U 1 1 5478DF9D
-P 4700 6250
-F 0 "C?" H 4700 6350 40  0000 L CNN
-F 1 "100n" H 4706 6165 40  0000 L CNN
-F 2 "" H 4738 6100 30  0000 C CNN
-F 3 "" H 4700 6250 60  0000 C CNN
-	1    4700 6250
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C?
-U 1 1 5478DFB9
-P 5000 6250
-F 0 "C?" H 5000 6350 40  0000 L CNN
-F 1 "1u" H 5006 6165 40  0000 L CNN
-F 2 "" H 5038 6100 30  0000 C CNN
-F 3 "" H 5000 6250 60  0000 C CNN
-	1    5000 6250
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR08
-U 1 1 5478E094
-P 3450 6600
-F 0 "#PWR08" H 3450 6600 30  0001 C CNN
-F 1 "GND" H 3450 6530 30  0001 C CNN
-F 2 "" H 3450 6600 60  0000 C CNN
-F 3 "" H 3450 6600 60  0000 C CNN
-	1    3450 6600
-	1    0    0    -1  
-$EndComp
 $Comp
 L A2235-H U?
 U 1 1 5478E27A
@@ -418,79 +284,6 @@ Wire Wire Line
 	8350 5500 8350 6050
 Wire Wire Line
 	7900 5300 8350 5300
-Connection ~ 4400 6450
-Wire Wire Line
-	4400 6450 4400 5650
-Wire Wire Line
-	4400 5650 4200 5650
-Connection ~ 3450 6450
-Wire Wire Line
-	3450 6450 3450 6600
-Wire Wire Line
-	2200 5850 2450 5850
-Wire Wire Line
-	2200 6450 2200 5850
-Wire Wire Line
-	2200 6450 3450 6450
-Wire Wire Line
-	3450 6450 4400 6450
-Wire Wire Line
-	4400 6450 5000 6450
-Connection ~ 5000 6000
-Wire Wire Line
-	4700 6000 4700 6050
-Wire Wire Line
-	5000 6000 4700 6000
-Connection ~ 5000 5750
-Wire Wire Line
-	5300 5850 5300 6600
-Wire Wire Line
-	5300 5850 4200 5850
-Wire Wire Line
-	5000 5750 4200 5750
-Wire Wire Line
-	4350 5450 4200 5450
-Wire Wire Line
-	900  5750 2450 5750
-Wire Wire Line
-	900  5300 900  5750
-Wire Wire Line
-	1100 5650 2450 5650
-Wire Wire Line
-	1100 5300 1100 5650
-Wire Wire Line
-	1300 5450 1300 5300
-Wire Wire Line
-	2450 5450 1300 5450
-Wire Wire Line
-	1300 4700 1300 4800
-Wire Wire Line
-	900  4700 900  4800
-Connection ~ 1100 4700
-Wire Wire Line
-	900  4700 1100 4700
-Wire Wire Line
-	1100 4700 1300 4700
-Wire Wire Line
-	1100 4600 1100 4700
-Wire Wire Line
-	1100 4700 1100 4800
-Wire Wire Line
-	2450 5550 2000 5550
-Wire Wire Line
-	2450 5350 2000 5350
-Wire Wire Line
-	4200 5350 4350 5350
-Wire Wire Line
-	4200 5250 4350 5250
-Wire Wire Line
-	5000 5300 5000 5750
-Wire Wire Line
-	5000 5750 5000 6000
-Wire Wire Line
-	5000 6000 5000 6050
-Wire Wire Line
-	2000 5250 2450 5250
 Wire Wire Line
 	5100 3200 5100 3400
 Wire Wire Line
