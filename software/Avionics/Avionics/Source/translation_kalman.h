@@ -12,14 +12,10 @@
 
 void translation_kalman_prediction_step(state_estimate_t* state, float dt);
 
-void translation_kalman_new_pressure(float pressure);
+void translation_kalman_new_pressure_raw(float pressure);
 
-// accel should correctly scaled and with the gravity vector removed
+// The scaled and calibrated acceleration vector in global coordinates with gravity removed
 void translation_kalman_new_accel(const float* accel);
-
-float state_estimation_pressure_to_altitude(float pressure);
-
-extern volatile uint8_t translation_kalman_trust_barometer;
 
 
 

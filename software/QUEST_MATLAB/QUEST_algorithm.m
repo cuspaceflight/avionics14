@@ -1,26 +1,28 @@
 format long
 
 %%Setup Matrices
-MagReference = [0;1;0];
-AccelReference = [0;0;-1];
+MagReference = [1;0;0];
+AccelReference = [0;1;0];
 
-
+MagReference = MagReference / norm(MagReference)
+AccelReference = AccelReference / norm(AccelReference)
 %MagObservation = [0;1;0];
 %AccelObservation = [0;0;-1];
 
 degToRad = 2.0 * pi / 360.0;
 
 % (roll, yaw, pitch)
-dcm = angle2dcm(35 * degToRad, -37 * degToRad,-180 * degToRad, 'xyz');
+dcm = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz')
+dcm2 = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz');
 
 MagObservation = dcm*MagReference;
-AccelObservation = dcm*AccelReference;
+AccelObservation = dcm2*AccelReference;
 
 MagObservation = (MagObservation/norm(MagObservation))
 AccelObservation = (AccelObservation/norm(AccelObservation))
 
-magA = 0.5;
-accelA = 0.5;
+magA = 0.0001;
+accelA = 1-magA;
 
 %% Compute Quaternion
 

@@ -21,9 +21,6 @@
     <ClCompile Include="Source\logging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\state_estimate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\telemetry.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -31,6 +28,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\quest_estimator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\calibration.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\state_estimate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\mag_rotation_estimator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -57,6 +63,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\math_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\calibration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\mag_rotation_estimator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

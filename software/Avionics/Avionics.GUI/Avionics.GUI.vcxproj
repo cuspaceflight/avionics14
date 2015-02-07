@@ -208,6 +208,11 @@
     <Image Include="Resources\Textures\uvtemplate.DDS" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Data\SerialDataSource.cpp" />
+    <ClCompile Include="Source\Data\SerialPort.cpp" />
+    <ClCompile Include="Source\Data\DataSource.cpp" />
+    <ClCompile Include="Source\Data\FileDataSource.cpp" />
+    <ClCompile Include="Source\Data\TelemetrySerialPort.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\MainScene.cpp" />
     <ClCompile Include="Source\RocketPathRenderer.cpp" />
@@ -233,6 +238,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Data\SerialDataSource.h" />
+    <ClInclude Include="Source\Data\SerialPort.h" />
+    <ClInclude Include="Source\Data\DataSource.h" />
+    <ClInclude Include="Source\Data\FileDataSource.h" />
+    <ClInclude Include="Source\Data\TelemetrySerialPort.h" />
     <ClInclude Include="Source\MainScene.h" />
     <ClInclude Include="Source\RocketPathRenderer.h" />
     <ClInclude Include="Source\RocketRenderer.h" />

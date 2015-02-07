@@ -77,7 +77,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\calibration.c" />
     <ClCompile Include="Source\logging.c" />
+    <ClCompile Include="Source\mag_rotation_estimator.c" />
     <ClCompile Include="Source\mission.c" />
     <ClCompile Include="Source\quest_estimator.c" />
     <ClCompile Include="Source\state_estimate.c" />
@@ -85,7 +87,9 @@
     <ClCompile Include="Source\translation_kalman.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\calibration.h" />
     <ClInclude Include="Source\logging.h" />
+    <ClInclude Include="Source\mag_rotation_estimator.h" />
     <ClInclude Include="Source\math_utils.h" />
     <ClInclude Include="Source\mission.h" />
     <ClInclude Include="Source\quest_estimator.h" />

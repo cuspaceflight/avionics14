@@ -36,6 +36,10 @@ typedef struct telemetry_t{
 #define MODE_FLOAT 9
 #define MODE_DOUBLE 10
 
+#define PACKET_ACCEL_RAW 0x20
+#define PACKET_MAG_RAW 0x23
+#define PACKET_GYRO_RAW 0x24
+#define PACKET_PRESSURE_RAW 0x22
 
 void print_telemetry_data(const telemetry_t* data);
 #endif /* TELEMETRY_H */
