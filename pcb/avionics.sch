@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:IRF7910
 LIBS:FDN304P
 LIBS:power
 LIBS:device
@@ -36,8 +35,12 @@ LIBS:uSD_holder
 LIBS:tvsd
 LIBS:FG6943010R
 LIBS:buzzer
-LIBS:avionics-cache
-EELAYER 27 0
+LIBS:irf7910
+LIBS:a2235-h
+LIBS:alpha_trx433s
+LIBS:quarter_wave_ant
+LIBS:rfm69w
+EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -73,38 +76,6 @@ Text Notes 600  900  0    250  ~ 0
 Avionics Project Michalmas 2014
 Text Notes 650  1150 0    60   ~ 0
 Each team has a subsheet below which can contain further subsheets and should expose hierarchical labels for input/output connections.
-$Comp
-L +3.3V #PWR?
-U 1 1 545BA0EE
-P 850 4400
-F 0 "#PWR?" H 850 4360 30  0001 C CNN
-F 1 "+3.3V" H 850 4510 30  0000 C CNN
-F 2 "" H 850 4400 60  0000 C CNN
-F 3 "" H 850 4400 60  0000 C CNN
-	1    850  4400
-	1    0    0    -1  
-$EndComp
-$Comp
-L +BATT #PWR?
-U 1 1 545BA102
-P 700 4400
-F 0 "#PWR?" H 700 4350 20  0001 C CNN
-F 1 "+BATT" H 700 4500 30  0000 C CNN
-F 2 "" H 700 4400 60  0000 C CNN
-F 3 "" H 700 4400 60  0000 C CNN
-	1    700  4400
-	1    0    0    -1  
-$EndComp
-Wire Notes Line
-	600  4200 1150 4200
-Wire Notes Line
-	1150 4200 1150 4700
-Wire Notes Line
-	1150 4700 600  4700
-Wire Notes Line
-	600  4700 600  4200
-Text Notes 650  4650 0    60   ~ 0
-POWER\nSYMBOLS
 Wire Notes Line
 	600  4100 600  1300
 Text Notes 650  1500 0    100  ~ 0
@@ -115,15 +86,4 @@ Wire Notes Line
 	11000 1300 11000 4100
 Wire Notes Line
 	11000 4100 600  4100
-$Comp
-L GND #PWR?
-U 1 1 54764B30
-P 1000 4400
-F 0 "#PWR?" H 1000 4400 30  0001 C CNN
-F 1 "GND" H 1000 4330 30  0001 C CNN
-F 2 "" H 1000 4400 60  0000 C CNN
-F 3 "" H 1000 4400 60  0000 C CNN
-	1    1000 4400
-	1    0    0    -1  
-$EndComp
 $EndSCHEMATC

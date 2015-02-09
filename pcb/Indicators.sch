@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:IRF7910
 LIBS:FDN304P
 LIBS:power
 LIBS:device
@@ -36,8 +35,12 @@ LIBS:uSD_holder
 LIBS:tvsd
 LIBS:FG6943010R
 LIBS:buzzer
-LIBS:avionics-cache
-EELAYER 27 0
+LIBS:irf7910
+LIBS:a2235-h
+LIBS:alpha_trx433s
+LIBS:quarter_wave_ant
+LIBS:rfm69w
+EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8

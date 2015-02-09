@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:IRF7910
 LIBS:FDN304P
 LIBS:power
 LIBS:device
@@ -36,8 +35,12 @@ LIBS:uSD_holder
 LIBS:tvsd
 LIBS:FG6943010R
 LIBS:buzzer
-LIBS:avionics-cache
-EELAYER 27 0
+LIBS:irf7910
+LIBS:a2235-h
+LIBS:alpha_trx433s
+LIBS:quarter_wave_ant
+LIBS:rfm69w
+EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -51,17 +54,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L +3.3V #PWR04
-U 1 1 54764AE2
-P 5400 2550
-F 0 "#PWR04" H 5400 2510 30  0001 C CNN
-F 1 "+3.3V" H 5400 2660 30  0000 C CNN
-F 2 "" H 5400 2550 60  0000 C CNN
-F 3 "" H 5400 2550 60  0000 C CNN
-	1    5400 2550
-	1    0    0    -1  
-$EndComp
 $Comp
 L GND #PWR05
 U 1 1 54764C20
@@ -216,4 +208,15 @@ Wire Wire Line
 	4900 3500 4950 3500
 Wire Wire Line
 	4950 3650 4900 3650
+$Comp
+L +3V3 #PWR?
+U 1 1 54D92D8C
+P 5400 2550
+F 0 "#PWR?" H 5400 2400 60  0001 C CNN
+F 1 "+3V3" H 5400 2690 60  0000 C CNN
+F 2 "" H 5400 2550 60  0000 C CNN
+F 3 "" H 5400 2550 60  0000 C CNN
+	1    5400 2550
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:FDN304P
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,16 +30,21 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:alpha_trx433s
+LIBS:resistor
+LIBS:uSD_holder
+LIBS:tvsd
+LIBS:FG6943010R
+LIBS:buzzer
+LIBS:irf7910
 LIBS:a2235-h
+LIBS:alpha_trx433s
 LIBS:quarter_wave_ant
 LIBS:rfm69w
-LIBS:avionics-cache
-EELAYER 24 0
+EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 4
+Sheet 2 7
 Title ""
 Date "6 nov 2014"
 Rev ""
@@ -63,17 +69,6 @@ Text HLabel 6900 1350 2    60   Input ~ 0
 RX
 Text HLabel 6900 1450 2    60   Output ~ 0
 TX
-$Comp
-L VCC #PWR05
-U 1 1 5468C061
-P 5000 5300
-F 0 "#PWR05" H 5000 5400 30  0001 C CNN
-F 1 "VCC" H 5000 5400 30  0000 C CNN
-F 2 "" H 5000 5300 60  0000 C CNN
-F 3 "" H 5000 5300 60  0000 C CNN
-	1    5000 5300
-	1    0    0    -1  
-$EndComp
 Text Notes 2900 4950 0    60   ~ 0
 Transmitter Module\n
 Text HLabel 4350 5350 2    60   Input ~ 0
@@ -88,17 +83,6 @@ Text HLabel 2000 5350 0    60   Output ~ 0
 RADIO_IRQ
 Text HLabel 2000 5550 0    60   Input ~ 0
 RADIO_FFIT
-$Comp
-L VCC #PWR06
-U 1 1 547504F8
-P 1100 4600
-F 0 "#PWR06" H 1100 4700 30  0001 C CNN
-F 1 "VCC" H 1100 4700 30  0000 C CNN
-F 2 "" H 1100 4600 60  0000 C CNN
-F 3 "" H 1100 4600 60  0000 C CNN
-	1    1100 4600
-	1    0    0    -1  
-$EndComp
 $Comp
 L R R?
 U 1 1 54750940
@@ -233,17 +217,6 @@ F 3 "" H 8350 6050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VCC #PWR010
-U 1 1 54B98B7A
-P 6400 4700
-F 0 "#PWR010" H 6400 4800 30  0001 C CNN
-F 1 "VCC" H 6400 4800 30  0000 C CNN
-F 2 "" H 6400 4700 60  0000 C CNN
-F 3 "" H 6400 4700 60  0000 C CNN
-	1    6400 4700
-	1    0    0    -1  
-$EndComp
-$Comp
 L C C?
 U 1 1 54B98CE3
 P 6400 5750
@@ -296,17 +269,6 @@ Text Notes 7650 4600 2    60   ~ 0
 Transmitter: RFM69W
 Text HLabel 6900 1650 2    60   Input ~ 0
 GPS_ON/OFF
-$Comp
-L VCC #PWR011
-U 1 1 54B99BA5
-P 3500 1350
-F 0 "#PWR011" H 3500 1450 30  0001 C CNN
-F 1 "VCC" H 3500 1450 30  0000 C CNN
-F 2 "" H 3500 1350 60  0000 C CNN
-F 3 "" H 3500 1350 60  0000 C CNN
-	1    3500 1350
-	1    0    0    -1  
-$EndComp
 $Comp
 L C C?
 U 1 1 54B99D53
@@ -632,4 +594,48 @@ F 3 "" H 7200 2800 60  0000 C CNN
 $EndComp
 NoConn ~ 4500 1800
 Connection ~ 4500 3400
+$Comp
+L +3V3 #PWR?
+U 1 1 54D91ABF
+P 1100 4600
+F 0 "#PWR?" H 1100 4450 60  0001 C CNN
+F 1 "+3V3" H 1100 4740 60  0000 C CNN
+F 2 "" H 1100 4600 60  0000 C CNN
+F 3 "" H 1100 4600 60  0000 C CNN
+	1    1100 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 54D91B90
+P 5000 5300
+F 0 "#PWR?" H 5000 5150 60  0001 C CNN
+F 1 "+3V3" H 5000 5440 60  0000 C CNN
+F 2 "" H 5000 5300 60  0000 C CNN
+F 3 "" H 5000 5300 60  0000 C CNN
+	1    5000 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 54D91C74
+P 6400 4700
+F 0 "#PWR?" H 6400 4550 60  0001 C CNN
+F 1 "+3V3" H 6400 4840 60  0000 C CNN
+F 2 "" H 6400 4700 60  0000 C CNN
+F 3 "" H 6400 4700 60  0000 C CNN
+	1    6400 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 54D91D22
+P 3500 1350
+F 0 "#PWR?" H 3500 1200 60  0001 C CNN
+F 1 "+3V3" H 3500 1490 60  0000 C CNN
+F 2 "" H 3500 1350 60  0000 C CNN
+F 3 "" H 3500 1350 60  0000 C CNN
+	1    3500 1350
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
