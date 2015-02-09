@@ -1,4 +1,4 @@
-update=Mon 09 Feb 2015 19:31:30 GMT
+update=Mon 09 Feb 2015 21:32:44 GMT
 version=1
 last_client=kicad
 [cvpcb]
@@ -72,3 +72,10 @@ LibName38=a2235-h
 LibName39=alpha_trx433s
 LibName40=quarter_wave_ant
 LibName41=rfm69w
+LibName42=adp3335
+LibName43=adxl345
+LibName44=hmc5883l
+LibName45=l3g4200d
+LibName46=ms5611-01ba03
+LibName47=stm32f405vgt
+LibName48=swd
