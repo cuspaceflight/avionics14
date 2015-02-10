@@ -172,16 +172,6 @@ F 3 "" H 6550 1350 60  0000 C CNN
 	1    6550 1350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6550 1350 6550 1600
-Wire Wire Line
-	6550 1400 6650 1400
-Wire Wire Line
-	6550 1500 6650 1500
-Connection ~ 6550 1400
-Wire Wire Line
-	6400 1600 6650 1600
-Connection ~ 6550 1500
 $Comp
 L GND #PWR?
 U 1 1 54D992FF
@@ -193,10 +183,6 @@ F 3 "" H 6550 1750 60  0000 C CNN
 	1    6550 1750
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6400 1700 6650 1700
-Wire Wire Line
-	6550 1700 6550 1750
 $Comp
 L +3V3 #PWR?
 U 1 1 54D9931E
@@ -208,16 +194,6 @@ F 3 "" H 7450 1350 60  0000 C CNN
 	1    7450 1350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7350 1400 7950 1400
-Wire Wire Line
-	7450 1350 7450 1600
-Wire Wire Line
-	7350 1500 7850 1500
-Connection ~ 7450 1400
-Wire Wire Line
-	7450 1600 7350 1600
-Connection ~ 7450 1500
 $Comp
 L C C?
 U 1 1 54D99379
@@ -229,10 +205,6 @@ F 3 "" H 7650 1700 60  0000 C CNN
 	1    7650 1700
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	7350 1700 7450 1700
-Wire Wire Line
-	7850 1500 7850 1700
 $Comp
 L CONN_01X02 P?
 U 1 1 54D9948C
@@ -244,8 +216,6 @@ F 3 "" H 6200 1650 60  0000 C CNN
 	1    6200 1650
 	-1   0    0    1   
 $EndComp
-Connection ~ 6550 1600
-Connection ~ 6550 1700
 $Comp
 L C C?
 U 1 1 54D9976E
@@ -290,14 +260,6 @@ F 3 "" H 6300 1300 60  0000 C CNN
 	1    6300 1300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6300 1250 6300 1300
-Wire Wire Line
-	6300 800  6300 850 
-Wire Wire Line
-	7950 1400 7950 1300
-Wire Wire Line
-	7950 1300 8050 1300
 $Comp
 L GND #PWR?
 U 1 1 54D999F2
@@ -309,6 +271,87 @@ F 3 "" H 8050 1750 60  0000 C CNN
 	1    8050 1750
 	1    0    0    -1  
 $EndComp
+Text Notes 6050 2100 0    60   ~ 0
+POWER REGULATION
+Text Label 4200 6850 0    60   ~ 0
+SWDIO
+NoConn ~ 4050 7150
+$Comp
+L GND #PWR?
+U 1 1 54DAC1BA
+P 2850 7400
+F 0 "#PWR?" H 2850 7150 60  0001 C CNN
+F 1 "GND" H 2850 7250 60  0000 C CNN
+F 2 "" H 2850 7400 60  0000 C CNN
+F 3 "" H 2850 7400 60  0000 C CNN
+	1    2850 7400
+	1    0    0    -1  
+$EndComp
+Text Label 4200 6950 0    60   ~ 0
+SWDCLK
+Text Label 4200 7050 0    60   ~ 0
+SWO
+$Comp
+L +3V3 #PWR?
+U 1 1 54DBBA22
+P 2850 6850
+F 0 "#PWR?" H 2850 6700 60  0001 C CNN
+F 1 "+3V3" H 2850 6990 60  0000 C CNN
+F 2 "" H 2850 6850 60  0000 C CNN
+F 3 "" H 2850 6850 60  0000 C CNN
+	1    2850 6850
+	1    0    0    -1  
+$EndComp
+Text Label 850  5550 2    60   ~ 0
+SWDCLK
+Text Label 4200 7250 0    60   ~ 0
+nReset
+Text Label 800  3650 2    60   ~ 0
+nReset
+Text Label 850  5450 2    60   ~ 0
+SWDIO
+Text Label 850  6150 2    60   ~ 0
+SWO
+Text Label 4900 4700 2    60   ~ 0
+RADIO_CS
+Wire Wire Line
+	6550 1350 6550 1600
+Wire Wire Line
+	6550 1400 6650 1400
+Wire Wire Line
+	6550 1500 6650 1500
+Connection ~ 6550 1400
+Wire Wire Line
+	6400 1600 6650 1600
+Connection ~ 6550 1500
+Wire Wire Line
+	6400 1700 6650 1700
+Wire Wire Line
+	6550 1700 6550 1750
+Wire Wire Line
+	7350 1400 7950 1400
+Wire Wire Line
+	7450 1350 7450 1600
+Wire Wire Line
+	7350 1500 7850 1500
+Connection ~ 7450 1400
+Wire Wire Line
+	7450 1600 7350 1600
+Connection ~ 7450 1500
+Wire Wire Line
+	7350 1700 7450 1700
+Wire Wire Line
+	7850 1500 7850 1700
+Connection ~ 6550 1600
+Connection ~ 6550 1700
+Wire Wire Line
+	6300 1250 6300 1300
+Wire Wire Line
+	6300 800  6300 850 
+Wire Wire Line
+	7950 1400 7950 1300
+Wire Wire Line
+	7950 1300 8050 1300
 Wire Wire Line
 	8050 1700 8050 1750
 Wire Notes Line
@@ -319,6 +362,264 @@ Wire Notes Line
 	8350 2150 8350 500 
 Wire Notes Line
 	8350 500  6000 500 
-Text Notes 6050 2100 0    60   ~ 0
-POWER REGULATION
+Wire Wire Line
+	4050 6850 4200 6850
+Wire Wire Line
+	2850 6950 2850 7400
+Connection ~ 3100 7250
+Wire Wire Line
+	3100 7250 2850 7250
+Wire Wire Line
+	3100 7050 2850 7050
+Connection ~ 2850 7250
+Wire Wire Line
+	3100 6950 2850 6950
+Connection ~ 2850 7050
+Wire Wire Line
+	4050 6950 4200 6950
+Wire Wire Line
+	4050 7050 4200 7050
+Wire Wire Line
+	4050 7250 4200 7250
+Wire Wire Line
+	3100 6850 2850 6850
+Wire Wire Line
+	2350 2150 2550 2150
+Wire Wire Line
+	1050 5550 850  5550
+Wire Wire Line
+	1050 3650 800  3650
+Wire Wire Line
+	1050 5450 850  5450
+Wire Wire Line
+	850  6150 1050 6150
+Wire Wire Line
+	5200 4700 4900 4700
+Wire Wire Line
+	5200 4800 4900 4800
+Text Label 4900 4800 2    60   ~ 0
+RADIO_MOSI
+Wire Wire Line
+	5200 4900 4900 4900
+Text Label 4900 4900 2    60   ~ 0
+RADIO_MISO
+Wire Wire Line
+	5200 5000 4900 5000
+Text Label 4900 5000 2    60   ~ 0
+RADIO_CLK
+Wire Wire Line
+	5200 5100 4900 5100
+Text Label 4900 5100 2    60   ~ 0
+RADIO_IRQ
+Wire Wire Line
+	5200 5300 4900 5300
+Text Label 4900 5300 2    60   ~ 0
+GPS_ON/OFF
+Wire Wire Line
+	5200 5400 4900 5400
+Text Label 4900 5400 2    60   ~ 0
+GPS_nRST
+Wire Wire Line
+	5200 5500 4900 5500
+Text Label 4900 5500 2    60   ~ 0
+RX
+Wire Wire Line
+	5200 5600 4900 5600
+Text Label 4900 5600 2    60   ~ 0
+TX
+Wire Wire Line
+	7550 4050 7350 4050
+Text Label 7350 4050 2    60   ~ 0
+ACCEL_INT
+Wire Wire Line
+	7550 4150 7350 4150
+Text Label 7350 4150 2    60   ~ 0
+ACCEL_CS
+Wire Wire Line
+	7550 4250 7350 4250
+Text Label 7350 4250 2    60   ~ 0
+ACCEL_MISO
+Wire Wire Line
+	7550 4350 7350 4350
+Text Label 7350 4350 2    60   ~ 0
+ACCEL_MOSI
+Wire Wire Line
+	7550 4450 7350 4450
+Text Label 7350 4450 2    60   ~ 0
+ACCEL_SCK
+Wire Wire Line
+	7550 4650 7350 4650
+Text Label 7350 4650 2    60   ~ 0
+GYRO_SCL
+Wire Wire Line
+	7550 4750 7350 4750
+Text Label 7350 4750 2    60   ~ 0
+GYRO_SDA
+Wire Wire Line
+	7550 4850 7350 4850
+Text Label 7350 4850 2    60   ~ 0
+GYRO_DRDY
+Wire Wire Line
+	7550 5050 7350 5050
+Text Label 7350 5050 2    60   ~ 0
+BARO_SCK
+Wire Wire Line
+	7550 5150 7350 5150
+Text Label 7350 5150 2    60   ~ 0
+BARO_MOSI
+Wire Wire Line
+	7550 5250 7350 5250
+Text Label 7350 5250 2    60   ~ 0
+BARO_MISO
+Wire Wire Line
+	7550 5350 7350 5350
+Text Label 7350 5350 2    60   ~ 0
+BARO_CS
+Wire Wire Line
+	7550 5550 7350 5550
+Text Label 7350 5550 2    60   ~ 0
+MAGNO_SCL
+Wire Wire Line
+	7550 5650 7350 5650
+Text Label 7350 5650 2    60   ~ 0
+MAGNO_SDA
+Wire Wire Line
+	7550 5750 7350 5750
+Text Label 7350 5750 2    60   ~ 0
+MAGNO_DRDY
+Wire Wire Line
+	6250 2550 6400 2550
+Text Label 6400 2550 0    60   ~ 0
+PY_OK
+Wire Wire Line
+	6250 2650 6400 2650
+Text Label 6400 2650 0    60   ~ 0
+IMU_OK
+Wire Wire Line
+	6250 2750 6400 2750
+Text Label 6400 2750 0    60   ~ 0
+RADIO_OK
+Wire Wire Line
+	6250 2850 6400 2850
+Text Label 6400 2850 0    60   ~ 0
+~RADIO_OK
+Wire Wire Line
+	6250 2950 6400 2950
+Text Label 6400 2950 0    60   ~ 0
+~IMU_OK
+Wire Wire Line
+	6250 3050 6400 3050
+Text Label 6400 3050 0    60   ~ 0
+~PY_OK
+Wire Wire Line
+	6250 3150 6400 3150
+Text Label 6400 3150 0    60   ~ 0
+BUZZER
+Wire Wire Line
+	5000 2550 4850 2550
+Text Label 4850 2550 2    60   ~ 0
+PY1_TRG
+Wire Wire Line
+	5000 2650 4850 2650
+Text Label 4850 2650 2    60   ~ 0
+PY2_TRG
+Wire Wire Line
+	5000 2750 4850 2750
+Text Label 4850 2750 2    60   ~ 0
+PY3_TRG
+Wire Wire Line
+	5000 2850 4850 2850
+Text Label 4850 2850 2    60   ~ 0
+PY4_TRG
+Wire Wire Line
+	5000 3000 4850 3000
+Text Label 4850 3000 2    60   ~ 0
+~PY1_CHK
+Wire Wire Line
+	5000 3100 4850 3100
+Text Label 4850 3100 2    60   ~ 0
+~PY2_CHK
+Wire Wire Line
+	5000 3200 4850 3200
+Text Label 4850 3200 2    60   ~ 0
+~PY3_CHK
+Wire Wire Line
+	5000 3300 4850 3300
+Text Label 4850 3300 2    60   ~ 0
+~PY4_CHK
+Wire Wire Line
+	5000 3450 4850 3450
+Text Label 4850 3450 2    60   ~ 0
+µSD_DAT0
+Wire Wire Line
+	5000 3550 4850 3550
+Text Label 4850 3550 2    60   ~ 0
+µSD_DAT1
+Wire Wire Line
+	5000 3650 4850 3650
+Text Label 4850 3650 2    60   ~ 0
+µSD_DAT2
+Wire Wire Line
+	5000 3750 4850 3750
+Text Label 4850 3750 2    60   ~ 0
+µSD_DAT3
+Wire Wire Line
+	5000 3850 4850 3850
+Text Label 4850 3850 2    60   ~ 0
+µSD_CLK
+Wire Wire Line
+	5000 3950 4850 3950
+Text Label 4850 3950 2    60   ~ 0
+µSD_CMD
+Wire Wire Line
+	5000 4050 4850 4050
+Text Label 4850 4050 2    60   ~ 0
+µSD_CD
+$Comp
+L CONN_01X04 P?
+U 1 1 54DE8EC0
+P 6100 6600
+F 0 "P?" H 6100 6850 50  0000 C CNN
+F 1 "CONN_01X04" V 6200 6600 50  0000 C CNN
+F 2 "" H 6100 6600 60  0000 C CNN
+F 3 "" H 6100 6600 60  0000 C CNN
+	1    6100 6600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 6450 5700 6450
+$Comp
+L +3V3 #PWR?
+U 1 1 54DE9D86
+P 5700 6450
+F 0 "#PWR?" H 5700 6300 60  0001 C CNN
+F 1 "+3V3" H 5700 6590 60  0000 C CNN
+F 2 "" H 5700 6450 60  0000 C CNN
+F 3 "" H 5700 6450 60  0000 C CNN
+	1    5700 6450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 6750 5700 6750
+Wire Wire Line
+	5700 6750 5700 6850
+$Comp
+L GND #PWR?
+U 1 1 54DEABCF
+P 5700 6850
+F 0 "#PWR?" H 5700 6600 60  0001 C CNN
+F 1 "GND" H 5700 6700 60  0000 C CNN
+F 2 "" H 5700 6850 60  0000 C CNN
+F 3 "" H 5700 6850 60  0000 C CNN
+	1    5700 6850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 6550 5700 6550
+Text Label 5700 6550 2    60   ~ 0
+TX
+Wire Wire Line
+	5900 6650 5700 6650
+Text Label 5700 6650 2    60   ~ 0
+RX
 $EndSCHEMATC
