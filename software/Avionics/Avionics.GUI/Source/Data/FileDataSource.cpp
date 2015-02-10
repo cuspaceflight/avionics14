@@ -7,7 +7,7 @@ extern "C" {
 }
 
 
-FileDataSource::FileDataSource(const char* filename) : simulation_index_(0), data_input_(nullptr), simulation_time_(0), packet_timestep_correction_(0) {
+FileDataSource::FileDataSource(const char* filename) : simulation_index_(0), data_input_(nullptr) {
 	loadFromBinaryFile(filename);
 }
 
@@ -16,11 +16,11 @@ FileDataSource::~FileDataSource() {
 }
 
 void FileDataSource::update(uint64_t dt, state_estimate_t* state) {
+	DataSource::update(dt, state);
 	if (simulation_index_ == num_samples_)
 		return;
 	//if (FTInputManager::getSharedInstance()->isKeyDown(KeyNameUp))
 	//	return;
-	simulation_time_ += dt;
 	//FTLOG("Simulation Time %lu", simulation_time_);
 
 	// Bring input data up to date
@@ -28,17 +28,11 @@ void FileDataSource::update(uint64_t dt, state_estimate_t* state) {
 		if (simulation_index_ == num_samples_)
 			break;
 		telemetry_t data = data_input_[simulation_index_];
-		if (data.timestamp_ < last_packet_time_) {
-			FTLog("uint32_t clock rollover");
-			packet_timestep_correction_ += 0xFFFFFFFF;
-		}
-		last_packet_time_ = data.timestamp_;
-		uint64_t packet_true_time = data.timestamp_ + packet_timestep_correction_;
-		if (packet_true_time > simulation_time_)
+		
+		if (isPacketInFuture(data))
 			break;
-		++simulation_index_;
-
 		handlePacket(data);
+		++simulation_index_;
 	}
 
 }
@@ -96,9 +90,9 @@ void FileDataSource::loadFromBinaryFile(const char* file) {
 		}
 		FTAssert(simulation_index_ != num_samples_, "No ignition state found!");
 
-
-		simulation_time_ = data_input_[simulation_index_].timestamp_;
-		last_packet_time_ = data_input_[simulation_index_].timestamp_;
+		setStartOffset(data_input_[simulation_index_].timestamp_);
+		//simulation_time_ = data_input_[simulation_index_].timestamp_;
+		//last_packet_time_ = data_input_[simulation_index_].timestamp_;
 	}
 	else {
 		FTLogError("Couldn't open input file at path %s", file);

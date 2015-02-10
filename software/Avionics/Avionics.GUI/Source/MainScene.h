@@ -21,9 +21,8 @@ public:
 protected:
 	state_estimate_t state_estimate_;
 	DataSource* data_source_;
-
 	
-	
+	float time_left_after_ticks_;
 
 	StateDetailView* state_detail_view_;
 	State3DRenderer* state_3d_renderer_;

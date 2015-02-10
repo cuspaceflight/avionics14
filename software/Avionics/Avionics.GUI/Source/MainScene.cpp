@@ -18,7 +18,7 @@ extern "C" {
 #define RUN_SIMULATION // Whether to run the estimators locally or render the on board values (not implemented yet)
 #define SERIAL_DATA_SOURCE // Whether to read from a file or COM port
 
-MainScene::MainScene() : data_source_(nullptr) {
+MainScene::MainScene() : data_source_(nullptr), time_left_after_ticks_(0) {
 	state_3d_renderer_ = new State3DRenderer();
 	addView(state_3d_renderer_);
 	state_3d_renderer_->release();
@@ -67,14 +67,17 @@ void MainScene::update(float actual_dt) {
 		return;
 	}
 
-	//if (FTInputManager::getSharedInstance()->isKeyDown(KeyNameUp))
-	//	return;
+	time_left_after_ticks_ += actual_dt;
 
 	const float prediction_update_rate = 1000.0f; // At what frequency to run the prediction step
 	const int prediction_update_rate_clocks = (int)(CLOCK_FREQUENCY / prediction_update_rate);
 	// This is needed because this method only gets called at 60Hz whereas the prediction functions need to be called at ~1kHz
-	int num_cycles = (int)(actual_dt * prediction_update_rate);
+	int num_cycles = (int)(time_left_after_ticks_ * prediction_update_rate);
 
+	time_left_after_ticks_ -= num_cycles/prediction_update_rate;
+	//FTLOG("Num Cycles %i", num_cycles);
+
+	// TODO add some sort of accumulating remainder as otherwise this will slowly fall behind
 	for (int i = 0; i < num_cycles; ++i) {
 		// Bring input data up to date
 		
@@ -84,22 +87,7 @@ void MainScene::update(float actual_dt) {
 		//FTLog("Running state estimators\n");
 		state_estimate_compute_next(&state_estimate_, 1 / prediction_update_rate);
 
-		/*glm::quat quaternion;
-		quaternion.x = state_estimate_.orientation_q[0];
-		quaternion.y = state_estimate_.orientation_q[1];
-		quaternion.z = state_estimate_.orientation_q[2];
-		quaternion.w = state_estimate_.orientation_q[3];
-		glm::vec3 euler = glm::eulerAngles(quaternion);
-		//FTLOG("%f %f %f vs %f %f %f", euler.x, euler.y, euler.z, state_estimate_.orientation_euler[0], state_estimate_.orientation_euler[1], state_estimate_.orientation_euler[2]);
-		state_estimate_.orientation_euler[0] = euler.x;
-		state_estimate_.orientation_euler[1] = euler.y;
-		state_estimate_.orientation_euler[2] = euler.z;
-
-
-		state_estimate_.orientation_euler[0] = -state_estimate_.orientation_euler[0];
-		state_estimate_.orientation_euler[1] = -state_estimate_.orientation_euler[1];*/
-
-		//print_state_estimate(&state_estimate_);
+		
 		state_detail_view_->updateDisplay(state_estimate_);
 		state_3d_renderer_->nextStateEstimate(state_estimate_);
 	}

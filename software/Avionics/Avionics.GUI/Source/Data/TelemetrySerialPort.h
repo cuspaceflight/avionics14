@@ -1,6 +1,8 @@
 #pragma once
 #include "SerialPort.h"
 #include <ThirdParty/Signals/Delegate.h>
+#include <FTCircularBuffer.h>
+#include <queue>
 
 extern "C" {
 #include <telemetry.h>
@@ -15,17 +17,24 @@ public:
 		return &packet_received_delegate_;
 	}
 	
-	bool poll();
+	// Call the delegate with the next packet and return true if there is one otherwise return false
+	bool getNext();
+
+	void sync();
 
 protected:
 	virtual int read(uint8_t* buff, size_t size) override {
 		return SerialPort::read(buff, size);
 	}
 
-	void sync();
+	
+
+	// Retrieve new packets from the serial port
+	bool poll();
 
 	Gallant::Delegate1<const telemetry_t&> packet_received_delegate_;
-	telemetry_t message_buffer_;
-	uint8_t message_buffer_index_;
+	telemetry_t message_read_buffer_;
+	int8_t message_buffer_index_;
+	std::queue<telemetry_t> message_cache_;
 };
 

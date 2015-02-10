@@ -15,5 +15,7 @@ public:
 
 private:
 	TelemetrySerialPort* serial_port_;
+	bool packet_waiting_;
+	telemetry_t waiting_packet_;
 };
 

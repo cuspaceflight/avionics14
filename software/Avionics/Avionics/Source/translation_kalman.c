@@ -204,7 +204,7 @@ void translation_kalman_new_pressure_raw(float pressure) {
 */
 
 void translation_kalman_new_accel(const float* accel) {
-	const float r = 0.2365f; //low-g value (high-g value is 7.6951f)
+	const float r = 5.8229525e-07f;//0.2365f; //low-g value (high-g value is 7.6951f)
 
 	int i;
 	for (i = 0; i < 3; i++) {
