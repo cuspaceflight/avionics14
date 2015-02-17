@@ -1,4 +1,4 @@
-update=Mon 09 Feb 2015 21:32:44 GMT
+update=Tue 17 Feb 2015 18:25:30 GMT
 version=1
 last_client=kicad
 [cvpcb]
@@ -70,12 +70,12 @@ LibName36=buzzer
 LibName37=library/irf7910
 LibName38=a2235-h
 LibName39=alpha_trx433s
-LibName40=quarter_wave_ant
-LibName41=rfm69w
-LibName42=adp3335
-LibName43=adxl345
-LibName44=hmc5883l
-LibName45=l3g4200d
-LibName46=ms5611-01ba03
-LibName47=stm32f405vgt
-LibName48=swd
+LibName40=rfm69w
+LibName41=adp3335
+LibName42=adxl345
+LibName43=hmc5883l
+LibName44=l3g4200d
+LibName45=ms5611-01ba03
+LibName46=stm32f405vgt
+LibName47=swd
+LibName48=sma

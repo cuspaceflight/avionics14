@@ -38,7 +38,6 @@ LIBS:buzzer
 LIBS:irf7910
 LIBS:a2235-h
 LIBS:alpha_trx433s
-LIBS:quarter_wave_ant
 LIBS:rfm69w
 LIBS:adp3335
 LIBS:adxl345
@@ -47,6 +46,7 @@ LIBS:l3g4200d
 LIBS:ms5611-01ba03
 LIBS:stm32f405vgt
 LIBS:swd
+LIBS:sma
 LIBS:avionics-cache
 EELAYER 25 0
 EELAYER END
