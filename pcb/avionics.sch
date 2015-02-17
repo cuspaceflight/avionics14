@@ -433,9 +433,9 @@ F 3 "" H 7600 5100 60  0000 C CNN
 	1    7600 5100
 	1    0    0    -1  
 $EndComp
-Text Label 7600 4800 2    60   ~ 0
-EXT_TX
 Text Label 7600 4900 2    60   ~ 0
+EXT_TX
+Text Label 7600 4800 2    60   ~ 0
 EXT_RX
 Text Label 2600 4400 2    60   ~ 0
 EXT_TX
@@ -443,15 +443,15 @@ Text Label 2600 4500 2    60   ~ 0
 EXT_RX
 Text Label 4200 4300 0    60   ~ 0
 PY_OK
-Text Label 4200 4400 0    60   ~ 0
+Text Label 4200 4700 0    60   ~ 0
 IMU_OK
 Text Label 4200 4500 0    60   ~ 0
 RADIO_OK
 Text Label 4200 4600 0    60   ~ 0
 ~RADIO_OK
-Text Label 4200 4700 0    60   ~ 0
-~IMU_OK
 Text Label 4200 4800 0    60   ~ 0
+~IMU_OK
+Text Label 4200 4400 0    60   ~ 0
 ~PY_OK
 Text Label 4200 4200 0    60   ~ 0
 BUZZER
