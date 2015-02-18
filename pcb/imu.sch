@@ -31,22 +31,23 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:resistor
+LIBS:max-7q
 LIBS:uSD_holder
 LIBS:tvsd
-LIBS:FG6943010R
-LIBS:buzzer
 LIBS:irf7910
-LIBS:a2235-h
-LIBS:alpha_trx433s
-LIBS:rfm69w
-LIBS:adp3335
-LIBS:adxl345
-LIBS:hmc5883l
-LIBS:l3g4200d
-LIBS:ms5611-01ba03
-LIBS:stm32f405vgt
-LIBS:swd
+LIBS:buzzer
 LIBS:sma
+LIBS:a2235-h
+LIBS:swd
+LIBS:stm32f405vgt
+LIBS:ms5611-01ba03
+LIBS:l3g4200d
+LIBS:hmc5883l
+LIBS:adxl345
+LIBS:adp3335
+LIBS:FG6943010R
+LIBS:rfm69w
+LIBS:alpha_trx433s
 LIBS:avionics-cache
 EELAYER 25 0
 EELAYER END
