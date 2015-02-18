@@ -75,8 +75,7 @@ F5 "RADIO_MOSI" I L 9700 2650 60
 F6 "RADIO_MISO" O L 9700 2750 60 
 F7 "RADIO_CLK" I L 9700 2850 60 
 F8 "RADIO_IRQ" O L 9700 2950 60 
-F9 "GPS_ON/OFF" I L 9700 3150 60 
-F10 "GPS_nRST" I L 9700 3250 60 
+F9 "GPS_nRST" I L 9700 3250 60 
 $EndSheet
 $Sheet
 S 6400 2500 1250 1700
@@ -319,8 +318,6 @@ Text Label 9400 2850 2    60   ~ 0
 RADIO_CLK
 Text Label 9400 2950 2    60   ~ 0
 RADIO_IRQ
-Text Label 9400 3150 2    60   ~ 0
-GPS_ON/OFF
 Text Label 9400 3250 2    60   ~ 0
 GPS_nRST
 Text Label 9400 3350 2    60   ~ 0
@@ -497,8 +494,6 @@ RADIO_CLK
 Text Label 4200 3900 0    60   ~ 0
 RADIO_IRQ
 Text Label 2600 5300 2    60   ~ 0
-GPS_ON/OFF
-Text Label 2600 5400 2    60   ~ 0
 GPS_nRST
 Text Label 2600 5100 2    60   ~ 0
 GPS_RX
@@ -647,8 +642,6 @@ Wire Wire Line
 	9700 2850 9400 2850
 Wire Wire Line
 	9700 2950 9400 2950
-Wire Wire Line
-	9700 3150 9400 3150
 Wire Wire Line
 	9700 3250 9400 3250
 Wire Wire Line
@@ -815,8 +808,6 @@ Wire Wire Line
 	4050 4000 4200 4000
 Wire Wire Line
 	4050 3900 4200 3900
-Wire Wire Line
-	2600 5400 2750 5400
 Wire Wire Line
 	2600 5300 2750 5300
 Wire Wire Line
@@ -1333,4 +1324,5 @@ Connection ~ 6450 1600
 Wire Wire Line
 	6450 1700 6450 1750
 Connection ~ 6450 1700
+NoConn ~ 2750 5400
 $EndSCHEMATC
