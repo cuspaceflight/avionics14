@@ -7,12 +7,12 @@
     id: bar
 
     canvas:
-		Color: 
-			rgba: 0, 1, 0, 0.2
-								
-		Rectangle: 
-			pos: self.pos
-			size: self.size
+        Color: 
+            rgba: 0, 1, 0, 0.2
+                                
+        Rectangle: 
+            pos: self.pos
+            size: self.size
         Rectangle:
             pos: self.pos
             size: self.width, self.height * (bar.curValue / bar.maxValue) 
@@ -38,7 +38,7 @@
 
 <LineGraph>:
     id: linegraph
-    y_ticks_major: 10 
+    y_ticks_major: 100 
     x_ticks_major: 10
     x_ticks_minor: 5
     y_ticks_minor: 5
@@ -60,164 +60,163 @@
 
 <MyScreenManager>:
     dataScreen: screen3
-	Screen1:
+    Screen1:
         id: screen1
-	Screen2:
+    Screen2:
         id: screen2
-	Screen3:
+    Screen3:
         id: screen3
-	
+    
 
 
 <Screen2>:
-	name: 'first'
-	BoxLayout:
-		orientation: 'vertical'
-		backgroundcolor: (100,200,0,1)
-	
-		ScrollView:
-			text: str('A very long string ' * 100)
-			Label:
-				text: self.parent.text
-				font_size: 35
-				text_size: self.width, None
-				size_hint_y: None
-				height: self.texture_size[1]
-				
-		
-		changescreen:
+    name: 'first'
+    BoxLayout:
+        orientation: 'vertical'
+        backgroundcolor: (100,200,0,1)
+    
+        ScrollView:
+            text: str('A very long string ' * 100)
+            Label:
+                text: self.parent.text
+                font_size: 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+                
+        
+        changescreen:
 
 
 
-	
+    
 
 <Screen1>:
-	name: 'second'
-	BoxLayout:
-		orientation: 'vertical'
-		Label:
-			text: "Welcome to:" 
-			font_size: 75
-			size_hint_y: None
-			height: 85
-		
-		Label: 
-			Image: 
-				source: "CUSFlogo.jpg"
-				size: root.width , root.height 
-				keep_ratio: True
-				allow_strech: True
-				center: self.parent.center
-		Label:
-			text: "EARS ground station" 
-			font_size: 75
-			size_hint_y: None
-			height: 110
-		
-					
-		changescreen:		
-		
-			
+    name: 'second'
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Welcome to:" 
+            font_size: 75
+            size_hint_y: None
+            height: 85
+        
+        Label: 
+            Image: 
+                source: "CUSFlogo.jpg"
+                size: root.width , root.height 
+                keep_ratio: True
+                allow_strech: True
+                center: self.parent.center
+        Label:
+            text: "EARS ground station" 
+            font_size: 75
+            size_hint_y: None
+            height: 110
+        
+                    
+        changescreen:        
+        
+            
 <Screen3>:
-	name: 'third'
-	BoxLayout:
-		orientation: 'vertical'
-		#This is the status:
-		BoxLayout:
-			orientation: 'horizontal'
-			size_hint_y: None
-			height: 35
-			
-			Button:
-				text: "Launch"
-				font_size: 15
-			Button:
-				text: 'Separation'
-				font_size: 15
-			Button:
-				text: "Parachute deployed"
-				font_size: 15
-			Button:
-				text: "Stage 2 ignition"
-				font_size: 15
-			Button:
-				text: "Sepration"		
-				font_size: 15
-			Button:
-				text: "Parachute deployed"
-				font_size: 15
-			Button: 
-				text: "Touch down"
-				font_size: 15
-				
-				
-		BoxLayout:
-			orientation: 'horizontal'
+    name: 'third'
+    BoxLayout:
+        orientation: 'vertical'
+        #This is the status:
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 35
+            
+            StatusBox:
+                id: status1
+                text: "Launch"
+                
+            StatusBox:
+                id: status2
+                text: "Parachute deployed"
+                
+            StatusBox:
+                id: status3
+                text: "Stage 2 ignition"
+
+            StatusBox:
+                id: status4
+                text: "Parachute deployed"
+            
+            StatusBox:
+                id: status5
+                text: "Touch down"
+
+                
+                
+        BoxLayout:
+            orientation: 'horizontal'
 
 
 
-			BoxLayout:
-				size_hint_x: None
-				width: 0.6 * self.parent.width
-				
-				#this is the graph
-				orientation: 'vertical'
-				LineGraph:        
+            BoxLayout:
+                size_hint_x: None
+                width: 0.6 * self.parent.width
+                
+                #this is the graph
+                orientation: 'vertical'
+                LineGraph:        
                     id: graph
-					size_hint_y: None
-					height: self.parent.height * 0.8
+                    size_hint_y: None
+                    height: self.parent.height * 0.8
                 
 
-#					canvas:
-#						Color: 
-#							rgba: 1, 0, 0, 0.5
-#							
-#						Rectangle: 
-#							pos: self.pos
-#							size: self.size
-#							
-#					color: (0, 0, 1, 1)
-#					text: "The graph"
+#                    canvas:
+#                        Color: 
+#                            rgba: 1, 0, 0, 0.5
+#                            
+#                        Rectangle: 
+#                            pos: self.pos
+#                            size: self.size
+#                            
+#                    color: (0, 0, 1, 1)
+#                    text: "The graph"
                 
 
 
-				ScrollView:
-					id: commandoutput
-					#update this text to make it appear on the screen
-					text: str('A very long string! \n ' * 100)
-					Label:
-						text: self.parent.text
-						font_size: 18
-						text_size: self.width, None
-						size_hint_y: None
-						height: self.texture_size[1]
-				
-					
-			BoxLayout:
-				orientation: 'vertical'
-				
+                ScrollView:
+                    id: commandoutput
+                    #update this text to make it appear on the screen
+                    text: str('A very long string! \n ' * 100)
+                    Label:
+                        text: self.parent.text
+                        font_size: 18
+                        text_size: self.width, None
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                
+                    
+            BoxLayout:
+                orientation: 'vertical'
+                
 
 
-				Label: 
-					#this is the timer
-					size_hint_y: None
-					height: self.parent.height * 0.3
-#					canvas:
-#						Color: 
-#							rgba: 0, 1, 0, 1
-#							
-#						Rectangle: 
-#							pos: self.pos
-#							size: self.size
-							
+                Label: 
+                    #this is the timer
+                    size_hint_y: None
+                    height: self.parent.height * 0.3
+#                    canvas:
+#                        Color: 
+#                            rgba: 0, 1, 0, 1
+#                            
+#                        Rectangle: 
+#                            pos: self.pos
+#                            size: self.size
+                            
 
-#					text: "Here will the graph be"
-#					Button:
-#						text: "reset timer"
-#						size_hint: None, None
-#						size: self.parent.width * 0.7, self.parent.height * 0.1
-#						pos: self.parent.x + self.parent.width * 0.15, self.parent.y + self.parent.height * 0.8  
-				    
+#                    text: "Here will the graph be"
+#                    Button:
+#                        text: "reset timer"
+#                        size_hint: None, None
+#                        size: self.parent.width * 0.7, self.parent.height * 0.1
+#                        pos: self.parent.x + self.parent.width * 0.15, self.parent.y + self.parent.height * 0.8  
+                    
 
 
                     Timer:
@@ -227,84 +226,84 @@
                         pos: self.parent.x , self.parent.y 
     
                             
-#            			canvas:
-#            				Color: 
-#            					rgba: 1, 0, 0, 0.2
-#            					
-#            				Rectangle: 
-#            					pos: self.pos
-#            					size: self.size
-				
-#						#text: "Time since launch  " + str("00:01:13")
-#						size_hint: None, None
-#						size: self.parent.width * 0.8, self.parent.height * 0.5
-						#pos: self.parent.x + self.parent.width * 0.1, self.parent.y + self.parent.height * 0.1
-						#font_size: 20  
+#                        canvas:
+#                            Color: 
+#                                rgba: 1, 0, 0, 0.2
+#                                
+#                            Rectangle: 
+#                                pos: self.pos
+#                                size: self.size
+                
+#                        #text: "Time since launch  " + str("00:01:13")
+#                        size_hint: None, None
+#                        size: self.parent.width * 0.8, self.parent.height * 0.5
+                        #pos: self.parent.x + self.parent.width * 0.1, self.parent.y + self.parent.height * 0.1
+                        #font_size: 20  
 
 
-				Label:
-					size_hint_y: None
-					height: self.parent.height * 0.5
-					canvas:
-						Color: 
-							rgba: 0, 0, 1, 0.2
-							
-						Rectangle: 
-							pos: self.pos
-							size: self.size
-					
-					# Place your 4 bars inside the following Labels		
+                Label:
+                    size_hint_y: None
+                    height: self.parent.height * 0.5
+                    canvas:
+                        Color: 
+                            rgba: 0, 0, 1, 0.2
+                            
+                        Rectangle: 
+                            pos: self.pos
+                            size: self.size
+                    
+                    # Place your 4 bars inside the following Labels        
 
 
-				    Bar:	
+                    Bar:    
                         id: bar1
                         maxValue: 1.0
-						size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 0, self.parent.y + self.parent.height * 0.1
+                        size_hint: None, None
+                        size: self.parent.width * 0.10, self.parent.height * 0.8
+                        pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 0, self.parent.y + self.parent.height * 0.1
 
 
 
 
-				    Bar:	
+                    Bar:    
                         id: bar2
                         maxValue: 100.0
-						size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 1, self.parent.y + self.parent.height * 0.1
+                        size_hint: None, None
+                        size: self.parent.width * 0.10, self.parent.height * 0.8
+                        pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 1, self.parent.y + self.parent.height * 0.1
 
 
 
-					Bar:
+                    Bar:
                         id: bar3
                         maxValue: 10.0
                         size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 2, self.parent.y + self.parent.height * 0.1
+                        size: self.parent.width * 0.10, self.parent.height * 0.8
+                        pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 2, self.parent.y + self.parent.height * 0.1
 
 
-							
-					Bar:
+                            
+                    Bar:
                         id: bar4
                         maxValue: 50.0
                         size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 3, self.parent.y + self.parent.height * 0.1
+                        size: self.parent.width * 0.10, self.parent.height * 0.8
+                        pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 3, self.parent.y + self.parent.height * 0.1
 
-					
-					
+                    
+                    
 
-				Label:	
-					Image: 
-						source: "CUSFlogo.jpg"
-						size: self.parent.width , self.parent.height 
-						keep_ratio: False
-						allow_strech: True
-						pos: self.parent.x, self.parent.y
-					 	
-				
-		
-		changescreen:
+                Label:    
+                    Image: 
+                        source: "CUSFlogo.jpg"
+                        size: self.parent.width , self.parent.height 
+                        keep_ratio: False
+                        allow_strech: True
+                        pos: self.parent.x, self.parent.y
+                         
+                
+        
+        changescreen:
 
 
 
@@ -317,24 +316,24 @@
 
 
 <changescreen>:
-	
-	size_hint_y: None
-	height: 25
-	size:
-	orientation: 'horizontal'
-	Button:
-		text: "Welcome screen"
-		font_size: 20
-		backgroundcolor: (0,0,0,0.5)
-		on_release: app.root.current = 'second'
-	Button:
-		text: "Flight data"
-		font_size: 20
-		backgroundcolor: (0,0,0,0.5)
-		on_release: app.root.current = 'first'
-	
-	Button:
-		text: "Time to launch"
-		font_size: 20
-		backgroundcolor: (0,0,0,1)
-		on_release: app.root.current = 'third'	
+    
+    size_hint_y: None
+    height: 25
+    size:
+    orientation: 'horizontal'
+    Button:
+        text: "Welcome screen"
+        font_size: 20
+        backgroundcolor: (0,0,0,0.5)
+        on_release: app.root.current = 'second'
+    Button:
+        text: "Flight data"
+        font_size: 20
+        backgroundcolor: (0,0,0,0.5)
+        on_release: app.root.current = 'first'
+    
+    Button:
+        text: "Time to launch"
+        font_size: 20
+        backgroundcolor: (0,0,0,1)
+        on_release: app.root.current = 'third'    
