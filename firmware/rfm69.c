@@ -1,22 +1,127 @@
 /**
- * RFM69HW (HopeRF) radio module driver for WRSC2014.
+ * Radio Driver for RFM69W.
  *
- * First (pre)release 4 Sep 2014. Please check back in a few days for an update.
+ * External thread calls log function, 16 bytes are allocated in the memory pool for 
+ * data, a message is sent to the mailbox, assume data of format:
+ * 
+ * | Timestamp(4) | Stage + logtype(1) | Channel(1) | Unused(2) | Data(8) |
+ * 
+ * The radio thread checks the mailbox, if ready, a return message will have a pointer to data
+ * Radio transmits data and returns to standby mode.
+ * Note: data pointer is cast to uint8* to be compatible with rfm_tx(), this has worked
+ * for a similar project I've done with this radio - as long as data is cast back to char
+ * at the groundstation.
  *
- * Joe Desbonnet, jdesbonnet@gmail.com
+ * Credit to Joe Desbonnet for the core of the radio driver section
  */
 
 #include <stdint.h>
 #include "rfm69.h"
-#include "err.h" //currently returns errors as defined in this header file
+#include "err.h" 
+#include "hal.h"
+#include "config.h"
 
+//change as needed
 #define RFM69_SPID SPID2 
-#define RFM69W_SPI_CS_PORT A //change as needed
-#define RFM69W_SPI_CS_PIN 0
+#define RFM69_SPI_CS_PORT A 
+#define RFM69_SPI_CS_PIN 0
 
-extern const uint8_t RFM69_CONFIG[][2];
+#define RFM69_MEMPOOL_ITEMS 32
 
-uint8_t telemBfr[66]; //data written into this buffer
+static MemoryPool rfm69_mp;
+static volatile char rfm69_mp_b[RFM69_MEMPOOL_ITEMS * 16]
+					__attribute__((aligned(sizeof(stkalign_t))))
+					__attribute__((section(".ccm")));
+
+static Mailbox rfm69_mb;
+static volatile msg_t rfm69_mb_q[RFM69_MEMPOOL_ITEMS];
+
+static void rfm69_mem_init(void);
+
+void rfm69_log_c(uint8_t channel, const char* data)
+{
+    volatile char *msg;
+    msg = (char*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(0 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy((void*)msg, (void*)&halGetCounterValue(), 4);
+    memcpy((void*)&msg[8], data, 8);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_s64(uint8_t channel, int64_t data)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(1 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy(msg, (void*)&halGetCounterValue(), 4);
+    memcpy(&msg[8], &data, 8);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(3 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy(msg, (void*)&halGetCounterValue(), 4);
+    memcpy(&msg[8],  &data_a, 4);
+    memcpy(&msg[12], &data_b, 4);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
+                                      int16_t data_c, int16_t data_d)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(5 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy(msg, (void*)&halGetCounterValue(), 4);
+    memcpy(&msg[8],  &data_a, 2);
+    memcpy(&msg[10], &data_b, 2);
+    memcpy(&msg[12], &data_c, 2);
+    memcpy(&msg[14], &data_d, 2);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
+                                      uint16_t data_c, uint16_t data_d)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(6 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy(msg, (void*)&halGetCounterValue(), 4);
+    memcpy(&msg[8],  &data_a, 2);
+    memcpy(&msg[10], &data_b, 2);
+    memcpy(&msg[12], &data_c, 2);
+    memcpy(&msg[14], &data_d, 2);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_f(uint8_t channel, float data_a, float data_b)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    msg[4] = (char)(9 | conf.location << 4);
+    msg[5] = (char)channel;
+    memcpy(msg, (void*)&halGetCounterValue(), 4);
+    memcpy(&msg[8],  &data_a, 4);
+    memcpy(&msg[12], &data_b, 4);
+    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+}
+
+static void rfm69_mem_init()
+{
+	chPoolInit(&rfm69_mp, 16, NULL);
+	chPoolLoadArray(&rfm69_mp, (void*)rfm69_mp_b, RFM69_MEMPOOL_ITEMS);
+	chMBInit(&rfm69_mb, (msg_t*)rfm69_mb_q, RFM69_MEMPOOL_ITEMS);
+}
+
+/*-----------------Start of RFM69W specific section-----------------------------------*/
 
 /**
  * Wait for a register bit to go high, with timeout.
@@ -76,74 +181,6 @@ int rfm69_mode (*SPID SPID, uint8_t mode) {
 }
 
 /**
- * Get RSSI
- */
-uint8_t rfm69_rssi (*SPID SPID) {
-
-	rfm69_register_write(SPID, RFM69_RSSICONFIG, RFM69_RSSICONFIG_RssiStart);
-
-	// Wait for RSSI ready
-	//while ((rfm69_register_read(SPID, RFM69_RSSICONFIG) & RFM69_RSSICONFIG_RssiDone_MASK) == 0x00);
-	rfm69_wait_for_bit_high(SPID, RFM69_RSSICONFIG, RFM69_RSSICONFIG_RssiDone);
-	return rfm69_register_read(SPID, RFM69_RSSIVALUE);
-}
-
-/**
- * Check if packet has been received and is ready to read from FIFO.
- * @return zero if no packet available, non-zero if packet available.
- */
-uint8_t rfm69_payload_ready(*SPID SPID) {
-	return rfm69_register_read(SPID, RFM69_IRQFLAGS2) & RFM69_IRQFLAGS2_PayloadReady_MASK;
-}
-
-/**
- * Retrieve a frame. If successful returns length of frame. If not an error code (negative value).
- * Frame is returned in buf but will not exceed length maxlen. Should only be called when
- * a frame is ready to download.
- *
- * @return frame_length if successful, else a negative value error code
- * Error codes:
- * -2 : frame too long
- */
-int rfm69_frame_rx(*SPID SPID, uint8_t *buf, int maxlen, uint8_t *rssi) {
-
-	int i;
-
-    uint8_t frame_length;
-
-    spiSelect(SPID);
-    rfm69_spi_transfer_byte(SPID, RFM69_FIFO);
-
-	// Read frame length;
-    frame_length = rfm69_spi_transfer_byte(SPID, 0);
-
-    // Probably SPI bus problem
-	if (frame_length == 0xff) {
-		return E_SPI;
-	}
-
-    if (frame_length > 66) {
-    	// error condition really
-    	frame_length = 66;
-    }
-
-    for (i = 0; i < frame_length; i++) {
-    	if (i == maxlen) {
-    		return E_PKT_TOO_LONG;
-    	}
-    	buf[i] = rfm69_spi_transfer_byte(SPID, 0);
-    }
-    spiUnselect(SPID);
-
-    // If pointer to rssi given, fetch it
-    if (rssi != 0) {
-    	*rssi = rfm69_rssi(SPID);
-    }
-
-    return frame_length;
-}
-
-/**
  * Transmit a frame stored in buf
  */
 void rfm69_frame_tx(*SPID SPID, uint8_t *buf, int len) {
@@ -189,39 +226,55 @@ void rfm69_register_write (*SPID SPID, uint8_t reg_addr, uint8_t reg_value) {
 
 uint8_t rfm69_spi_transfer_byte(*SPID SPID, uint8_t out) {
 	//the spi_transfer_byte function in this library is an SPI exchange: out is sent and MISO is sampled synchronously, so think can be replaced with the CHiBiOS spiExchange method
-	
-	uint8_t val; //receive buffer	
+	uint8_t val; 	
 	spiExchange(SPID, 1, (void*) &out, (void*) &val);
 	
 	return val;
 }
 
-msg_t rfm69_thread(void *arg) {
-	(void) arg;
+/*----------------------------Thread-------------------------------------------------*/
 
-	const SPIConfig spi_cfg = { //setup SPI
+msg_t rfm69_thread(void *arg) {
+	
+	msg_t status, msgp;
+	uint8_t *msg;
+	
+	(void) arg;
+	chRegSetThreadName("RFM69");
+	
+	//setup SPI
+	const SPIConfig spi_cfg = { 
 		NULL,
 		RFM69_SPI_CS_PORT,
 		RFM69_SPI_CS_PIN,
 		SPI_CR1_BR_1 | SPI_CR1_BR_0 | SPI_CR1_CPOL | SPI_CR1_CPHA
 	};
-
-	chRegSetThreadName("RFM69");
-
 	spiStart(&RFM69_SPID, &spi_cfg);
 	rfm69_config(SPID);
+	
+	rfm69_mem_init();
+	
+	if(config.location == TOP)
+		rfm69_log_c(0x00, "TOP");
+	else if(config.location == BOTTOM)
+		rfm69_log_c(0x00, "BOTTOM");
 
 	while(TRUE) {
-		//update the buffer with telemetry data
+		status = chMBFetch(&rfm69_mb, &msgp, TIME_INFINITE);
+		if(status != RDY_OK || msgp == 0) {
+			continue;
+		}
 		
-		//send telemetry data
-		rfm69_frame_tx(SPID, telemBfr, 66);
-		rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY); //turn receiver to standby mode
-		chThdSleepMilliseconds(100);
+		/**
+		 * cast the msgp pointer to be uint8_t so data can be sent using tx function 
+		 * on ground station end cast the message back to type char
+		**/
 		
-		//assume that the FIFO can be overwritten instead of having to be cleared
+		msg = (uint8_t*) msgp;  
+		rfm69_frame_tx(SPID, msg, 16);
+		chPoolFree(&rfm69_mp, (void*)msg);
+		rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
 	}
-
 	return (msg_t)NULL;
 }
 	
