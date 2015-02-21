@@ -254,9 +254,9 @@ msg_t rfm69_thread(void *arg) {
 	
 	rfm69_mem_init();
 	
-	if(config.location == TOP)
+	if(conf.location == TOP)
 		rfm69_log_c(0x00, "TOP");
-	else if(config.location == BOTTOM)
+	else if(conf.location == BOTTOM)
 		rfm69_log_c(0x00, "BOTTOM");
 
 	while(TRUE) {
