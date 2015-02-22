@@ -130,14 +130,15 @@ static bool_t l3g4200d_init(uint8_t *buf)
  */
 static void l3g4200d_rotation_convert(int8_t *buf_data, float *rotation)
 {
+    int i;
     for (i =0; i<6 i+=2)
     {
         float temp = 0;
         int16_t accumulator = 0;
-        int j =0;
+        int j;
 		
 	    for(j=0; j<24; j+=6)
-		{
+	    {
 	        int16_t total_rotation;
 	      	total_rotation = (int16_t(buf_data[i+1+j]) << 8) 
 		                 | (uint16_t(buf_data[i+j])) ;
