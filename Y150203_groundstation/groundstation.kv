@@ -1,11 +1,30 @@
 
  
+<BarLabel@Label>:
+	id: barlabel
+	size_hint: None, None
+	size: self.parent.width * 0.15, self.parent.height * 0.15
+	y: self.parent.y + self.parent.height * 0.80
+	canvas:
+		Color: 
+			rgba: 0, 1, 0, 0.2
+								
+		Rectangle: 
+			pos: self.pos
+			size: self.size
 
 
 <Bar>:
+    # d1: distance from edge, d2=spacing, w = width
+    #2*d1 + (n - 1)*d2 + n*w = 1
+    #d1 = 0.075, d2=0.15, w = 0.15
     
     id: bar
-
+	
+	size_hint: None, None
+	size: self.parent.width * 0.15, self.parent.height * 0.7
+	y: self.parent.y + self.parent.height * 0.075
+	
     canvas:
 		Color: 
 			rgba: 0, 1, 0, 0.2
@@ -38,7 +57,7 @@
 
 <LineGraph>:
     id: linegraph
-    y_ticks_major: 10 
+    y_ticks_major: 100 
     x_ticks_major: 10
     x_ticks_minor: 5
     y_ticks_minor: 5
@@ -128,27 +147,26 @@
 			size_hint_y: None
 			height: 35
 			
-			Button:
+			StatusBox:
+				id: status1
 				text: "Launch"
-				font_size: 15
-			Button:
-				text: 'Separation'
-				font_size: 15
-			Button:
+				
+			StatusBox:
+				id: status2
 				text: "Parachute deployed"
-				font_size: 15
-			Button:
+				
+			StatusBox:
+				id: status3
 				text: "Stage 2 ignition"
-				font_size: 15
-			Button:
-				text: "Sepration"		
-				font_size: 15
-			Button:
+
+			StatusBox:
+				id: status4
 				text: "Parachute deployed"
-				font_size: 15
-			Button: 
+			
+			StatusBox:
+				id: status5
 				text: "Touch down"
-				font_size: 15
+
 				
 				
 		BoxLayout:
@@ -259,38 +277,44 @@
 				    Bar:	
                         id: bar1
                         maxValue: 1.0
-						size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 0, self.parent.y + self.parent.height * 0.1
-
-
-
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 0
+					
+					BarLabel:
+						id: barlabel1
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 0
+						text: "BarLabel1"
 
 				    Bar:	
                         id: bar2
                         maxValue: 100.0
-						size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 1, self.parent.y + self.parent.height * 0.1
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 1
 
+					BarLabel:
+						id: barlabel2
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 1
+						text: "BarLabel2"
 
 
 					Bar:
                         id: bar3
                         maxValue: 10.0
-                        size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 2, self.parent.y + self.parent.height * 0.1
+                        x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 2
 
+					BarLabel:
+						id: barlabel3
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 2
+						text: "BarLabel3"
 
 							
 					Bar:
                         id: bar4
                         maxValue: 50.0
-                        size_hint: None, None
-						size: self.parent.width * 0.10, self.parent.height * 0.8
-						pos: self. parent.x + self.parent.width * 0.15 + self.parent.width * 0.2 * 3, self.parent.y + self.parent.height * 0.1
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 3
 
+					BarLabel:
+						id: barlabel4
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 3
+						text: "BarLabel4"
 					
 					
 
