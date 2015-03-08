@@ -19,10 +19,16 @@ from random import randint
 import random
 import string
 import math
+from nbstreamreader import NonBlockingStreamReader as NBSR
+#import sim
 
 import time
 from datetime import datetime
 import struct
+import thread
+from subprocess import Popen, PIPE
+from fcntl import fcntl, F_GETFL, F_SETFL
+from os import O_NONBLOCK, read
 
 def getData(fileObject, chunk_size = 16):
     while True:
@@ -31,19 +37,52 @@ def getData(fileObject, chunk_size = 16):
             break
         yield data
 
+def pout(s):
+    print s
+
+def run(gs, infile, fd):
+    #print gs.gui
+    while not fd.hasStarted:
+        continue ##todo: make this a block
+    #thread.start_new_thread(sim.sleepRun, (infile,))
+    p = Popen(['python', 'sim.py'], stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False)
+    nbsr = NBSR(p.stdout) 
+
+    while True:
+
+        try: 
+            packet = nbsr.readline()
+            if packet == None:
+                continue
+            #print packet
+
+        except OSError:
+            #print "No more data"
+            continue
+        #thread.start_new_thread(pout, (packet,))
+        fd.packet = packet.strip()
+        thread.start_new_thread(gs.gui.update, (0,)) #concurrency?
+        #gs.gui.update(0)
+
+    
 class GroundstationApp(App):
+
     def build(self):
-        gui = Gui()
-        Clock.schedule_interval(gui.update, 10.0/60.0)
-        return gui
+        self.gui = Gui()
+
+        #Clock.schedule_interval(gui.update, 10.0/60.0)
+        #Clock.schedule_once(gui.update, 3)
+        return self.gui
 
 class Gui(ScreenManager):
     dataScreen = ObjectProperty(None)
     def update(self, dt):
-        self.dataScreen.update()
+        self.dataScreen.update() 
+
    
 
 class FlightData():
+    packet = ""
     def __init__(self):
         
         self.radiocontact = False
@@ -69,40 +108,108 @@ class FlightData():
         self.parachute_2 = False
         
         self.parachute_3 = False
-
+    
     def parse(self,packet):
+        if (len(packet)!=16):
+            #TODO: handle error
+            return packet 
         timestamp = struct.unpack("i", packet[:4])
-        a, b, mode, channel = struct.unpack("BBBB", packet[4:8])
+        metadata, channel, cs1, cs2 = struct.unpack("BBBB", packet[4:8])
+        origin = metadata >> 4
+        mode = metadata & 15
 
-        #print a, b, mode, channel
-        if mode == 9:
+        if mode == 0:
+            data = struct.unpack("8s", packet[8:])
+        elif mode == 1:
+            data = struct.unpack("q", packet[8:])
+        elif mode == 2:
+            data = struct.unpack("Q", packet[8:])
+        elif mode == 3:
+            data = struct.unpack("ii", packet[8:])
+        elif mode == 4:
+            data = struct.unpack("II", packet[8:])
+        elif mode == 5:
+            data = struct.unpack("hhhh", packet[8:])
+        elif mode == 6:
+            data = struct.unpack("HHHH", packet[8:])
+        elif mode == 7:
+            data = struct.unpack("bbbbbbbb", packet[8:])
+        elif mode == 8:
+            data = struct.unpack("BBBBBBBB", packet[8:])
+        elif mode == 9:
             data = struct.unpack("ff", packet[8:])
+        elif mode == 10:
+            data = struct.unpack("d", packet[8:])
 
-
-        if channel == 0x50: ##dt, height
-            #print data[0]
+        if channel == 0x00:
+            return "Initialisation message", data[0]
+        elif channel == 0x10:
+            return "Calibration - timestamp frequency", data[0]
+        elif channel == 0x11:
+            return "Calibration - lg_accel: axis, gravMag", data[0], data[1]
+        elif channel == 0x12:
+            return "Calibration - hg_accel: axis, gravMag", data[0], data[1]
+        elif channel == 0x13: 
+            return "Calibration - barometer: d0, c1, c2, c3", data[0], data[1], data[2], data[3]
+        elif channel == 0x14:
+            return "Calibration - barometer: c4, c5, c6, c7", data[0], data[1], data[2], data[3]
+        elif channel == 0x20:
+            return "IM - lg_accel: x, y, z", data[0], data[1], data[2]
+        elif channel == 0x21:
+            return "IM - hg_accel: x, y, z", data[0], data[1], data[2]
+        elif channel == 0x22:
+            return "IM - barom: pressure, temperature", data[0], data[1]
+        elif channel == 0x23:
+            return "IM - rate gyroscope", data
+        elif channel == 0x24:
+            return "Im - magnetometer", data
+        elif channel == 0x30:
+            return "External sensors - battery voltage", data[0]
+        elif channel == 0x31:
+            return "External sensors - strain gauges : ch1, ch2, ch3", data[0], data[1], data[2]
+        elif channel == 0x32:
+            return "External sensors - thermocouples: ch1, ch2, ch3", data[0], data[1], data[2]
+        elif channel == 0x40:
+            return "M2FC Mission Control: old_state, new_state", data[0], data[1]
+        elif channel == 0x50:
             self.altitude_1 = data[1]
             self.datascreen.ids.bar1.setCurVal(data[1])#update acceleration bar as desired
-            return str(timestamp[0]) + " " + str(channel) + " alt: " + str(data[1]) + "\n"
-        elif channel == 0x51: ##velocity, acceleration
+
+            return "State estimation: pred output I: dt, height", data[0], data[1]
+        elif channel == 0x51:
             self.velocity_1 = data[0]
             self.acceleration_1 = data[1]
             self.datascreen.ids.bar2.setCurVal(data[0])
             self.datascreen.ids.bar3.setCurVal(data[1])
-            return str(timestamp[0]) + " " + str(channel) + " vel: " + str(data[0]) + " acc: " + str(data[1]) + "\n"
+            return "State estimation: pred output II: vel, acc", data[0], data[1]
+        elif channel == 0x52: 
+            return "State estimation: pressure measurement: sensor, estimate", data[0], data[1]
+        elif channel == 0x53:
+            return "State estimation: acceleration measurement: sensor, estimate", data[0], data[1]
+        elif channel == 0x60:
+            return "Pyrotechnics: continuity results: ch1, ch2, ch3", data[0], data[1], data[2]
+        elif channel == 0x61:
+            return "Pyrotechnics: fired: ch1, ch2, ch3", data[0], data[1], data[2]
+
+        return packet
 
 
     def update(self, datascreen):
         self.datascreen = datascreen
 
-        if not self.hasStarted: return
+        #if not self.hasStarted: return
         m, s = divmod(self.time.seconds, 60)
         milliseconds = self.time.microseconds/1000.0
         xVal = m*60.0 + s + milliseconds/1000.0
 
-        s = getData(inFile).next()
-        parsed = self.parse(s)
-        datascreen.ids.commandoutput.text = (parsed + datascreen.ids.commandoutput.text)[:500]
+        #s = getData(inFile).next()
+        parsed = self.parse(self.packet)
+        #print parsed
+        #print "HI", self.packet
+        outputText = ""
+        for i in parsed:
+            outputText += str(i) + " "
+        datascreen.ids.commandoutput.text = (outputText +"\n" + datascreen.ids.commandoutput.text)[:500]
         
 
 #        self.altitude_1 = 150 * math.sqrt(xVal) 
@@ -162,6 +269,7 @@ class Timer(Widget):
             self.startTime = datetime.now()
             self.started = True
             flightData.hasStarted = True
+            
         else:
             self.started = False
             flightData.hasStarted = False
@@ -229,12 +337,12 @@ class LineGraph(Graph):
             self.plot_2.points.append((self.xVal, self.yVal_2))
 
  
-
+datafile = "log_00027.bin"
 
 if __name__=="__main__":
-    inFile = open("testData.txt", "rb")
+    inFile = open(datafile, "rb")
     flightData = FlightData()
     app = GroundstationApp()
-
-    app.run()
+    thread.start_new_thread(run, (app, inFile, flightData))
+    gui = app.run()
 
