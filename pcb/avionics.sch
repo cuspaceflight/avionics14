@@ -453,19 +453,19 @@ Text Label 4200 4400 0    60   ~ 0
 ~PY_OK
 Text Label 4200 4200 0    60   ~ 0
 BUZZER
-Text Label 4200 5700 0    60   ~ 0
-PY1_TRG
 Text Label 4200 5800 0    60   ~ 0
-PY2_TRG
+PY1_TRG
 Text Label 4200 5900 0    60   ~ 0
-PY3_TRG
-Text Label 4200 6000 0    60   ~ 0
-PY4_TRG
-Text Label 4200 6100 0    60   ~ 0
-~PY1_CHK
+PY2_TRG
 Text Label 4200 6200 0    60   ~ 0
-~PY2_CHK
+PY3_TRG
 Text Label 4200 6300 0    60   ~ 0
+PY4_TRG
+Text Label 4200 5700 0    60   ~ 0
+~PY1_CHK
+Text Label 4200 6000 0    60   ~ 0
+~PY2_CHK
+Text Label 4200 6100 0    60   ~ 0
 ~PY3_CHK
 Text Label 4200 6400 0    60   ~ 0
 ~PY4_CHK
