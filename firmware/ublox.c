@@ -18,10 +18,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "ublox.h"
 #include "hal.h"
-#include "dispatch.h"
 
+/*#include "dispatch.h" */
 
 /* uBlox I2C addresses
 #define UBLOX_I2C_ADDR        0x42
@@ -211,10 +212,10 @@ static void ublox_warn(const uint8_t n)
 {
     uint8_t i;
     for(i=0; i<n; i++) {
-        palSetPad(GPIOB, GPIOB_LED_GPS);
+/*        palSetPad(GPIOB, GPIOB_LED_GPS); */
         chThdSleepMilliseconds(100);
-        palClearPad(GPIOB, GPIOB_LED_GPS);
-        chThdSleepMilliseconds(200);
+/*        palClearPad(GPIOB, GPIOB_LED_GPS);
+        chThdSleepMilliseconds(200); */
     }
 }
 
@@ -255,7 +256,7 @@ static void ublox_checksum(uint8_t *buf)
  * Message length is determined from the UBX length field.
  * Checksum is added automatically.
  */
-static bool_t ublox_transmit(uint8_t *buf)
+static bool ublox_transmit(uint8_t *buf)
 {
     size_t n;
     systime_t timeout;
@@ -269,10 +270,7 @@ static bool_t ublox_transmit(uint8_t *buf)
     timeout = n / 100 + 10;
 
     /* Transmit message */
-    /*rv = i2cMasterTransmitTimeout(&I2CD1, UBLOX_I2C_ADDR, buf, n,
-                                  NULL, 0, timeout);
-                                  
-                                  */
+	/*rv = i2cMasterTransmitTimeout(&I2CD1, UBLOX_I2C_ADDR, buf, n, NULL, 0, timeout); */
     rv = sdWriteTimeout(&SD1, buf, n, 1000);
                                   
     return rv == RDY_OK;
@@ -282,19 +280,22 @@ static bool_t ublox_transmit(uint8_t *buf)
  * Returns 0 if no messages were read, else returns the number of bytes
  * read. Will read at most bufsize bytes into buf.
  */
+ 
 static size_t ublox_receive(uint8_t *buf, size_t bufsize)
 {
     uint16_t bytes_available;
-    uint8_t bytes_available_addr = UBLOX_I2C_BYTES_AVAIL;
+   /* uint8_t bytes_available_addr = UBLOX_I2C_BYTES_AVAIL; */
     systime_t timeout;
     msg_t rv;
-
+    size_t n;
+    
+    n = 8 + ((uint16_t*)buf)[2];
+    timeout = n / 100 + 10;
 
     
-    /* rv = i2cMasterReceiveTimeout(&I2CD1, UBLOX_I2C_ADDR,
-                                 buf, 64, 1000); */
+    /* rv = i2cMasterReceiveTimeout(&I2CD1, UBLOX_I2C_ADDR, buf, 64, 1000); */
                                  
-    rv = sdReadTimeout((&SD1, buf, n, 1000));
+    rv = sdReadTimeout(&SD1, buf, n, 1000);
 	
     if(rv == RDY_OK)
         return 64;
@@ -311,21 +312,23 @@ static size_t ublox_receive(uint8_t *buf, size_t bufsize)
      * then read those two bytes. Timeout of 2ms should be plenty.
      */
     /*
+     * 
     rv = i2cMasterTransmitTimeout(&I2CD1, UBLOX_I2C_ADDR,
                                   &bytes_available_addr, 1, buf, 2,
                                   TIME_INFINITE);
     if(rv != RDY_OK)
         return 0;
     bytes_available = ((uint16_t*)buf)[0];
-    */
-    bytes_available = bufsize;
+    
+    bytes_available = bufsize; */
     
     /* If there's data to read, try and read it.
      * After the last two reads, the read register will already be 0xFF.
      */
-    if(bytes_available > 0) {
+    /*
+    if(bytes_available > 0) { */
         /* Don't overflow the read buffer. We'll just read some more later. */
-        if(bytes_available > bufsize)
+ /*       if(bytes_available > bufsize)
             bytes_available = bufsize;
         bytes_available = 128;
         timeout = bytes_available / 100 + 10;
@@ -339,9 +342,11 @@ static size_t ublox_receive(uint8_t *buf, size_t bufsize)
             sdStart(&SD1, &gps_port_config);
         }
     }
-
+	*/
     /* No data to read. */
+    /*
     return 0;
+	*/	
 }
 
 /* Run the first `num_new_bytes` bytes in `buf` through the UBX decoding state
@@ -467,11 +472,11 @@ static void ublox_state_machine(uint8_t *buf, size_t num_new_bytes)
     }
 }
 
-static bool_t ublox_init(uint8_t *buf, size_t bufsize)
+static bool ublox_init(uint8_t *buf, size_t bufsize)
 {
     ubx_cfg_nav5_t nav5;
     ubx_cfg_msg_t msg;
-    bool_t success = TRUE;
+    bool success = TRUE;
 
     /* Set to Airborne <4g dynamic mode */
     nav5.sync1 = UBX_SYNC1;
@@ -555,9 +560,9 @@ msg_t ublox_thread(void* arg)
     chRegSetThreadName("uBlox");
 
     /* We'll reset the uBlox so it's in a known state */
-    palClearPad(GPIOB, GPIOB_GPS_RESET);
+/*    palClearPad(GPIOB, GPIOB_GPS_RESET); */
     chThdSleepMilliseconds(100);
-    palSetPad(GPIOB, GPIOB_GPS_RESET);
+/*    palSetPad(GPIOB, GPIOB_GPS_RESET); */
     chThdSleepMilliseconds(500);
 
     /*i2cStart(&I2CD1, &i2cconfig);*/

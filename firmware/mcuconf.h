@@ -139,7 +139,6 @@
 #define STM32_I2C_USE_I2C1                  FALSE
 #define STM32_I2C_USE_I2C2                  FALSE
 #define STM32_I2C_USE_I2C3                  FALSE
-#define STM32_I2C_BUSY_TIMEOUT              50
 #define STM32_I2C_I2C1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 0)
 #define STM32_I2C_I2C1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 6)
 #define STM32_I2C_I2C2_RX_DMA_STREAM        STM32_DMA_STREAM_ID(1, 2)
@@ -152,7 +151,9 @@
 #define STM32_I2C_I2C1_DMA_PRIORITY         3
 #define STM32_I2C_I2C2_DMA_PRIORITY         3
 #define STM32_I2C_I2C3_DMA_PRIORITY         3
-#define STM32_I2C_DMA_ERROR_HOOK(i2cp)      osalSysHalt("DMA failure")
+#define STM32_I2C_I2C1_DMA_ERROR_HOOK()     chSysHalt()
+#define STM32_I2C_I2C2_DMA_ERROR_HOOK()     chSysHalt()
+#define STM32_I2C_I2C3_DMA_ERROR_HOOK()     chSysHalt()
 
 /*
  * ICU driver system settings.
@@ -203,21 +204,12 @@
 #define STM32_PWM_TIM9_IRQ_PRIORITY         7
 
 /*
- * SDC driver system settings.
- */
-#define STM32_SDC_SDIO_DMA_PRIORITY         3
-#define STM32_SDC_SDIO_IRQ_PRIORITY         9
-#define STM32_SDC_WRITE_TIMEOUT_MS          250
-#define STM32_SDC_READ_TIMEOUT_MS           25
-#define STM32_SDC_CLOCK_ACTIVATION_DELAY    10
-#define STM32_SDC_SDIO_UNALIGNED_SUPPORT    TRUE
-#define STM32_SDC_SDIO_DMA_STREAM           STM32_DMA_STREAM_ID(2, 3)
-
-/*
  * SERIAL driver system settings.
  */
-#define STM32_SERIAL_USE_USART1             FALSE
-#define STM32_SERIAL_USE_USART2             FALSE
+#define STM32_SERIAL_USE_USART1             TRUE
+#define PLATFORM_SERIAL_USE_SD1             TRUE
+#define STM32_SERIAL_USE_USART2             TRUE
+#define PLATFORM_SERIAL_USE_SD2             TRUE
 #define STM32_SERIAL_USE_USART3             FALSE
 #define STM32_SERIAL_USE_UART4              FALSE
 #define STM32_SERIAL_USE_UART5              FALSE
@@ -247,13 +239,14 @@
 #define STM32_SPI_SPI1_IRQ_PRIORITY         10
 #define STM32_SPI_SPI2_IRQ_PRIORITY         10
 #define STM32_SPI_SPI3_IRQ_PRIORITY         10
-#define STM32_SPI_DMA_ERROR_HOOK(spip)      osalSysHalt("DMA failure")
+#define STM32_SPI_DMA_ERROR_HOOK(spip)      chSysHalt()
 
 /*
- * ST driver system settings.
+ * Set the SDIO DMA stream. It defaults to (2, 3), same as SPI1, which
+ * will cause serious problems. (2, 6) is used for TIM1, SPI6, CRYP_IN,
+ * USART6 and SPI5, none of which I'm using.
  */
-#define STM32_ST_IRQ_PRIORITY               8
-#define STM32_ST_USE_TIMER                  2
+#define STM32_SDC_SDIO_DMA_STREAM           STM32_DMA_STREAM_ID(2, 6)
 
 /*
  * UART driver system settings.
@@ -288,7 +281,7 @@
 #define STM32_UART_UART4_DMA_PRIORITY       0
 #define STM32_UART_UART5_DMA_PRIORITY       0
 #define STM32_UART_USART6_DMA_PRIORITY      0
-#define STM32_UART_DMA_ERROR_HOOK(uartp)    osalSysHalt("DMA failure")
+#define STM32_UART_DMA_ERROR_HOOK(uartp)    chSysHalt()
 
 /*
  * USB driver system settings.

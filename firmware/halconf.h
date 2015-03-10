@@ -31,6 +31,13 @@
 #include "mcuconf.h"
 
 /**
+ * @brief   Enables the TM subsystem.
+ */
+#if !defined(HAL_USE_TM) || defined(__DOXYGEN__)
+#define HAL_USE_TM                  FALSE
+#endif
+
+/**
  * @brief   Enables the PAL subsystem.
  */
 #if !defined(HAL_USE_PAL) || defined(__DOXYGEN__)
@@ -55,7 +62,7 @@
  * @brief   Enables the EXT subsystem.
  */
 #if !defined(HAL_USE_EXT) || defined(__DOXYGEN__)
-#define HAL_USE_EXT                 FALSE
+#define HAL_USE_EXT                 TRUE
 #endif
 
 /**
@@ -70,13 +77,6 @@
  */
 #if !defined(HAL_USE_I2C) || defined(__DOXYGEN__)
 #define HAL_USE_I2C                 FALSE
-#endif
-
-/**
- * @brief   Enables the I2S subsystem.
- */
-#if !defined(HAL_USE_I2S) || defined(__DOXYGEN__)
-#define HAL_USE_I2S                 FALSE
 #endif
 
 /**
@@ -125,7 +125,7 @@
  * @brief   Enables the SERIAL subsystem.
  */
 #if !defined(HAL_USE_SERIAL) || defined(__DOXYGEN__)
-#define HAL_USE_SERIAL              FALSE
+#define HAL_USE_SERIAL              TRUE
 #endif
 
 /**
@@ -284,7 +284,7 @@
  *          buffers.
  */
 #if !defined(SERIAL_BUFFERS_SIZE) || defined(__DOXYGEN__)
-#define SERIAL_BUFFERS_SIZE         16
+#define SERIAL_BUFFERS_SIZE         64
 #endif
 
 /*===========================================================================*/
