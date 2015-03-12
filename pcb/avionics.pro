@@ -1,4 +1,4 @@
-update=Wed 18 Feb 2015 14:37:37 GMT
+update=Thu 12 Mar 2015 21:32:39 GMT
 version=1
 last_client=kicad
 [cvpcb]
@@ -6,8 +6,6 @@ version=1
 NetIExt=net
 [cvpcb/libraries]
 EquName1=devcms
-[general]
-version=1
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -83,3 +81,5 @@ LibName48=library/FG6943010R
 LibName49=library/FDN304P
 LibName50=library/rfm69w
 LibName51=library/alpha_trx433s
+[general]
+version=1

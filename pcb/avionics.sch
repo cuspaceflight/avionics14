@@ -586,17 +586,6 @@ F 3 "" H 1850 1850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C105
-U 1 1 54DFCC68
-P 1350 1850
-F 0 "C105" H 1400 1950 50  0000 L CNN
-F 1 "100n" H 1400 1750 50  0000 L CNN
-F 2 "avionics14:0603" H 1388 1700 30  0001 C CNN
-F 3 "" H 1350 1850 60  0000 C CNN
-	1    1350 1850
-	1    0    0    -1  
-$EndComp
-$Comp
 L C C103
 U 1 1 54DFCC91
 P 1100 1850
@@ -851,7 +840,7 @@ $EndComp
 NoConn ~ 2750 5400
 NoConn ~ 4050 4200
 Wire Wire Line
-	6550 1350 6550 1600
+	6550 1600 6550 1350
 Wire Wire Line
 	6550 1400 6650 1400
 Wire Wire Line
@@ -874,22 +863,12 @@ Connection ~ 7450 1400
 Wire Wire Line
 	7450 1600 7350 1600
 Connection ~ 7450 1500
-Wire Wire Line
-	7350 1700 7500 1700
-Wire Wire Line
-	7850 1500 7850 1700
 Connection ~ 6550 1600
 Connection ~ 6550 1700
-Wire Wire Line
-	6300 1200 6300 1300
-Wire Wire Line
-	6300 800  6300 900 
 Wire Wire Line
 	7950 1400 7950 1300
 Wire Wire Line
 	7950 1300 8050 1300
-Wire Wire Line
-	8050 1650 8050 1750
 Wire Notes Line
 	6000 500  6000 2150
 Wire Notes Line
@@ -1188,79 +1167,35 @@ Wire Wire Line
 Wire Wire Line
 	1750 3200 2750 3200
 Connection ~ 2650 3300
-Wire Wire Line
-	2350 1600 2350 1700
-Wire Wire Line
-	2100 1600 2100 1700
 Connection ~ 2350 1600
-Wire Wire Line
-	1850 1600 1850 1700
 Connection ~ 2100 1600
-Wire Wire Line
-	1600 1600 1600 1700
 Connection ~ 1850 1600
 Connection ~ 1600 1600
-Wire Wire Line
-	1350 1600 1350 1700
-Wire Wire Line
-	1100 1600 1100 1700
 Connection ~ 1350 1600
-Wire Wire Line
-	850  1600 850  1700
 Connection ~ 1100 1600
 Wire Wire Line
-	600  1500 600  1700
+	600  1500 600  1650
 Connection ~ 850  1600
 Wire Wire Line
-	600  2000 600  2150
-Wire Wire Line
-	2350 2100 600  2100
-Wire Wire Line
-	850  2000 850  2100
+	600  2100 2350 2100
 Connection ~ 600  2100
-Wire Wire Line
-	1100 2000 1100 2100
 Connection ~ 850  2100
-Wire Wire Line
-	1350 2000 1350 2100
 Connection ~ 1100 2100
-Wire Wire Line
-	1600 2000 1600 2100
 Connection ~ 1350 2100
-Wire Wire Line
-	1850 2000 1850 2100
 Connection ~ 1600 2100
-Wire Wire Line
-	2100 2000 2100 2100
 Connection ~ 1850 2100
-Wire Wire Line
-	2350 2000 2350 2100
 Connection ~ 2100 2100
 Connection ~ 600  1600
 Wire Wire Line
 	2650 1600 2650 2200
 Wire Wire Line
-	2250 2500 2250 2600
-Wire Wire Line
 	2250 2500 2750 2500
-Wire Wire Line
-	2750 2400 2000 2400
-Wire Wire Line
-	2000 2400 2000 2600
-Wire Wire Line
-	2000 2900 2000 3000
-Wire Wire Line
-	2250 2900 2250 3000
 Connection ~ 2500 3000
 Connection ~ 2250 3000
 Wire Wire Line
 	1150 2600 1150 2650
 Wire Wire Line
 	1150 2650 1750 2650
-Wire Wire Line
-	1250 2650 1250 2750
-Wire Wire Line
-	1500 2650 1500 2750
 Connection ~ 1250 2650
 Wire Wire Line
 	1750 2650 1750 3200
@@ -1272,10 +1207,6 @@ Wire Wire Line
 	1150 3200 1150 3150
 Wire Wire Line
 	1150 3150 1500 3150
-Wire Wire Line
-	1250 3050 1250 3150
-Wire Wire Line
-	1500 3150 1500 3050
 Connection ~ 1250 3150
 Wire Wire Line
 	2400 4300 2400 4000
@@ -1286,23 +1217,11 @@ Wire Wire Line
 Wire Wire Line
 	2100 3600 2100 3900
 Wire Wire Line
-	1500 3600 2100 3600
-Wire Wire Line
 	1600 3600 1600 3650
-Wire Wire Line
-	2050 4300 2400 4300
-Wire Wire Line
-	1600 4250 1600 4300
-Wire Wire Line
-	1500 4300 1750 4300
 Connection ~ 1600 3600
 Connection ~ 1600 4300
 Wire Wire Line
-	950  3600 1200 3600
-Wire Wire Line
 	950  3600 950  4550
-Wire Wire Line
-	950  4300 1200 4300
 Connection ~ 950  4300
 Wire Notes Line
 	8350 2200 5100 2200
@@ -1326,7 +1245,86 @@ Connection ~ 6450 1700
 Wire Wire Line
 	2750 4300 2600 4300
 Wire Wire Line
-	7850 1700 7800 1700
-Wire Wire Line
 	8050 1300 8050 1350
+Wire Wire Line
+	850  1600 850  1650
+Wire Wire Line
+	1100 1600 1100 1650
+Wire Wire Line
+	1350 1600 1350 1650
+Wire Wire Line
+	1600 1600 1600 1650
+Wire Wire Line
+	1850 1600 1850 1650
+Wire Wire Line
+	2100 1600 2100 1650
+Wire Wire Line
+	2350 1600 2350 1650
+Wire Wire Line
+	2350 2100 2350 2050
+Wire Wire Line
+	2100 2050 2100 2100
+Wire Wire Line
+	1850 2050 1850 2100
+Wire Wire Line
+	1600 2050 1600 2100
+$Comp
+L C C105
+U 1 1 54DFCC68
+P 1350 1850
+F 0 "C105" H 1400 1950 50  0000 L CNN
+F 1 "100n" H 1400 1750 50  0000 L CNN
+F 2 "avionics14:0603" H 1388 1700 30  0001 C CNN
+F 3 "" H 1350 1850 60  0000 C CNN
+	1    1350 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 2100 1350 2050
+Wire Wire Line
+	1100 2050 1100 2100
+Wire Wire Line
+	850  2050 850  2100
+Wire Wire Line
+	600  2050 600  2150
+Wire Wire Line
+	2750 2400 2000 2400
+Wire Wire Line
+	2250 2500 2250 2550
+Wire Wire Line
+	2000 2400 2000 2550
+Wire Wire Line
+	2250 2950 2250 3000
+Wire Wire Line
+	2000 2950 2000 3000
+Wire Wire Line
+	1500 3150 1500 3100
+Wire Wire Line
+	1250 3100 1250 3150
+Wire Wire Line
+	1550 3600 2100 3600
+Wire Wire Line
+	1150 3600 950  3600
+Wire Wire Line
+	1600 4250 1600 4300
+Wire Wire Line
+	1550 4300 1650 4300
+Wire Wire Line
+	1150 4300 950  4300
+Wire Wire Line
+	2150 4300 2400 4300
+Wire Wire Line
+	6300 1250 6300 1300
+Wire Wire Line
+	6300 800  6300 850 
+Wire Wire Line
+	7350 1700 7450 1700
+Wire Wire Line
+	7850 1500 7850 1700
+Wire Wire Line
+	8050 1700 8050 1750
+Wire Wire Line
+	1500 2700 1500 2650
+Wire Wire Line
+	1250 2650 1250 2700
 $EndSCHEMATC
