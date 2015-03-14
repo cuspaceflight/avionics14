@@ -17,14 +17,16 @@
 
 #include <stdint.h>
 #include "rfm69.h"
+#include "rfm69_config.h"
+
 #include "err.h" 
 #include "hal.h"
 #include "config.h"
 
 //change as needed
-#define RFM69_SPID SPID2 
-#define RFM69_SPI_CS_PORT A 
-#define RFM69_SPI_CS_PIN 0
+#define RFM69_SPID SPID1 
+#define RFM69_SPI_CS_PORT GPIOD 
+#define RFM69_SPI_CS_PIN GPIOD_RADIO_CS
 
 #define RFM69_MEMPOOL_ITEMS 32
 
@@ -242,12 +244,12 @@ msg_t rfm69_thread(void *arg) {
 	(void) arg;
 	chRegSetThreadName("RFM69");
 	
-	//setup SPI
+	//setup SPI: CPHA = 0, CPOL = 0;
 	const SPIConfig spi_cfg = { 
 		NULL,
 		RFM69_SPI_CS_PORT,
 		RFM69_SPI_CS_PIN,
-		SPI_CR1_BR_1 | SPI_CR1_BR_0 | SPI_CR1_CPOL | SPI_CR1_CPHA
+		SPI_CR1_BR_2 | 0 | 0 
 	};
 	spiStart(&RFM69_SPID, &spi_cfg);
 	rfm69_config(SPID);
