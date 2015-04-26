@@ -7,8 +7,9 @@ typedef struct state_estimate_t {
 	float vel[3];
 	float accel[3];
 
+	float angular_velocity[3];
+
 	float orientation_q[4];
-	float orientation_euler[3];
 } state_estimate_t;
 
 void print_state_estimate(const state_estimate_t* estimate);
@@ -18,6 +19,8 @@ void state_estimate_new_accel_raw(const int16_t accel[3]);
 void state_estimate_new_pressure_raw(int pressure);
 
 void state_estimate_new_magnetometer_raw(const int16_t mag[3]);
+
+void state_estimate_new_gyro_raw(const int16_t gyro[3]);
 
 void state_estimate_compute_next(state_estimate_t* next_estimate, float dt);
 

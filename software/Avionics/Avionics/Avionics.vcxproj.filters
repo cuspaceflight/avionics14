@@ -39,6 +39,9 @@
     <ClCompile Include="Source\mag_rotation_estimator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\orientation_kalman.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\translation_kalman.h">
@@ -69,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\mag_rotation_estimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\orientation_kalman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

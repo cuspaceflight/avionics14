@@ -7,13 +7,14 @@
 
 extern "C" {
 #include <state_estimate.h>
+#include <math_utils.h>
 }
 
 StateDetailView::StateDetailView() : FTView(new FTCamera2D(), FTRect<float>(0, 0, 1, 1)), children_(new FTArray<FTNode>()) {
 	camera_->release();
 
-	const int num_labels = 11;
-	static const wchar_t* label_names[num_labels] = {L"Position X", L"Position Y", L"Position Z", L"Velocity X", L"Velocity Y", L"Velocity Z", L"Velocity Mag", L"Accel X", L"Accel Y", L"Accel Z", L"Accel Mag"};
+	const int num_labels = 21;
+	static const wchar_t* label_names[num_labels] = { L"Position X", L"Position Y", L"Position Z", L"Velocity X", L"Velocity Y", L"Velocity Z", L"Velocity Mag", L"Accel X", L"Accel Y", L"Accel Z", L"Accel Mag", L"Quat X", L"Quat Y", L"Quat Z", L"Quat W", L"Orientation Euler X", L"Orientation Euler Y", L"Orientation Euler Z", L"Angular Velocity X", L"Angular Velocity Y", L"Angular Velocity Z"};
 
 	glm::vec2 screensize = FTDirector::getSharedInstance()->getWindowSize();
 	float y = screensize.y - 30;
@@ -37,9 +38,6 @@ StateDetailView::StateDetailView() : FTView(new FTCamera2D(), FTRect<float>(0, 0
 
 		y -= y_padding;
 	}
-
-	value_labels_[0]->setString(L"-0.03");
-	value_labels_[0]->setString(L"-0.04");
 }
 
 StateDetailView::~StateDetailView() {
@@ -75,6 +73,23 @@ void StateDetailView::updateDisplay(state_estimate_t& current_state) {
 
 	mag = sqrtf(current_state.accel[0] * current_state.accel[0] + current_state.accel[1] * current_state.accel[1] + current_state.accel[2] * current_state.accel[2]);
 	value_labels_[10]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", mag));
+
+	value_labels_[11]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.orientation_q[0]));
+	value_labels_[12]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.orientation_q[1]));
+	value_labels_[13]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.orientation_q[2]));
+	value_labels_[14]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.orientation_q[3]));
+
+	float euler[3];
+	quat_to_euler(current_state.orientation_q,euler);
+
+	value_labels_[15]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", euler[0] * 57.2957795131f));
+	value_labels_[16]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", euler[1] * 57.2957795131f));
+	value_labels_[17]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", euler[2] * 57.2957795131f));
+
+	value_labels_[18]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.angular_velocity[0]));
+	value_labels_[19]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.angular_velocity[1]));
+	value_labels_[20]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.angular_velocity[2]));
+
 
 	//value_labels_[3]->setString(FTStringUtil<wchar_t>::formatString(buff, 1024, L"%f", current_state.vel[0]));
 

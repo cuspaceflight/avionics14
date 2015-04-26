@@ -146,6 +146,7 @@
     <ClCompile Include="Source\logging.c" />
     <ClCompile Include="Source\mag_rotation_estimator.c" />
     <ClCompile Include="Source\mission.c" />
+    <ClCompile Include="Source\orientation_kalman.c" />
     <ClCompile Include="Source\quest_estimator.c" />
     <ClCompile Include="Source\state_estimate.c" />
     <ClCompile Include="Source\telemetry.c" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Source\mag_rotation_estimator.h" />
     <ClInclude Include="Source\math_utils.h" />
     <ClInclude Include="Source\mission.h" />
+    <ClInclude Include="Source\orientation_kalman.h" />
     <ClInclude Include="Source\quest_estimator.h" />
     <ClInclude Include="Source\state_estimate.h" />
     <ClInclude Include="Source\telemetry.h" />

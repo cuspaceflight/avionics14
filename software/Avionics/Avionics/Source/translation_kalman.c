@@ -10,25 +10,25 @@
 */
 
 #include "translation_kalman.h"
-#include <math.h>
 #include <calibration.h>
 
 // Current state - [x,y,z],[position,velocity,acceleration]
 static float current_state[3][3];
 
 //Covariance storage - [x,y,z],[row],[column]
+// Initialise to 0 - we know the initial state with certainty
 static float current_covariance[3][3][3] = {
-		{ { 250.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.1f, 0.0f },
-		{ 0.0f, 0.0f, 0.1f } },
+		{ { 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f } },
 
-		{ { 250.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.1f, 0.0f },
-		{ 0.0f, 0.0f, 0.1f } },
+		{ { 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f } },
 
-		{ { 250.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.1f, 0.0f },
-		{ 0.0f, 0.0f, 0.1f } }
+		{ { 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f } }
 };
 
 /*

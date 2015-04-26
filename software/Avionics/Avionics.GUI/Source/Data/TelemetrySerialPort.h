@@ -27,8 +27,6 @@ protected:
 		return SerialPort::read(buff, size);
 	}
 
-	
-
 	// Retrieve new packets from the serial port
 	bool poll();
 

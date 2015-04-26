@@ -38,6 +38,7 @@ void DataSource::handlePacket(const telemetry_t& data) {
 		break;
 	}
 	case PACKET_GYRO_RAW: {
+		state_estimate_new_gyro_raw(data.int16_data_);
 		break;
 	}
 	case PACKET_MAG_RAW: {

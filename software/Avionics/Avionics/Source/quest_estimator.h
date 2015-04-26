@@ -8,7 +8,7 @@ void quest_estimator_new_accel(const float accel[3]);
 void quest_estimator_new_mag(const float mag[3]);
 
 // Compute the current quaternion based on the current data
-void quest_estimator_update(float q[4], float euler_angles[3]);
+void quest_estimator_update(float q[4]);
 
 void quest_estimator_set_reference_vectors(float accel_reference[3], float mag_reference[3]);
 

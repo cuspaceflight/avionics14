@@ -4,15 +4,9 @@
 #include <Util/FTInputManager.h>
 #include <Data/FileDataSource.h>
 #include <Data/SerialDataSource.h>
-#include <glm\gtx\quaternion.hpp>
 
 extern "C" {
-#include <telemetry.h>
 #include <time_utils.h>
-#include <mission.h>
-#include <translation_kalman.h>
-#include <quest_estimator.h>
-#include <math_utils.h>
 }
 
 #define RUN_SIMULATION // Whether to run the estimators locally or render the on board values (not implemented yet)
@@ -26,23 +20,6 @@ MainScene::MainScene() : data_source_(nullptr), time_left_after_ticks_(0) {
 	state_detail_view_ = new StateDetailView();
 	addView(state_detail_view_);
 	state_detail_view_->release();
-	
-	/*float mag[3] = { -0.692562103971370, -0.297156898213635, -0.657309295527456 };
-	float accel[3] = { 0.229187214724976, -0.752609925351439, -0.617293707135516 };
-
-	quest_estimator_new_accel(accel);
-	quest_estimator_new_mag(mag);
-	float q[4];
-	float xyz[3];
-	quest_estimator_update(q,xyz);
-
-	
-	//quat_to_euler(q, xyz);
-
-	for (int i = 0; i < 3; i++)
-		xyz[i] *= 180.0f / PI;
-
-	FTLOG("Quest returned: (%f %f %f)", xyz[0], xyz[1], xyz[2]);*/
 
 #ifdef RUN_SIMULATION
 #ifdef SERIAL_DATA_SOURCE
@@ -86,12 +63,9 @@ void MainScene::update(float actual_dt) {
 		
 		//FTLog("Running state estimators\n");
 		state_estimate_compute_next(&state_estimate_, 1 / prediction_update_rate);
-
-		
-		state_detail_view_->updateDisplay(state_estimate_);
-		state_3d_renderer_->nextStateEstimate(state_estimate_);
 	}
-
+	state_detail_view_->updateDisplay(state_estimate_);
+	state_3d_renderer_->nextStateEstimate(state_estimate_);
 }
 
 

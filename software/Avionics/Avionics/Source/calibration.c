@@ -26,6 +26,10 @@
 #define MAG_OY -24.2148733051456f
 #define MAG_OZ 106.4663323513927f
 
+// Gyro has range of 2000 degrees per second
+// TODO: Calibrate this properly
+#define GYRO_SCALE 2000.0f*0.01745329251f/INT16_MAX
+
 #elif defined(M2FC)
 
 // Very rough calibration - don't have board to actually calibrate properly
@@ -51,14 +55,11 @@
 
 #endif
 
-
-
-
 void calibrate_accel(const int16_t in[3], float out[3]) {
 	float x = (float)in[0] - ACCEL_OX;
 	float y = (float)in[1] - ACCEL_OY;
 	float z = (float)in[2] - ACCEL_OZ;
-
+	
 	out[0] = ACCEL_MXX*x + ACCEL_MXY*y + ACCEL_MXZ*z;
 	out[1] = ACCEL_MXY*x + ACCEL_MYY*y + ACCEL_MYZ*z;
 	out[2] = ACCEL_MXZ*x + ACCEL_MYZ*y + ACCEL_MZZ*z;
@@ -72,6 +73,12 @@ void calibrate_mag(const int16_t in[3], float out[3]) {
 	out[0] = MAG_MXX*x + MAG_MXY*y + MAG_MXZ*z;
 	out[1] = MAG_MXY*x + MAG_MYY*y + MAG_MYZ*z;
 	out[2] = MAG_MXZ*x + MAG_MYZ*y + MAG_MZZ*z;
+}
+
+void calibrate_gyro(const int16_t in[3], float out[3]) {
+	out[0] = GYRO_SCALE*in[0];
+	out[1] = GYRO_SCALE*in[1];
+	out[2] = GYRO_SCALE*in[2];
 }
 
 

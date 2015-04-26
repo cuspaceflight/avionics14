@@ -1,27 +1,27 @@
-format long
+function [Q] = QUEST_algorithm(AccelReference,MagReference,AccelObservation,MagObservation)
 
 %%Setup Matrices
-MagReference = [1;0;0];
-AccelReference = [0;1;0];
+%MagReference = [1;0;0];
+%AccelReference = [0;1;0];
 
-MagReference = MagReference / norm(MagReference)
-AccelReference = AccelReference / norm(AccelReference)
+%MagReference = MagReference / norm(MagReference)
+%AccelReference = AccelReference / norm(AccelReference)
 %MagObservation = [0;1;0];
 %AccelObservation = [0;0;-1];
 
-degToRad = 2.0 * pi / 360.0;
+%degToRad = 2.0 * pi / 360.0;
 
 % (roll, yaw, pitch)
-dcm = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz')
-dcm2 = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz');
+%dcm = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz')
+%dcm2 = angle2dcm(20 * degToRad, -37 * degToRad,12 * degToRad, 'xyz');
 
-MagObservation = dcm*MagReference;
-AccelObservation = dcm2*AccelReference;
+%MagObservation = dcm*MagReference;
+%AccelObservation = dcm2*AccelReference;
 
-MagObservation = (MagObservation/norm(MagObservation))
-AccelObservation = (AccelObservation/norm(AccelObservation))
+%MagObservation = (MagObservation/norm(MagObservation))
+%AccelObservation = (AccelObservation/norm(AccelObservation))
 
-magA = 0.0001;
+magA = 0.5;
 accelA = 1-magA;
 
 %% Compute Quaternion
@@ -31,7 +31,7 @@ accelA = 1-magA;
 % This can be dealt by rotating the reference vectors by pi about the
 % problematic axis and then rotating the quaternion back at the end when
 % gamma is below a certain threshold value
-% This has not been implemented here but might be implemented on the rocket
+% This has not been implemented here but is implemented on the rocket
 
 B = accelA*AccelObservation*transpose(AccelReference) + magA*MagObservation*transpose(MagReference)
 
@@ -52,9 +52,8 @@ detY = det(Y)
 Y = inv(Y);
 Y = Y*Z;
 
-Q3 = [Y; 1] / sqrt(norm(Y)*norm(Y) + 1)
-
-[X, Y, Z] = EulerAngles(Q3)
+Q = [Y; 1] / sqrt(norm(Y)*norm(Y) + 1)
+end
 
 
 

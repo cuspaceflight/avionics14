@@ -2,13 +2,15 @@
 #include <math.h>
 #include <logging.h>
 #include "math_utils.h"
-#include "state_estimate.h"
 
 // Stores the last orientation output in euler angles
-float current_orientation[3] = {0,0,0};
 float MO[3] = { 1, 0, 0 };
 float AO[3] = { 0, 1, 0 };
 
+float MO_rotated[3] = { 1, 0, 0 };
+float AO_rotated[3] = { 1, 0, 0 };
+float last_orientation[3] = { 0, 0, 0 };
+float last_w = 1.0f;
 
 float MR[3] = { 0.948683298050514f, 0.316227766016838f, 0 };
 float AR[3] = { 0, 0.986393923832144f, -0.164398987305357f };
@@ -20,7 +22,7 @@ const float MagA = 0.5f;
 
 // We need to apply sequential rotations to avoid singularities
 // 1 - rotation pi about x axis
-// 2 - rotaiton pi about y axis
+// 2 - rotation pi about y axis
 // 3 - rotation pi about z axis
 int sequential_rotations = 0;
 
@@ -45,26 +47,6 @@ void quest_estimator_new_accel(const float accel[3]) {
 	AO[0] = accel[0] / normAccel;
 	AO[1] = accel[1] / normAccel;
 	AO[2] = accel[2] / normAccel;
-
-	switch (sequential_rotations) {
-		case 1: {
-			AO[1] = -AO[1];
-			AO[2] = -AO[2];
-			break;
-		}
-		case 2: {
-			AO[0] = -AO[0];
-			AO[2] = -AO[2];
-			break;
-		}
-		case 3: {
-			AO[1] = -AO[1];
-			AO[0] = -AO[0];
-			break;
-		}
-		default:
-			break;
-	}
 }
 
 void quest_estimator_new_mag(const float mag[3]) {
@@ -72,49 +54,33 @@ void quest_estimator_new_mag(const float mag[3]) {
 	MO[0] = mag[0] / normMag;
 	MO[1] = mag[1] / normMag;
 	MO[2] = mag[2] / normMag;
-
-	switch (sequential_rotations) {
-		case 1: {
-			MO[1] = -MO[1];
-			MO[2] = -MO[2];
-			break;
-		}
-		case 2: {
-			MO[0] = -MO[0];
-			MO[2] = -MO[2];
-			break;
-		}
-		case 3: {
-			MO[1] = -MO[1];
-			MO[0] = -MO[0];
-			break;
-		}
-		default:
-			break;
-	}
 }
 
 void rotate_measurement_data() {
+	for (int i = 0; i < 3; i++) {
+		MO_rotated[i] = MO[i];
+		AO_rotated[i] = AO[i];
+	}
 	switch (sequential_rotations) {
 		case 1: {
-			MO[1] = -MO[1];
-			MO[2] = -MO[2];
-			AO[1] = -AO[1];
-			AO[2] = -AO[2];
+			MO_rotated[1] = -MO[1];
+			MO_rotated[2] = -MO[2];
+			AO_rotated[1] = -AO[1];
+			AO_rotated[2] = -AO[2];
 			break;
 		}
 		case 2: {
-			MO[0] = -MO[0];
-			MO[2] = -MO[2];
-			AO[0] = -AO[0];
-			AO[2] = -AO[2];
+			MO_rotated[0] = -MO[0];
+			MO_rotated[2] = -MO[2];
+			AO_rotated[0] = -AO[0];
+			AO_rotated[2] = -AO[2];
 			break;
 		}
 		case 3: {
-			MO[1] = -MO[1];
-			MO[0] = -MO[0];
-			AO[1] = -AO[1];
-			AO[0] = -AO[0];
+			MO_rotated[1] = -MO[1];
+			MO_rotated[0] = -MO[0];
+			AO_rotated[1] = -AO[1];
+			AO_rotated[0] = -AO[0];
 			break;
 		}
 		default:
@@ -181,37 +147,30 @@ static void mat3x3_inv_transpose(float mat[3][3], float det, float res[3][3]) {
 }
 
 
-void quest_estimator_update(float q[4], float euler_angles[3]) {
+void quest_estimator_update(float q[4]) {
 	
 	// Make best guess for which sequential rotation to use
-	//sequential_rotations = 0;
-	if (current_orientation[0] > PI / 2.0f && sequential_rotations != 1) {
+
+	if (fabsf(last_orientation[0]) > PI * 0.5f) {
 		// Rotation around x axis
-		rotate_measurement_data();
 		sequential_rotations = 1;
-		rotate_measurement_data();
-	} else if (current_orientation[1] > PI / 2.0f && sequential_rotations != 2) {
-		// Rotation around y axis
-		rotate_measurement_data();
-		sequential_rotations = 2;
-		rotate_measurement_data();
-	} else if (current_orientation[2] > PI / 2.0f && sequential_rotations != 3) {
-		// Rotation around z axis
-		rotate_measurement_data();
-		sequential_rotations = 3;
-		rotate_measurement_data();
-	} else if (sequential_rotations != 0) {
-		// No rotation
-		rotate_measurement_data();
-		sequential_rotations = 0;
-		rotate_measurement_data();
 	}
+	else if (fabsf(last_orientation[2]) > PI * 0.5f) {
+		// Rotation around z axis
+		sequential_rotations = 3;
+	} else {
+		// No rotation
+		sequential_rotations = 0;
+	}
+	sequential_rotations = 0;
+	//PRINT("Rotation %i\n", sequential_rotations);
 
 	for (int attempt = 0; attempt < 4; attempt++) {
+		rotate_measurement_data();
 		float B[3][3];
 		for (int row = 0; row < 3; row++) {
 			for (int col = 0; col < 3; col++) {
-				B[row][col] = AO[row] * AR[col] * AccelA + MO[row] * MR[col] * MagA;
+				B[row][col] = AO_rotated[row] * AR[col] * AccelA + MO_rotated[row] * MR[col] * MagA;
 			}
 		}
 
@@ -222,7 +181,7 @@ void quest_estimator_update(float q[4], float euler_angles[3]) {
 			}
 		}
 
-		float sigma = MagA * (MR[0] * MO[0] + MR[1] * MO[1] + MR[2] * MO[2]) + AccelA * (AR[0] * AO[0] + AR[1] * AO[1] + AR[2] * AO[2]);
+		float sigma = MagA * (MR[0] * MO_rotated[0] + MR[1] * MO_rotated[1] + MR[2] * MO_rotated[2]) + AccelA * (AR[0] * AO_rotated[0] + AR[1] * AO_rotated[1] + AR[2] * AO_rotated[2]);
 
 		float Z[3];
 
@@ -230,7 +189,7 @@ void quest_estimator_update(float q[4], float euler_angles[3]) {
 		Z[1] = B[2][0] - B[0][2];
 		Z[2] = B[0][1] - B[1][0];
 
-		float deltaCos = vector_dot(MO, AO) * vector_dot(MR, AR) + vector_cross_mag(MO, AO) * vector_cross_mag(MR, AR);
+		float deltaCos = vector_dot(MO_rotated, AO_rotated) * vector_dot(MR, AR) + vector_cross_mag(MO_rotated, AO_rotated) * vector_cross_mag(MR, AR);
 
 		float lambda = sqrtf(MagA * MagA + 2 * MagA * AccelA * deltaCos + AccelA * AccelA);
 
@@ -243,15 +202,13 @@ void quest_estimator_update(float q[4], float euler_angles[3]) {
 		float ymat[3][3];
 		float det = mat3x3_det(minus_s);
 
-		if (det < 1e-5f) {
+		if (det < 1e-2f) {
 			// We made the wrong sequential rotation assumption - try a different one
-			// This shouldn't ever happen unless we are spinning really really fast
-			rotate_measurement_data();
+			// This will only occur if spinning really fast or upside down
 			sequential_rotations++;
 			if (sequential_rotations > 3)
 				sequential_rotations = 0;
-			rotate_measurement_data();
-			PRINT("Made incorrect first guess!");
+			PRINT("Made incorrect first guess! Changing to %i\n",sequential_rotations);
 			continue;
 		}
 
@@ -273,11 +230,14 @@ void quest_estimator_update(float q[4], float euler_angles[3]) {
 
 		rotate_quaternion(q);
 
-		quat_to_euler(q, current_orientation);
-
-		euler_angles[0] = current_orientation[0];
-		euler_angles[1] = current_orientation[1];
-		euler_angles[2] = current_orientation[2];
+		if (q[3] < 0.0f) {
+			for (int i = 0; i < 4; i++)
+				q[i] = -q[i];
+		}
+		
+		quat_to_euler(q, last_orientation);
+		last_w = q[3];
+		//PRINT("%f %f %f\n", last_orientation[0], last_orientation[1], last_orientation[2]);
 
 		break;
 	}
