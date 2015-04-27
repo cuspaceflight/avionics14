@@ -1,116 +1,328 @@
 /*
  * HMC5883L Driver 
  * Cambridge University Spaceflight
+ *
+ * Based on magn_hmc5883l.h from https://github.com/DuinoPilot/trunetcopter/
+ *
  */
 
 #include <stdlib.h>
-#include "microsd.h"
-#include "config.h"
-#include "state_estimation.h"
 
-#include "hmc5883l.h"  
+#include "hmc5883l.h"
+#include "i2c_util.h"
 
-#define HMC5883L_I2C_WRITE_ADDR    0x3C 
-#define HMC5883L_I2C_READ_ADDR     0x3D
+#include <string.h>
+
+/* Config Values */
+#define HMC5883L_ADDRESS            0x1E // this device only has one address
+#define HMC5883L_DEFAULT_ADDRESS    0x1E
+
+#define HMC5883L_MEASUREMENT_PERIOD 6 // From receiving command to data ready (ms)
+
+#define HMC5883L_RA_CONFIG_A        0x00
+#define HMC5883L_RA_CONFIG_B        0x01
+#define HMC5883L_RA_MODE            0x02
+#define HMC5883L_RA_DATAX_H         0x03
+#define HMC5883L_RA_DATAX_L         0x04
+#define HMC5883L_RA_DATAZ_H         0x05
+#define HMC5883L_RA_DATAZ_L         0x06
+#define HMC5883L_RA_DATAY_H         0x07
+#define HMC5883L_RA_DATAY_L         0x08
+#define HMC5883L_RA_STATUS          0x09
+#define HMC5883L_RA_ID_A            0x0A
+#define HMC5883L_RA_ID_B            0x0B
+#define HMC5883L_RA_ID_C            0x0C
+
+#define HMC5883L_CRA_AVERAGE_BIT    6
+#define HMC5883L_CRA_AVERAGE_LENGTH 2
+#define HMC5883L_CRA_RATE_BIT       4
+#define HMC5883L_CRA_RATE_LENGTH    3
+#define HMC5883L_CRA_BIAS_BIT       1
+#define HMC5883L_CRA_BIAS_LENGTH    2
+
+#define HMC5883L_AVERAGING_1        0x00
+#define HMC5883L_AVERAGING_2        0x01
+#define HMC5883L_AVERAGING_4        0x02
+#define HMC5883L_AVERAGING_8        0x03
+
+#define HMC5883L_RATE_0P75          0x00
+#define HMC5883L_RATE_1P5           0x01
+#define HMC5883L_RATE_3             0x02
+#define HMC5883L_RATE_7P5           0x03
+#define HMC5883L_RATE_15            0x04
+#define HMC5883L_RATE_30            0x05
+#define HMC5883L_RATE_75            0x06
+
+#define HMC5883L_BIAS_NORMAL        0x00
+#define HMC5883L_BIAS_POSITIVE      0x01
+#define HMC5883L_BIAS_NEGATIVE      0x02
+
+#define HMC5883L_CRB_GAIN_BIT       7
+#define HMC5883L_CRB_GAIN_LENGTH    3
+
+#define HMC5883L_GAIN_1370          0x00
+#define HMC5883L_GAIN_1090          0x01
+#define HMC5883L_GAIN_820           0x02
+#define HMC5883L_GAIN_660           0x03
+#define HMC5883L_GAIN_440           0x04
+#define HMC5883L_GAIN_390           0x05
+#define HMC5883L_GAIN_330           0x06
+#define HMC5883L_GAIN_220           0x07
+
+static const uint16_t HMC5883L_LSB_PER_GAUS[] = {
+	1370, 1090, 820, 660, 440, 390, 330, 230
+};
+
+#define HMC5883L_MODEREG_BIT        1
+#define HMC5883L_MODEREG_LENGTH     2
+
+#define HMC5883L_MODE_CONTINUOUS    0x00
+#define HMC5883L_MODE_SINGLE        0x01
+#define HMC5883L_MODE_IDLE          0x02
+
+#define HMC5883L_I2CDRIVERPOINTER &I2CD1
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
+static const uint16_t HMC5883L_READY_FOR_I2C_COMMAND = 200; // Ready for I2C commands (µs)
+
+static const float  HMC5883L_SELF_TEST_X_AXIS_ABSOLUTE_GAUSS = 1.16f;
+static const float  HMC5883L_SELF_TEST_Y_AXIS_ABSOLUTE_GAUSS = 1.16f;
+static const float  HMC5883L_SELF_TEST_Z_AXIS_ABSOLUTE_GAUSS = 1.08f;
+
+static const I2CConfig i2cfg = {
+	OPMODE_I2C,
+	400000,
+	FAST_DUTY_CYCLE_2,
+};
+
+uint8_t hmc5883l_buffer[6];
+uint8_t hmc5883l_mode;
+uint8_t hmc5883l_gain;
+float hmc5883l_scaleFactors[8][3];
 
 static Thread *tpHMC5883L = NULL;
-static float counts_to_Tesla = 0.000000092 ;
+
+bool_t hmc5883l_testConnection(void);
+
+// CONFIG_A register
+uint8_t hmc5883l_getSampleAveraging(void);
+void hmc5883l_setSampleAveraging(uint8_t averaging);
+uint8_t hmc5883l_getDataRate(void);
+void hmc5883l_setDataRate(uint8_t rate);
+uint8_t hmc5883l_getMeasurementBias(void);
+void hmc5883l_setMeasurementBias(uint8_t bias);
+
+// CONFIG_B register
+uint8_t hmc5883l_getGain(void);
+void hmc5883l_setGain(uint8_t newGain);
+
+// MODE register
+uint8_t hmc5883l_getMode(void);
+void hmc5883l_setMode(uint8_t mode);
+
+// DATA* registers
+void hmc5883l_getHeading(int16_t *x, int16_t *y, int16_t *z);
+
+void hmc5883l_getRawHeading(int16_t *x, int16_t *y, int16_t *z);
+
+bool_t hmc5883l_calibrate(int8_t testGain);
 
 
-/* Transmit data to sensor */
-static bool_t hmc5883l_transmit(uint8_t *buf)
+static void hmc5883l_init(void)
 {
-    size_t n = 2;  /* Transmit 2 bytes */
-    systime_t timeout;
-    msg_t rv;
+	memset((void *)&hmc5883l_buffer, 0, sizeof(hmc5883l_buffer));
 
-    /* Determine timeout in systicks (ms) - UNSURE ABOUT THIS */
-    timeout = n / 100 + 10; 
+	// We need to wait a bit...
+	chThdSleepMicroseconds(HMC5883L_READY_FOR_I2C_COMMAND);
 
-    /* Transmit message */
-    rv = i2cMasterTransmitTimeout(&I2CD1, HMC5883L_I2C_WRITE_ADDR, buf, 
-	                              n, NULL, 0, timeout);
-								  
-	if (rv == RDY_OK)
-	    return TRUE;
-	else
-	    return FALSE;
+	// write CONFIG_A register
+	i2c_writeByte(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A,
+		(HMC5883L_AVERAGING_8 << (HMC5883L_CRA_AVERAGE_BIT - HMC5883L_CRA_AVERAGE_LENGTH + 1)) |
+		(HMC5883L_RATE_75 << (HMC5883L_CRA_RATE_BIT - HMC5883L_CRA_RATE_LENGTH + 1)) |
+		(HMC5883L_BIAS_NORMAL << (HMC5883L_CRA_BIAS_BIT - HMC5883L_CRA_BIAS_LENGTH + 1)));
 
+	// write CONFIG_B register
+	hmc5883l_setGain(HMC5883L_GAIN_1090);
+
+	// write MODE register
+	hmc5883l_setMode(HMC5883L_MODE_CONTINUOUS);
+
+	// TODO: Maybe it would be a good idea to use the EEPROM
+	// to store the scale factors and recover the last valid
+	// value in case of a calibration fail.
+	uint8_t gain;
+	for (gain = HMC5883L_GAIN_1370; gain <= HMC5883L_GAIN_220; gain++) {
+		hmc5883l_scaleFactors[gain][0] = 1.0f;
+		hmc5883l_scaleFactors[gain][1] = 1.0f;
+		hmc5883l_scaleFactors[gain][2] = 1.0f;
+	}
 }
 
-/* Read data about magnetic field from sensor into buffer.
- * Do so through a transmit operation.
- * Place output data(6 bytes) into a (different) buffer
- */
+bool_t hmc5883l_testConnection(void) {
+	if (i2c_readBytes(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_ID_A, 3, hmc5883l_buffer) == RDY_OK) {
+		return (hmc5883l_buffer[0] == 'H' && hmc5883l_buffer[1] == '4' && hmc5883l_buffer[2] == '3');
+	}
+	return 0;
+}
 
-static bool_t hmc5883l_receive(uint8_t *buf, int8_t *buf_data)
-{
-    msg_t rv;
-    buf[0] = 0x06;
-    buf[1] = NULL;
+uint8_t hmc5883l_getSampleAveraging(void) {
+	i2c_readBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH, hmc5883l_buffer);
+	return hmc5883l_buffer[0];
+}
+
+void hmc5883l_setSampleAveraging(uint8_t averaging) {
+	i2c_writeBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_AVERAGE_BIT, HMC5883L_CRA_AVERAGE_LENGTH, averaging);
+}
+
+uint8_t hmc5883l_getDataRate(void) {
+	i2c_readBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH, hmc5883l_buffer);
+	return hmc5883l_buffer[0];
+}
+
+void hmc5883l_setDataRate(uint8_t rate) {
+	i2c_writeBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_RATE_BIT, HMC5883L_CRA_RATE_LENGTH, rate);
+}
+
+uint8_t hmc5883l_getMeasurementBias(void) {
+	i2c_readBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH, hmc5883l_buffer);
+	return hmc5883l_buffer[0];
+}
+
+void hmc5883l_setMeasurementBias(uint8_t bias) {
+	i2c_writeBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_A, HMC5883L_CRA_BIAS_BIT, HMC5883L_CRA_BIAS_LENGTH, bias);
+}
+
+uint8_t hmc5883l_getGain(void) {
+	i2c_readBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_B, HMC5883L_CRB_GAIN_BIT, HMC5883L_CRB_GAIN_LENGTH, hmc5883l_buffer);
+	return hmc5883l_buffer[0];
+}
+
+void hmc5883l_setGain(uint8_t newGain) {
+	if (i2c_writeByte(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_CONFIG_B, newGain << (HMC5883L_CRB_GAIN_BIT - HMC5883L_CRB_GAIN_LENGTH + 1))) {
+		hmc5883l_gain = newGain;
+	}
+}
+
+uint8_t hmc5883l_getMode(void) {
+	i2c_readBits(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_MODE, HMC5883L_MODEREG_BIT, HMC5883L_MODEREG_LENGTH, hmc5883l_buffer);
+	return hmc5883l_buffer[0];
+}
+
+void hmc5883l_setMode(uint8_t newMode) {
+	i2c_writeByte(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_MODE, hmc5883l_mode << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1));
+	hmc5883l_mode = newMode;
+}
+
+void hmc5883l_getHeading(int16_t *x, int16_t *y, int16_t *z) {
+	int16_t rawx, rawy, rawz;
+	hmc5883l_getRawHeading(&rawx, &rawy, &rawz);
 	
-	/* Timeout is somewhat arbitrary- CHECK THIS */
+	*x = (int16_t)(hmc5883l_scaleFactors[hmc5883l_gain][0] * rawx);
+	*y = (int16_t)(hmc5883l_scaleFactors[hmc5883l_gain][1] * rawy);
+	*z = (int16_t)(hmc5883l_scaleFactors[hmc5883l_gain][2] * rawz);
+}
+
+void hmc5883l_getRawHeading(int16_t *x, int16_t *y, int16_t *z) {
+	if (hmc5883l_mode == HMC5883L_MODE_SINGLE) {
+		i2c_writeByte(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_MODE, HMC5883L_MODE_SINGLE << (HMC5883L_MODEREG_BIT - HMC5883L_MODEREG_LENGTH + 1));
+		chThdSleepMilliseconds(HMC5883L_MEASUREMENT_PERIOD);
+	}
 	
-    rv = i2cMasterTransmitTimeout(&I2CD1, HMC5883L_I2C_READ_ADDR, buf, 
-	                          1, buf_data, 6, 100);
-    
-	if  (rv == RDY_OK)
-	    return TRUE;
-	else
-	    return FALSE;
+	i2c_readBytes(HMC5883L_I2CDRIVERPOINTER, HMC5883L_DEFAULT_ADDRESS, HMC5883L_RA_DATAX_H, 6, hmc5883l_buffer);
+	*x = (((int16_t)hmc5883l_buffer[0]) << 8) | hmc5883l_buffer[1];
+	*y = (((int16_t)hmc5883l_buffer[4]) << 8) | hmc5883l_buffer[5];
+	*z = (((int16_t)hmc5883l_buffer[2]) << 8) | hmc5883l_buffer[3];
 }
 
-static bool_t hmc5883l_init(uint8_t *buf, int8_t *buf_data)
-{
-    bool_t success;
-  
-    /* Configure Reg A - Highest Data Rate- 75 Hz */
-    buf[0] = 0x00;
-    buf[1] = 0x18;
-    success = hmc5883l_transmit(buf) ; 
-								  
-    /* Configure Mode Register: High Speed, Continuous Measurement */
-    buf[0] = 0x02;
-    buf[1] = 0x00;
-    success &= hmc5883l_transmit(buf) ;
-	
-    /* Wait for 20 ms whilst measurements are taken, then read them */
-    chThdSleepMilliseconds(20) ;
-    
-    success &= hmc5883l_receive(buf, buf_data) ;
+bool_t hmc5883l_calibrate(int8_t testGain) {
 
-    return success;
-  
+	// Keep the current status ...
+	uint8_t previousGain = hmc5883l_getGain();
+
+	// Set the gain
+	if (testGain < 0) {
+		testGain = hmc5883l_gain;
+	}
+	hmc5883l_setGain(testGain);
+
+	// To check the HMC5883L for proper operation, a self test
+	// feature in incorporated in which the sensor offset straps
+	// are excited to create a nominal field strength (bias field)
+	// to be measured. To implement self test, the least significant
+	// bits (MS1 and MS0) of configuration register A are changed
+	// from 00 to 01 (positive bias) or 10 (negetive bias)
+	hmc5883l_setMeasurementBias(HMC5883L_BIAS_POSITIVE);
+
+	// Then, by placing the mode register into single-measurement mode ...
+	hmc5883l_setMode(HMC5883L_MODE_SINGLE);
+
+	// Two data acquisition cycles will be made on each magnetic vector.
+	// The first acquisition will be a set pulse followed shortly by
+	// measurement data of the external field. The second acquisition
+	// will have the offset strap excited (about 10 mA) in the positive
+	// bias mode for X, Y, and Z axes to create about a ±1.1 gauss self
+	// test field plus the external field.
+	// The first acquisition values will be subtracted from the
+	// second acquisition, and the net measurement will be placed into
+	// the data output registers.
+	int16_t x, y, z;
+	hmc5883l_getRawHeading(&x, &y, &z);
+
+	// In the event the ADC reading overflows or underflows for the
+	// given channel, or if there is a math overflow during the bias
+	// measurement, this data register will contain the value -4096.
+	// This register value will clear when after the next valid
+	// measurement is made.
+	if (min(x, min(y, z)) == -4096) {
+		hmc5883l_scaleFactors[testGain][0] = 1.0f;
+		hmc5883l_scaleFactors[testGain][1] = 1.0f;
+		hmc5883l_scaleFactors[testGain][2] = 1.0f;
+		return 0;
+	}
+	hmc5883l_getRawHeading(&x, &y, &z);
+
+	if (min(x, min(y, z)) == -4096) {
+		hmc5883l_scaleFactors[testGain][0] = 1.0f;
+		hmc5883l_scaleFactors[testGain][1] = 1.0f;
+		hmc5883l_scaleFactors[testGain][2] = 1.0f;
+		return 0;
+	}
+
+	// Since placing device in positive bias mode
+	// (or alternatively negative bias mode) applies
+	// a known artificial field on all three axes,
+	// the resulting ADC measurements in data output
+	// registers can be used to scale the sensors.
+	float xExpectedSelfTestValue =
+		HMC5883L_SELF_TEST_X_AXIS_ABSOLUTE_GAUSS *
+		HMC5883L_LSB_PER_GAUS[testGain];
+	float yExpectedSelfTestValue =
+		HMC5883L_SELF_TEST_Y_AXIS_ABSOLUTE_GAUSS *
+		HMC5883L_LSB_PER_GAUS[testGain];
+	float zExpectedSelfTestValue =
+		HMC5883L_SELF_TEST_Z_AXIS_ABSOLUTE_GAUSS *
+		HMC5883L_LSB_PER_GAUS[testGain];
+
+	hmc5883l_scaleFactors[testGain][0] = xExpectedSelfTestValue / x;
+	hmc5883l_scaleFactors[testGain][1] = yExpectedSelfTestValue / y;
+	hmc5883l_scaleFactors[testGain][2] = zExpectedSelfTestValue / z;
+
+	hmc5883l_setGain(previousGain);
+	hmc5883l_setMeasurementBias(HMC5883L_BIAS_NORMAL);
+
+	return 1;
 }
 
-/* 
- * buf_data contains 3 pairs of 8 bit entries.
- * Each pair corresponds to field strength along X, Y, and Z axes.
- * Function generates three 16 bit readings and converts them into
- * floats corresponding to field strength along each axis.
- * Multiplication by constant necessary to account for the 
- * conversion factor from counts measured into Tesla.
- */
-static void hmc5883l_field_convert(int8_t *buf_data, float *field)
-{
-    int16_t temp ;
-    int i;
-    
-    for (i =0; i<6 i+=2)
-    {
-    	int j = i/2 ;
-    	temp = (int16_t(buf_data[i]) << 8) | (uint16_t(buf_data[i+1])) ;
-    	field [j] = (float (temp)) * counts_to_Tesla;
-    }
-    
-}
+
 
 /* 
  * Interrupt handler- wake up when DRDY deasserted 
  * Relevant pin needs defining in main/config
  */
-void hmc5883l_wakeup(EXTDriver *extp, expchannel_t channel)
-{
+void hmc5883l_wakeup(EXTDriver *extp, expchannel_t channel) {
     (void)extp;
     (void)channel;
     chSysLockFromIsr();
@@ -122,61 +334,30 @@ void hmc5883l_wakeup(EXTDriver *extp, expchannel_t channel)
     chSysUnlockFromIsr();
 }
 
-msg_t hmc5883l_thread(void *arg)
-{
-    (void)arg;
-    const int bufsize_1 = 2;
-    const int bufsize_2 = 6;
-    
-    uint8_t buf[bufsize_1];
-    int8_t buf_data[bufsize_2];
-    float field[3] ;
-	
+msg_t hmc5883l_thread(void *arg) {
     chRegSetThreadName("HMC5883L");
-	
-/* 
- * Reset Magno so it's in a known state 
- * Uncomment afer pin allocation completed
- */
 
-    /* 
-     * palClearPad(GPIOB, GPIOB_GPS_RESET); 
-     * chThdSleepMilliseconds(100);
-     * palSetPad(GPIOB, GPIOB_GPS_RESET); 
-     * chThdSleepMilliseconds(500);
-     */
+	i2cStart(HMC5883L_I2CDRIVERPOINTER, &i2cfg);
 
-    i2cStart(&I2CD1, &i2cconfig);
+	hmc5883l_init();
 
-    if(!hmc5883l_init(buf, buf_data) 
-    {
-        while(1) chThdSleepMilliseconds(5);
-    }
-    
-	i2cStart(&I2CD1, &i2cconfig);
-	
-	while(TRUE)
+	if (hmc5883l_testConnection() != 1)
+		chDbgPanic("HMC5883L not responding!");
+
+
+	hmc5883l_calibrate(HMC5883L_GAIN_1090);
+
+
+	while(true)
 	{   
-		if (hmc5883l_receive(buf, buf_data))
-		{
-		    hmc5883l_field_convert(buf_data, field);
-		    microsd_log_s16(CHAN_IMU_MAGNO /*define*/, 
-			            field[0], field[1], field[2], 0);
-		    /*define this state estimation function */
-                    state_estimation_new_magno(field[0], 
-			                       field[1], field[2]);
-		}
-		
-		else
-		    chThdSleepMilliseconds(20);
-		
+		//TODO Read Data and do stuff with it
 		
 		/* Sleep until DRDY */
 		chSysLock();
 		tpHMC5883L = chThdSelf();
-		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+		chSchGoSleepS(THD_STATE_SUSPENDED);
 		chSysUnlock();
 	}
 	
-    return (msg_t)NULL;
+    return 0;
 }
