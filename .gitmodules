@@ -1,3 +1,19 @@
+[submodule "software/Avionics/ThirdParty/Frontier.Engine"]
+	path = software/Avionics/ThirdParty/Frontier.Engine
+	url = https://github.com/Tustvold/Frontier.Engine
+[submodule "software/Avionics/ThirdParty/glm"]
+	path = software/Avionics/ThirdParty/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "software/Avionics/ThirdParty/glfw"]
+	path = software/Avionics/ThirdParty/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "software/Avionics/ThirdParty/freetype-gl"]
+	path = software/Avionics/ThirdParty/freetype-gl
+	url = https://github.com/rougier/freetype-gl
+[submodule "software/Avionics/ThirdParty/freetype2"]
+	path = software/Avionics/ThirdParty/freetype2
+	url = git://git.savannah.nongnu.org/freetype/freetype2.git
 [submodule "ChibiOS-RT"]
 	path = ChibiOS-RT
-	url = https://github.com/ChibiOS/ChibiOS-RT.git
+	url = https://github.com/ChibiOS/ChibiOS.git
+	branch = stable_2.6.x

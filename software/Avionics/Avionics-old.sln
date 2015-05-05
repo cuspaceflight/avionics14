@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Avionics", "Avionics\Avionics.vcxproj", "{5D684E1E-7AA6-4487-9790-A2CA41AC576B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Avionics GUI", "Avionics GUI\Avionics GUI.vcxproj", "{E7275401-D3C2-44C7-A6C1-E347565D43FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D684E1E-7AA6-4487-9790-A2CA41AC576B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D684E1E-7AA6-4487-9790-A2CA41AC576B}.Debug|Win32.Build.0 = Debug|Win32
+		{5D684E1E-7AA6-4487-9790-A2CA41AC576B}.Release|Win32.ActiveCfg = Release|Win32
+		{5D684E1E-7AA6-4487-9790-A2CA41AC576B}.Release|Win32.Build.0 = Release|Win32
+		{E7275401-D3C2-44C7-A6C1-E347565D43FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7275401-D3C2-44C7-A6C1-E347565D43FF}.Debug|Win32.Build.0 = Debug|Win32
+		{E7275401-D3C2-44C7-A6C1-E347565D43FF}.Release|Win32.ActiveCfg = Release|Win32
+		{E7275401-D3C2-44C7-A6C1-E347565D43FF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

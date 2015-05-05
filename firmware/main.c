@@ -1,5 +1,5 @@
 /*
- * M2FC
+ * Avionics14
  * 2014 Raphael Taylor-Davies, Cambridge University Spaceflight
  */
 
@@ -15,7 +15,7 @@ int main(void) {
     chSysInit();
     chRegSetThreadName("Main");
 
-    
+
 
     /* Let the main thread idle now. */
     chThdSetPriority(LOWPRIO);
