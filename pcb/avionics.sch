@@ -547,8 +547,6 @@ Text Notes 8450 3750 0    60   ~ 0
 RADIOS
 Text Notes 8450 6250 0    60   ~ 0
 INERTIAL MEASUREMENT UNIT
-Text Notes 4150 7650 0    60   ~ 0
-TO-DO\n======\n\n* Carefully check microcontroller pin allocations\n   x Peripherals\n   x UART directions\n   x Conflicts (DMA, other)\n   x Layout for routing\n* Check pin number vs function for all other ICs\n* Check schematic for other modules (GPS, radio, sensors, etc)\n  against module datasheet recommendation
 $Comp
 L GND #PWR011
 U 1 1 54DF5CE2
@@ -757,6 +755,7 @@ F 0 "X101" H 1600 4100 50  0000 C CNN
 F 1 "8M" H 1600 3800 50  0000 C CNN
 F 2 "avionics14:XTAL50x32" H 1600 3950 60  0001 C CNN
 F 3 "" H 1600 3950 60  0000 C CNN
+F 4 "2101329" H 1600 3950 60  0001 C CNN "Farnell"
 	1    1600 3950
 	0    1    1    0   
 $EndComp
