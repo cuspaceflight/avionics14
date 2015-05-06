@@ -1,0 +1,2352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/adam/Projects/avionics14/pcb/avionics.sch</source>
+    <date>Wed 06 May 2015 14:56:39 BST</date>
+    <tool>Eeschema 0.201502231246+5447~21~ubuntu14.04.1-product</tool>
+  </design>
+  <components>
+    <comp ref="IC101">
+      <value>STM32F405VGT</value>
+      <footprint>avionics14:LQFP100</footprint>
+      <fields>
+        <field name="Farnell">2393648</field>
+      </fields>
+      <libsource lib="stm32f405vgt" part="STM32F405VGT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D92A29</tstamp>
+    </comp>
+    <comp ref="P103">
+      <value>SWD</value>
+      <footprint>avionics14:FTSH-105-01-F-D-K</footprint>
+      <fields>
+        <field name="Farnell">Toby</field>
+      </fields>
+      <libsource lib="swd" part="SWD"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D92A54</tstamp>
+    </comp>
+    <comp ref="IC102">
+      <value>ADP3335</value>
+      <footprint>avionics14:MSOP8</footprint>
+      <fields>
+        <field name="Farnell">2067775</field>
+      </fields>
+      <libsource lib="adp3335" part="ADP3335"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D92A97</tstamp>
+    </comp>
+    <comp ref="C116">
+      <value>1n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">1759088</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D99379</tstamp>
+    </comp>
+    <comp ref="P101">
+      <value>CONN_01X02</value>
+      <footprint>avionics14:S02B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">1830747</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D9948C</tstamp>
+    </comp>
+    <comp ref="C115">
+      <value>2µ2</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211185</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D9976E</tstamp>
+    </comp>
+    <comp ref="C117">
+      <value>2µ2</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211185</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54D9978D</tstamp>
+    </comp>
+    <comp ref="P102">
+      <value>CONN_01X04</value>
+      <footprint>avionics14:S04B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">1830749</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X04"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DE8EC0</tstamp>
+    </comp>
+    <comp ref="C109">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFBE64</tstamp>
+    </comp>
+    <comp ref="C110">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCBEE</tstamp>
+    </comp>
+    <comp ref="C103">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCC91</tstamp>
+    </comp>
+    <comp ref="C102">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCCB7</tstamp>
+    </comp>
+    <comp ref="C101">
+      <value>10µ</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309028</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCD3C</tstamp>
+    </comp>
+    <comp ref="C112">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCE0A</tstamp>
+    </comp>
+    <comp ref="C114">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFD17C</tstamp>
+    </comp>
+    <comp ref="C113">
+      <value>2µ2</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211185</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54E07855</tstamp>
+    </comp>
+    <comp ref="C111">
+      <value>2µ2</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211185</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54E07FE7</tstamp>
+    </comp>
+    <comp ref="C108">
+      <value>10n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">1759102</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54E0AA09</tstamp>
+    </comp>
+    <comp ref="C104">
+      <value>1µ</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">1759408</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54E0B4F4</tstamp>
+    </comp>
+    <comp ref="X101">
+      <value>8M</value>
+      <footprint>avionics14:XTAL50x32</footprint>
+      <fields>
+        <field name="Farnell">2101329</field>
+      </fields>
+      <libsource lib="device" part="CRYSTAL"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DEB424</tstamp>
+    </comp>
+    <comp ref="C107">
+      <value>15p</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2464619</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DEBE65</tstamp>
+    </comp>
+    <comp ref="C106">
+      <value>15p</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2464619</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DEC0A2</tstamp>
+    </comp>
+    <comp ref="R101">
+      <value>100</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333587</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DEC0BC</tstamp>
+    </comp>
+    <comp ref="C105">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>54DFCC68</tstamp>
+    </comp>
+    <comp ref="U202">
+      <value>RFM69W</value>
+      <footprint>avionics14:rfm69w</footprint>
+      <fields>
+        <field name="Farnell">RS-793-1998</field>
+      </fields>
+      <libsource lib="rfm69w" part="RFM69W"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54B98639</tstamp>
+    </comp>
+    <comp ref="C203">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54B98CE3</tstamp>
+    </comp>
+    <comp ref="C204">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54B98CF5</tstamp>
+    </comp>
+    <comp ref="C201">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54B99D53</tstamp>
+    </comp>
+    <comp ref="P201">
+      <value>SMA</value>
+      <footprint>avionics14:SMA-142-0701-801</footprint>
+      <fields>
+        <field name="Farnell">1608592</field>
+      </fields>
+      <libsource lib="sma" part="SMA"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54E39226</tstamp>
+    </comp>
+    <comp ref="P202">
+      <value>SMA</value>
+      <footprint>avionics14:SMA-142-0701-801</footprint>
+      <fields>
+        <field name="Farnell">1608592</field>
+      </fields>
+      <libsource lib="sma" part="SMA"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54E39562</tstamp>
+    </comp>
+    <comp ref="IC201">
+      <value>MAX-7Q</value>
+      <footprint>avionics14:MAX-7Q</footprint>
+      <fields>
+        <field name="Farnell">HAB-MAX-M8Q</field>
+      </fields>
+      <libsource lib="max-7q" part="MAX-7Q"/>
+      <sheetpath names="/Radio/" tstamps="/545BA057/"/>
+      <tstamp>54E4ACC9</tstamp>
+    </comp>
+    <comp ref="C401">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>54764C46</tstamp>
+    </comp>
+    <comp ref="R401">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>54764CD8</tstamp>
+    </comp>
+    <comp ref="R402">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>54764CE7</tstamp>
+    </comp>
+    <comp ref="U401">
+      <value>MICROSD_HOLDER</value>
+      <footprint>avionics14:MEM2051</footprint>
+      <fields>
+        <field name="Farnell">2443092</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="uSD_holder" part="MICROSD_HOLDER"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>54766118</tstamp>
+    </comp>
+    <comp ref="R403">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>5478F42B</tstamp>
+    </comp>
+    <comp ref="R404">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/microSD/" tstamps="/545BA068/5476453E/"/>
+      <tstamp>5478F431</tstamp>
+    </comp>
+    <comp ref="Q502">
+      <value>FDN304P</value>
+      <fields>
+        <field name="Farnell">1467974</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="FDN304P" part="FDN304P"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5464E6EE</tstamp>
+    </comp>
+    <comp ref="Q501">
+      <value>IRF7910</value>
+      <footprint>avionics14:SO-8</footprint>
+      <fields>
+        <field name="Farnell">1013366</field>
+      </fields>
+      <libsource lib="irf7910" part="IRF7910"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5464E6F4</tstamp>
+    </comp>
+    <comp ref="R503">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5464E6FA</tstamp>
+    </comp>
+    <comp ref="R505">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5464E700</tstamp>
+    </comp>
+    <comp ref="R501">
+      <value>1k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309108</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5464E70F</tstamp>
+    </comp>
+    <comp ref="Q503">
+      <value>FDN304P</value>
+      <fields>
+        <field name="Farnell">1467974</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="FDN304P" part="FDN304P"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F216</tstamp>
+    </comp>
+    <comp ref="R504">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F222</tstamp>
+    </comp>
+    <comp ref="R506">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F228</tstamp>
+    </comp>
+    <comp ref="R502">
+      <value>1k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309108</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F239</tstamp>
+    </comp>
+    <comp ref="Q506">
+      <value>FDN304P</value>
+      <fields>
+        <field name="Farnell">1467974</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="FDN304P" part="FDN304P"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F28F</tstamp>
+    </comp>
+    <comp ref="Q504">
+      <value>IRF7910</value>
+      <footprint>avionics14:SO-8</footprint>
+      <fields>
+        <field name="Farnell">1013366</field>
+      </fields>
+      <libsource lib="irf7910" part="IRF7910"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F295</tstamp>
+    </comp>
+    <comp ref="R514">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F29B</tstamp>
+    </comp>
+    <comp ref="R516">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F2A1</tstamp>
+    </comp>
+    <comp ref="R512">
+      <value>1k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309108</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F2B2</tstamp>
+    </comp>
+    <comp ref="Q505">
+      <value>FDN304P</value>
+      <fields>
+        <field name="Farnell">1467974</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="FDN304P" part="FDN304P"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F2DE</tstamp>
+    </comp>
+    <comp ref="R513">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F2EA</tstamp>
+    </comp>
+    <comp ref="R515">
+      <value>100k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309107</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F2F0</tstamp>
+    </comp>
+    <comp ref="R511">
+      <value>1k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309108</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5475F301</tstamp>
+    </comp>
+    <comp ref="D503">
+      <value>CGA0402MLC-12G</value>
+      <footprint>avionics14:R0402</footprint>
+      <fields>
+        <field name="Farnell">2368169</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="tvsd" part="TVSD"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478E408</tstamp>
+    </comp>
+    <comp ref="D504">
+      <value>CGA0402MLC-12G</value>
+      <footprint>avionics14:R0402</footprint>
+      <fields>
+        <field name="Farnell">2368169</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="tvsd" part="TVSD"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478E43A</tstamp>
+    </comp>
+    <comp ref="D502">
+      <value>CGA0402MLC-12G</value>
+      <footprint>avionics14:R0402</footprint>
+      <fields>
+        <field name="Farnell">2368169</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="tvsd" part="TVSD"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478E44A</tstamp>
+    </comp>
+    <comp ref="D501">
+      <value>CGA0402MLC-12G</value>
+      <footprint>avionics14:R0402</footprint>
+      <fields>
+        <field name="Farnell">2368169</field>
+        <field name="Fieldname">Value</field>
+      </fields>
+      <libsource lib="tvsd" part="TVSD"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478E450</tstamp>
+    </comp>
+    <comp ref="R507">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478E9AE</tstamp>
+    </comp>
+    <comp ref="R509">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478EC5D</tstamp>
+    </comp>
+    <comp ref="R517">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478ED11</tstamp>
+    </comp>
+    <comp ref="R519">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478EF64</tstamp>
+    </comp>
+    <comp ref="R508">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478EFBF</tstamp>
+    </comp>
+    <comp ref="R510">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478F17B</tstamp>
+    </comp>
+    <comp ref="R518">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478F1D1</tstamp>
+    </comp>
+    <comp ref="R520">
+      <value>51k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333565</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>5478F39C</tstamp>
+    </comp>
+    <comp ref="P503">
+      <value>CONN_01X02</value>
+      <footprint>avionics14:S02B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">RS 512-8462</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>54D92414</tstamp>
+    </comp>
+    <comp ref="P504">
+      <value>CONN_01X02</value>
+      <footprint>avionics14:S02B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">RS 512-8462</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>54D924F7</tstamp>
+    </comp>
+    <comp ref="P502">
+      <value>CONN_01X02</value>
+      <footprint>avionics14:S02B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">RS 512-8462</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>54D92735</tstamp>
+    </comp>
+    <comp ref="P501">
+      <value>CONN_01X02</value>
+      <footprint>avionics14:S02B-PASK-2</footprint>
+      <fields>
+        <field name="Farnell">RS 512-8462</field>
+      </fields>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/Datalogging &amp; Pyros/pyro chn/" tstamps="/545BA068/5464CBD3/"/>
+      <tstamp>54D92A16</tstamp>
+    </comp>
+    <comp ref="D601">
+      <value>LED_GREEN</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2145365</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54793064</tstamp>
+    </comp>
+    <comp ref="D602">
+      <value>LED_RED</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2290329</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54793073</tstamp>
+    </comp>
+    <comp ref="R601">
+      <value>130</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2141288</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>5479308C</tstamp>
+    </comp>
+    <comp ref="R602">
+      <value>150</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333549</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>547930C3</tstamp>
+    </comp>
+    <comp ref="D603">
+      <value>LED_GREEN</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2145365</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FC4</tstamp>
+    </comp>
+    <comp ref="D604">
+      <value>LED_RED</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2290329</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FCA</tstamp>
+    </comp>
+    <comp ref="R603">
+      <value>130</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2141288</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FD0</tstamp>
+    </comp>
+    <comp ref="R604">
+      <value>150</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333549</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FD6</tstamp>
+    </comp>
+    <comp ref="D605">
+      <value>LED_GREEN</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2145365</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FEA</tstamp>
+    </comp>
+    <comp ref="D606">
+      <value>LED_RED</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2290329</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FF0</tstamp>
+    </comp>
+    <comp ref="R605">
+      <value>130</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2141288</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FF6</tstamp>
+    </comp>
+    <comp ref="R606">
+      <value>150</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2333549</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54791FFC</tstamp>
+    </comp>
+    <comp ref="ABI-042-RC601">
+      <value>BUZZER</value>
+      <footprint>avionics14:ABI-042-RC</footprint>
+      <fields>
+        <field name="Farnell">1827949</field>
+      </fields>
+      <libsource lib="buzzer" part="BUZZER"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>54C2A7B7</tstamp>
+    </comp>
+    <comp ref="R608">
+      <value>130</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2141288</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>55018AF0</tstamp>
+    </comp>
+    <comp ref="D607">
+      <value>LED_GREEN</value>
+      <footprint>avionics14:0603_LED</footprint>
+      <fields>
+        <field name="Farnell">2145365</field>
+      </fields>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>554A2E67</tstamp>
+    </comp>
+    <comp ref="R607">
+      <value>130</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2141288</field>
+      </fields>
+      <libsource lib="resistor" part="RESISTOR"/>
+      <sheetpath names="/Datalogging &amp; Pyros/Indicators/" tstamps="/545BA068/5478FE09/"/>
+      <tstamp>554A2EC3</tstamp>
+    </comp>
+    <comp ref="IC701">
+      <value>ADXL345</value>
+      <footprint>avionics14:ADXL3x5</footprint>
+      <fields>
+        <field name="Farnell">1853935</field>
+      </fields>
+      <libsource lib="adxl345" part="ADXL345"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D92AD2</tstamp>
+    </comp>
+    <comp ref="IC702">
+      <value>L3G4200D</value>
+      <footprint>avionics14:L3G4200D</footprint>
+      <fields>
+        <field name="Farnell">1872924</field>
+      </fields>
+      <libsource lib="l3g4200d" part="L3G4200D"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D92AF7</tstamp>
+    </comp>
+    <comp ref="IC704">
+      <value>HMC5883L</value>
+      <footprint>avionics14:HMC5883L</footprint>
+      <fields>
+        <field name="Farnell">1971743</field>
+      </fields>
+      <libsource lib="hmc5883l" part="HMC5883L"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D92B20</tstamp>
+    </comp>
+    <comp ref="IC703">
+      <value>MS5611-01BA03</value>
+      <footprint>avionics14:MS5611-01BA</footprint>
+      <fields>
+        <field name="Farnell">2362662</field>
+      </fields>
+      <libsource lib="ms5611-01ba03" part="MS5611-01BA03"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D92B5D</tstamp>
+    </comp>
+    <comp ref="C701">
+      <value>10µ</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309028</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D93665</tstamp>
+    </comp>
+    <comp ref="C703">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D936E2</tstamp>
+    </comp>
+    <comp ref="C705">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D93700</tstamp>
+    </comp>
+    <comp ref="R703">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D93C54</tstamp>
+    </comp>
+    <comp ref="R701">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D93FB1</tstamp>
+    </comp>
+    <comp ref="R702">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D940C1</tstamp>
+    </comp>
+    <comp ref="C706">
+      <value>10n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">1759102</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D942BC</tstamp>
+    </comp>
+    <comp ref="C707">
+      <value>470n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211183</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D9434E</tstamp>
+    </comp>
+    <comp ref="R704">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D943F6</tstamp>
+    </comp>
+    <comp ref="C708">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D94CD2</tstamp>
+    </comp>
+    <comp ref="C702">
+      <value>10µ</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2309028</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D94D0F</tstamp>
+    </comp>
+    <comp ref="C704">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D94E60</tstamp>
+    </comp>
+    <comp ref="R706">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D9580B</tstamp>
+    </comp>
+    <comp ref="C709">
+      <value>100n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">9406140</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D95ADC</tstamp>
+    </comp>
+    <comp ref="C711">
+      <value>220n</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2346906</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D961C1</tstamp>
+    </comp>
+    <comp ref="C710">
+      <value>4µ7</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2211173</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D963CC</tstamp>
+    </comp>
+    <comp ref="R705">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D96A42</tstamp>
+    </comp>
+    <comp ref="R707">
+      <value>10k</value>
+      <footprint>avionics14:0603</footprint>
+      <fields>
+        <field name="Farnell">2303192</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/Inertial Measurement/" tstamps="/545BA07E/"/>
+      <tstamp>54D96A48</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="FDN304P" part="FDN304P">
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">FDN304P</field>
+      </fields>
+      <pins>
+        <pin num="1" name="G" type="passive"/>
+        <pin num="2" name="S" type="passive"/>
+        <pin num="3" name="D" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="C">
+      <description>Condensateur non polarise</description>
+      <footprints>
+        <fp>SM*</fp>
+        <fp>C?</fp>
+        <fp>C1-1</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="CRYSTAL">
+      <fields>
+        <field name="Reference">X</field>
+        <field name="Value">CRYSTAL</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="LED">
+      <footprints>
+        <fp>LED-3MM</fp>
+        <fp>LED-5MM</fp>
+        <fp>LED-10MM</fp>
+        <fp>LED-0603</fp>
+        <fp>LED-0805</fp>
+        <fp>LED-1206</fp>
+        <fp>LEDV</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A" type="passive"/>
+        <pin num="2" name="K" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistance</description>
+      <footprints>
+        <fp>R?</fp>
+        <fp>SM0603</fp>
+        <fp>SM0805</fp>
+        <fp>R?-*</fp>
+        <fp>SM1206</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_01X02">
+      <footprints>
+        <fp>Pin_Header_Straight_1X02</fp>
+        <fp>Pin_Header_Angled_1X02</fp>
+        <fp>Socket_Strip_Straight_1X02</fp>
+        <fp>Socket_Strip_Angled_1X02</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X02</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_01X04">
+      <footprints>
+        <fp>Pin_Header_Straight_1X04</fp>
+        <fp>Pin_Header_Angled_1X04</fp>
+        <fp>Socket_Strip_Straight_1X04</fp>
+        <fp>Socket_Strip_Angled_1X04</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X04</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+        <pin num="3" name="P3" type="passive"/>
+        <pin num="4" name="P4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="resistor" part="RESISTOR">
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">RESISTOR</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="max-7q" part="MAX-7Q">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">MAX-7Q</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="TX" type="output"/>
+        <pin num="3" name="RX" type="input"/>
+        <pin num="4" name="TIMEPULSE" type="output"/>
+        <pin num="5" name="EXTINT" type="input"/>
+        <pin num="6" name="V_BCKP" type="power_in"/>
+        <pin num="7" name="VCC_IO" type="power_in"/>
+        <pin num="8" name="VCC" type="power_in"/>
+        <pin num="9" name="RESET_N" type="input"/>
+        <pin num="10" name="GND" type="power_in"/>
+        <pin num="11" name="RF_IN" type="input"/>
+        <pin num="12" name="GND" type="power_in"/>
+        <pin num="13" name="ANT_ON" type="output"/>
+        <pin num="14" name="VCC_RF" type="power_in"/>
+        <pin num="15" name="NC" type="NotConnected"/>
+        <pin num="16" name="SDA" type="BiDi"/>
+        <pin num="17" name="SCL" type="BiDi"/>
+        <pin num="18" name="NC" type="NotConnected"/>
+      </pins>
+    </libpart>
+    <libpart lib="uSD_holder" part="MICROSD_HOLDER">
+      <fields>
+        <field name="Value">MICROSD_HOLDER</field>
+      </fields>
+      <pins>
+        <pin num="1" name="DAT2" type="BiDi"/>
+        <pin num="2" name="CD/DAT3" type="BiDi"/>
+        <pin num="3" name="CMD" type="BiDi"/>
+        <pin num="4" name="VDD" type="power_in"/>
+        <pin num="5" name="CLK" type="input"/>
+        <pin num="6" name="VSS" type="passive"/>
+        <pin num="7" name="DAT0" type="BiDi"/>
+        <pin num="8" name="DAT1" type="BiDi"/>
+        <pin num="9" name="CD" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="tvsd" part="TVSD">
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">TVSD</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="irf7910" part="IRF7910">
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">IRF7910</field>
+      </fields>
+      <pins>
+        <pin num="1" name="S" type="passive"/>
+        <pin num="2" name="G" type="passive"/>
+        <pin num="3" name="S" type="passive"/>
+        <pin num="4" name="G" type="passive"/>
+        <pin num="5" name="D" type="passive"/>
+        <pin num="6" name="~" type="passive"/>
+        <pin num="7" name="D" type="passive"/>
+        <pin num="8" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="buzzer" part="BUZZER">
+      <fields>
+        <field name="Value">BUZZER</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="sma" part="SMA">
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">SMA</field>
+      </fields>
+      <pins>
+        <pin num="1" name="RF" type="BiDi"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="GND" type="power_in"/>
+        <pin num="5" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="swd" part="SWD">
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">SWD</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VTref" type="power_in"/>
+        <pin num="2" name="SWDIO/TMS" type="BiDi"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="SWDCLK/TCK" type="BiDi"/>
+        <pin num="5" name="GND" type="power_in"/>
+        <pin num="6" name="SWO/TDO" type="BiDi"/>
+        <pin num="7" name="KEY" type="NotConnected"/>
+        <pin num="8" name="TDI" type="BiDi"/>
+        <pin num="9" name="GND" type="power_in"/>
+        <pin num="10" name="nRESET" type="output"/>
+      </pins>
+    </libpart>
+    <libpart lib="stm32f405vgt" part="STM32F405VGT">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">STM32F405VGT</field>
+      </fields>
+      <pins>
+        <pin num="1" name="PE2" type="BiDi"/>
+        <pin num="2" name="PE3" type="BiDi"/>
+        <pin num="3" name="PE4" type="BiDi"/>
+        <pin num="4" name="PE5" type="BiDi"/>
+        <pin num="5" name="PE6" type="BiDi"/>
+        <pin num="6" name="VBAT" type="power_in"/>
+        <pin num="7" name="PC13" type="BiDi"/>
+        <pin num="8" name="PC14" type="BiDi"/>
+        <pin num="9" name="PC15" type="BiDi"/>
+        <pin num="10" name="VSS" type="power_in"/>
+        <pin num="11" name="VDD" type="power_in"/>
+        <pin num="12" name="PH0_OSCIN" type="input"/>
+        <pin num="13" name="PH1_OSCOUT" type="output"/>
+        <pin num="14" name="NRST" type="input"/>
+        <pin num="15" name="PC0" type="BiDi"/>
+        <pin num="16" name="PC1" type="BiDi"/>
+        <pin num="17" name="PC2" type="BiDi"/>
+        <pin num="18" name="PC3" type="BiDi"/>
+        <pin num="19" name="VDD" type="power_in"/>
+        <pin num="20" name="VSSA" type="power_in"/>
+        <pin num="21" name="VREF+" type="input"/>
+        <pin num="22" name="VDDA" type="power_in"/>
+        <pin num="23" name="PA0" type="BiDi"/>
+        <pin num="24" name="PA1" type="BiDi"/>
+        <pin num="25" name="PA2" type="BiDi"/>
+        <pin num="26" name="PA3" type="BiDi"/>
+        <pin num="27" name="VSS" type="power_in"/>
+        <pin num="28" name="VDD" type="power_in"/>
+        <pin num="29" name="PA4" type="BiDi"/>
+        <pin num="30" name="PA5" type="BiDi"/>
+        <pin num="31" name="PA6" type="BiDi"/>
+        <pin num="32" name="PA7" type="BiDi"/>
+        <pin num="33" name="PC4" type="BiDi"/>
+        <pin num="34" name="PC5" type="BiDi"/>
+        <pin num="35" name="PB0" type="BiDi"/>
+        <pin num="36" name="PB1" type="BiDi"/>
+        <pin num="37" name="PB2" type="BiDi"/>
+        <pin num="38" name="PE7" type="BiDi"/>
+        <pin num="39" name="PE8" type="BiDi"/>
+        <pin num="40" name="PE9" type="BiDi"/>
+        <pin num="41" name="PE10" type="BiDi"/>
+        <pin num="42" name="PE11" type="BiDi"/>
+        <pin num="43" name="PE12" type="BiDi"/>
+        <pin num="44" name="PE13" type="BiDi"/>
+        <pin num="45" name="PE14" type="BiDi"/>
+        <pin num="46" name="PE15" type="BiDi"/>
+        <pin num="47" name="PB10" type="BiDi"/>
+        <pin num="48" name="PB11" type="BiDi"/>
+        <pin num="49" name="VCAP1" type="passive"/>
+        <pin num="50" name="VDD" type="power_in"/>
+        <pin num="51" name="PB12" type="BiDi"/>
+        <pin num="52" name="PB13" type="BiDi"/>
+        <pin num="53" name="PB14" type="BiDi"/>
+        <pin num="54" name="PB15" type="BiDi"/>
+        <pin num="55" name="PD8" type="BiDi"/>
+        <pin num="56" name="PD9" type="BiDi"/>
+        <pin num="57" name="PD10" type="BiDi"/>
+        <pin num="58" name="PD11" type="BiDi"/>
+        <pin num="59" name="PD12" type="BiDi"/>
+        <pin num="60" name="PD13" type="BiDi"/>
+        <pin num="61" name="PD14" type="BiDi"/>
+        <pin num="62" name="PD15" type="BiDi"/>
+        <pin num="63" name="PC6" type="BiDi"/>
+        <pin num="64" name="PC7" type="BiDi"/>
+        <pin num="65" name="PC8" type="BiDi"/>
+        <pin num="66" name="PC9" type="BiDi"/>
+        <pin num="67" name="PA8" type="BiDi"/>
+        <pin num="68" name="PA9" type="BiDi"/>
+        <pin num="69" name="PA10" type="BiDi"/>
+        <pin num="70" name="PA11" type="BiDi"/>
+        <pin num="71" name="PA12" type="BiDi"/>
+        <pin num="72" name="PA13" type="BiDi"/>
+        <pin num="73" name="VCAP2" type="passive"/>
+        <pin num="74" name="VSS" type="power_in"/>
+        <pin num="75" name="VDD" type="power_in"/>
+        <pin num="76" name="PA14" type="BiDi"/>
+        <pin num="77" name="PA15" type="BiDi"/>
+        <pin num="78" name="PC10" type="BiDi"/>
+        <pin num="79" name="PC11" type="BiDi"/>
+        <pin num="80" name="PC12" type="BiDi"/>
+        <pin num="81" name="PD0" type="BiDi"/>
+        <pin num="82" name="PD1" type="BiDi"/>
+        <pin num="83" name="PD2" type="BiDi"/>
+        <pin num="84" name="PD3" type="BiDi"/>
+        <pin num="85" name="PD4" type="BiDi"/>
+        <pin num="86" name="PD5" type="BiDi"/>
+        <pin num="87" name="PD6" type="BiDi"/>
+        <pin num="88" name="PD7" type="BiDi"/>
+        <pin num="89" name="PB3" type="BiDi"/>
+        <pin num="90" name="PB4" type="BiDi"/>
+        <pin num="91" name="PB5" type="BiDi"/>
+        <pin num="92" name="PB6" type="BiDi"/>
+        <pin num="93" name="PB7" type="BiDi"/>
+        <pin num="94" name="BOOT0" type="input"/>
+        <pin num="95" name="PB8" type="BiDi"/>
+        <pin num="96" name="PB9" type="BiDi"/>
+        <pin num="97" name="PE0" type="BiDi"/>
+        <pin num="98" name="PE1" type="BiDi"/>
+        <pin num="99" name="VSS" type="power_in"/>
+        <pin num="100" name="VDD" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="ms5611-01ba03" part="MS5611-01BA03">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">MS5611-01BA03</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VDD" type="power_in"/>
+        <pin num="2" name="PS" type="input"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="CSB" type="input"/>
+        <pin num="5" name="CSB" type="input"/>
+        <pin num="6" name="SDO" type="output"/>
+        <pin num="7" name="SDI" type="input"/>
+        <pin num="8" name="SCLK" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="l3g4200d" part="L3G4200D">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">L3G4200D</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VDD_IO" type="power_in"/>
+        <pin num="2" name="SCL" type="input"/>
+        <pin num="3" name="SDA" type="input"/>
+        <pin num="4" name="I2C_LSB" type="input"/>
+        <pin num="5" name="I2C_EN" type="input"/>
+        <pin num="6" name="DRDY" type="output"/>
+        <pin num="7" name="INT1" type="output"/>
+        <pin num="8" name="GND" type="power_in"/>
+        <pin num="9" name="GND" type="power_in"/>
+        <pin num="10" name="GND" type="power_in"/>
+        <pin num="11" name="GND" type="power_in"/>
+        <pin num="12" name="GND" type="power_in"/>
+        <pin num="13" name="GND" type="power_in"/>
+        <pin num="14" name="PLLFILT" type="input"/>
+        <pin num="15" name="VDD" type="power_in"/>
+        <pin num="16" name="VDD" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="adxl345" part="ADXL345">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">ADXL345</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VDD_IO" type="power_in"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="NC" type="NotConnected"/>
+        <pin num="4" name="GND" type="power_in"/>
+        <pin num="5" name="GND" type="power_in"/>
+        <pin num="6" name="Vs" type="power_in"/>
+        <pin num="7" name="CS" type="input"/>
+        <pin num="8" name="INT1" type="output"/>
+        <pin num="9" name="INT2" type="output"/>
+        <pin num="10" name="NC" type="NotConnected"/>
+        <pin num="11" name="NC" type="NotConnected"/>
+        <pin num="12" name="SDO" type="output"/>
+        <pin num="13" name="SDI" type="input"/>
+        <pin num="14" name="SCLK" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="hmc5883l" part="HMC5883L">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">HMC5883L</field>
+      </fields>
+      <pins>
+        <pin num="1" name="SCL" type="input"/>
+        <pin num="2" name="VDD" type="power_in"/>
+        <pin num="3" name="NC" type="NotConnected"/>
+        <pin num="4" name="VDD_IO" type="power_in"/>
+        <pin num="5" name="NC" type="NotConnected"/>
+        <pin num="6" name="NC" type="NotConnected"/>
+        <pin num="7" name="NC" type="NotConnected"/>
+        <pin num="8" name="SETP" type="input"/>
+        <pin num="9" name="GND" type="power_in"/>
+        <pin num="10" name="C1" type="passive"/>
+        <pin num="11" name="GND" type="power_in"/>
+        <pin num="12" name="SETC" type="output"/>
+        <pin num="13" name="VDD_IO" type="power_in"/>
+        <pin num="14" name="NC" type="NotConnected"/>
+        <pin num="15" name="DRDY" type="output"/>
+        <pin num="16" name="SDA" type="BiDi"/>
+      </pins>
+    </libpart>
+    <libpart lib="adp3335" part="ADP3335">
+      <fields>
+        <field name="Reference">IC</field>
+        <field name="Value">ADP3335</field>
+      </fields>
+      <pins>
+        <pin num="1" name="OUT" type="power_out"/>
+        <pin num="2" name="OUT" type="passive"/>
+        <pin num="3" name="OUT" type="passive"/>
+        <pin num="4" name="GND" type="power_in"/>
+        <pin num="5" name="NR" type="power_out"/>
+        <pin num="6" name="SD" type="input"/>
+        <pin num="7" name="IN" type="power_in"/>
+        <pin num="8" name="IN" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="rfm69w" part="RFM69W">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">RFM69W</field>
+      </fields>
+      <pins>
+        <pin num="1" name="RESET" type="BiDi"/>
+        <pin num="2" name="DIO0" type="BiDi"/>
+        <pin num="3" name="DIO1" type="BiDi"/>
+        <pin num="4" name="DIO2" type="BiDi"/>
+        <pin num="5" name="DIO3" type="BiDi"/>
+        <pin num="6" name="DIO4" type="BiDi"/>
+        <pin num="7" name="DIO5" type="BiDi"/>
+        <pin num="8" name="VIN" type="power_in"/>
+        <pin num="9" name="GND" type="power_in"/>
+        <pin num="10" name="ANA" type="BiDi"/>
+        <pin num="11" name="GND" type="power_in"/>
+        <pin num="12" name="SCK" type="input"/>
+        <pin num="13" name="MISO" type="output"/>
+        <pin num="14" name="MOSI" type="input"/>
+        <pin num="15" name="NSS" type="input"/>
+        <pin num="16" name="NC" type="input"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
+    <library logical="FDN304P">
+      <uri>/home/adam/Projects/avionics14/pcb/library/FDN304P.lib</uri>
+    </library>
+    <library logical="conn">
+      <uri>/usr/share/kicad/library/conn.lib</uri>
+    </library>
+    <library logical="resistor">
+      <uri>/home/adam/Projects/avionics14/pcb/library/resistor.lib</uri>
+    </library>
+    <library logical="max-7q">
+      <uri>/home/adam/Projects/avionics14/pcb/library/max-7q.lib</uri>
+    </library>
+    <library logical="uSD_holder">
+      <uri>/home/adam/Projects/avionics14/pcb/library/uSD_holder.lib</uri>
+    </library>
+    <library logical="tvsd">
+      <uri>/home/adam/Projects/avionics14/pcb/library/tvsd.lib</uri>
+    </library>
+    <library logical="buzzer">
+      <uri>/home/adam/Projects/avionics14/pcb/library/buzzer.lib</uri>
+    </library>
+    <library logical="irf7910">
+      <uri>/home/adam/Projects/avionics14/pcb/library/irf7910.lib</uri>
+    </library>
+    <library logical="sma">
+      <uri>/home/adam/Projects/avionics14/pcb/library/sma.lib</uri>
+    </library>
+    <library logical="swd">
+      <uri>/home/adam/Projects/avionics14/pcb/library/swd.lib</uri>
+    </library>
+    <library logical="stm32f405vgt">
+      <uri>/home/adam/Projects/avionics14/pcb/library/stm32f405vgt.lib</uri>
+    </library>
+    <library logical="ms5611-01ba03">
+      <uri>/home/adam/Projects/avionics14/pcb/library/ms5611-01ba03.lib</uri>
+    </library>
+    <library logical="l3g4200d">
+      <uri>/home/adam/Projects/avionics14/pcb/library/l3g4200d.lib</uri>
+    </library>
+    <library logical="hmc5883l">
+      <uri>/home/adam/Projects/avionics14/pcb/library/hmc5883l.lib</uri>
+    </library>
+    <library logical="adxl345">
+      <uri>/home/adam/Projects/avionics14/pcb/library/adxl345.lib</uri>
+    </library>
+    <library logical="adp3335">
+      <uri>/home/adam/Projects/avionics14/pcb/library/adp3335.lib</uri>
+    </library>
+    <library logical="rfm69w">
+      <uri>/home/adam/Projects/avionics14/pcb/library/rfm69w.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/SWDIO">
+      <node ref="P103" pin="2"/>
+      <node ref="IC101" pin="72"/>
+    </net>
+    <net code="2" name="/SWDCLK">
+      <node ref="P103" pin="4"/>
+      <node ref="IC101" pin="76"/>
+    </net>
+    <net code="3" name="/nReset">
+      <node ref="IC101" pin="14"/>
+      <node ref="P103" pin="10"/>
+    </net>
+    <net code="4" name="/Datalogging &amp; Pyros/µSD_DAT3">
+      <node ref="U401" pin="2"/>
+      <node ref="R404" pin="2"/>
+      <node ref="IC101" pin="79"/>
+    </net>
+    <net code="5" name="/Datalogging &amp; Pyros/µSD_CLK">
+      <node ref="U401" pin="5"/>
+      <node ref="IC101" pin="80"/>
+    </net>
+    <net code="6" name="/Datalogging &amp; Pyros/µSD_CMD">
+      <node ref="U401" pin="3"/>
+      <node ref="IC101" pin="83"/>
+    </net>
+    <net code="7" name="/Datalogging &amp; Pyros/µSD_CD">
+      <node ref="IC101" pin="82"/>
+      <node ref="U401" pin="9"/>
+    </net>
+    <net code="8" name="/Datalogging &amp; Pyros/~IMU_OK">
+      <node ref="IC101" pin="62"/>
+      <node ref="R604" pin="1"/>
+    </net>
+    <net code="9" name="/Datalogging &amp; Pyros/IMU_OK">
+      <node ref="IC101" pin="61"/>
+      <node ref="R603" pin="1"/>
+    </net>
+    <net code="10" name="/Datalogging &amp; Pyros/~RADIO_OK">
+      <node ref="IC101" pin="60"/>
+      <node ref="R606" pin="1"/>
+    </net>
+    <net code="11" name="/Datalogging &amp; Pyros/RADIO_OK">
+      <node ref="IC101" pin="59"/>
+      <node ref="R605" pin="1"/>
+    </net>
+    <net code="12" name="/Datalogging &amp; Pyros/~PY_OK">
+      <node ref="R602" pin="1"/>
+      <node ref="IC101" pin="58"/>
+    </net>
+    <net code="13" name="/Datalogging &amp; Pyros/PY_OK">
+      <node ref="IC101" pin="57"/>
+      <node ref="R601" pin="1"/>
+    </net>
+    <net code="14" name="/Datalogging &amp; Pyros/~PY4_CHK">
+      <node ref="IC101" pin="45"/>
+      <node ref="R520" pin="2"/>
+    </net>
+    <net code="15" name="GND">
+      <node ref="P103" pin="9"/>
+      <node ref="IC101" pin="27"/>
+      <node ref="C204" pin="2"/>
+      <node ref="C401" pin="2"/>
+      <node ref="IC101" pin="74"/>
+      <node ref="IC101" pin="94"/>
+      <node ref="U202" pin="16"/>
+      <node ref="C203" pin="2"/>
+      <node ref="P103" pin="3"/>
+      <node ref="IC101" pin="99"/>
+      <node ref="IC201" pin="1"/>
+      <node ref="P103" pin="5"/>
+      <node ref="U401" pin="6"/>
+      <node ref="C115" pin="2"/>
+      <node ref="C117" pin="2"/>
+      <node ref="P102" pin="4"/>
+      <node ref="R504" pin="1"/>
+      <node ref="Q501" pin="3"/>
+      <node ref="IC102" pin="4"/>
+      <node ref="D502" pin="2"/>
+      <node ref="D501" pin="2"/>
+      <node ref="C102" pin="2"/>
+      <node ref="C103" pin="2"/>
+      <node ref="C110" pin="2"/>
+      <node ref="C109" pin="2"/>
+      <node ref="IC101" pin="20"/>
+      <node ref="D504" pin="2"/>
+      <node ref="D503" pin="2"/>
+      <node ref="IC201" pin="12"/>
+      <node ref="P504" pin="2"/>
+      <node ref="P503" pin="2"/>
+      <node ref="P502" pin="2"/>
+      <node ref="IC201" pin="10"/>
+      <node ref="P501" pin="2"/>
+      <node ref="P202" pin="3"/>
+      <node ref="P202" pin="4"/>
+      <node ref="P202" pin="5"/>
+      <node ref="Q504" pin="1"/>
+      <node ref="IC101" pin="10"/>
+      <node ref="P101" pin="1"/>
+      <node ref="R503" pin="1"/>
+      <node ref="Q501" pin="1"/>
+      <node ref="R513" pin="1"/>
+      <node ref="R514" pin="1"/>
+      <node ref="Q504" pin="3"/>
+      <node ref="C104" pin="2"/>
+      <node ref="C108" pin="2"/>
+      <node ref="C706" pin="1"/>
+      <node ref="C111" pin="2"/>
+      <node ref="C113" pin="2"/>
+      <node ref="IC701" pin="5"/>
+      <node ref="IC701" pin="4"/>
+      <node ref="C114" pin="2"/>
+      <node ref="IC701" pin="2"/>
+      <node ref="C112" pin="2"/>
+      <node ref="R704" pin="2"/>
+      <node ref="C101" pin="2"/>
+      <node ref="C705" pin="2"/>
+      <node ref="IC703" pin="3"/>
+      <node ref="IC703" pin="2"/>
+      <node ref="IC704" pin="11"/>
+      <node ref="IC704" pin="9"/>
+      <node ref="IC702" pin="8"/>
+      <node ref="D602" pin="2"/>
+      <node ref="IC702" pin="12"/>
+      <node ref="IC702" pin="10"/>
+      <node ref="IC702" pin="9"/>
+      <node ref="C702" pin="2"/>
+      <node ref="C704" pin="2"/>
+      <node ref="D603" pin="2"/>
+      <node ref="C708" pin="2"/>
+      <node ref="D604" pin="2"/>
+      <node ref="C709" pin="2"/>
+      <node ref="IC702" pin="11"/>
+      <node ref="D607" pin="2"/>
+      <node ref="C710" pin="2"/>
+      <node ref="C106" pin="2"/>
+      <node ref="C107" pin="2"/>
+      <node ref="C701" pin="2"/>
+      <node ref="C703" pin="2"/>
+      <node ref="D606" pin="2"/>
+      <node ref="D605" pin="2"/>
+      <node ref="IC702" pin="13"/>
+      <node ref="D601" pin="2"/>
+      <node ref="C201" pin="2"/>
+      <node ref="ABI-042-RC601" pin="2"/>
+      <node ref="P201" pin="2"/>
+      <node ref="P201" pin="3"/>
+      <node ref="C105" pin="2"/>
+      <node ref="P201" pin="4"/>
+      <node ref="P202" pin="2"/>
+      <node ref="U202" pin="9"/>
+      <node ref="U202" pin="11"/>
+      <node ref="P201" pin="5"/>
+    </net>
+    <net code="16" name="Net-(C106-Pad1)">
+      <node ref="X101" pin="1"/>
+      <node ref="IC101" pin="12"/>
+      <node ref="C106" pin="1"/>
+    </net>
+    <net code="17" name="Net-(IC101-Pad77)">
+      <node ref="IC101" pin="77"/>
+    </net>
+    <net code="18" name="Net-(IC101-Pad35)">
+      <node ref="IC101" pin="35"/>
+    </net>
+    <net code="19" name="Net-(IC101-Pad36)">
+      <node ref="IC101" pin="36"/>
+    </net>
+    <net code="20" name="Net-(IC101-Pad37)">
+      <node ref="IC101" pin="37"/>
+    </net>
+    <net code="21" name="Net-(IC101-Pad92)">
+      <node ref="IC101" pin="92"/>
+    </net>
+    <net code="22" name="Net-(IC101-Pad93)">
+      <node ref="IC101" pin="93"/>
+    </net>
+    <net code="23" name="Net-(IC101-Pad5)">
+      <node ref="IC101" pin="5"/>
+    </net>
+    <net code="24" name="Net-(C111-Pad1)">
+      <node ref="IC101" pin="49"/>
+      <node ref="C111" pin="1"/>
+    </net>
+    <net code="25" name="Net-(IC101-Pad23)">
+      <node ref="IC101" pin="23"/>
+    </net>
+    <net code="26" name="Net-(IC101-Pad29)">
+      <node ref="IC101" pin="29"/>
+    </net>
+    <net code="27" name="Net-(IC101-Pad67)">
+      <node ref="IC101" pin="67"/>
+    </net>
+    <net code="28" name="Net-(P103-Pad6)">
+      <node ref="P103" pin="6"/>
+    </net>
+    <net code="29" name="Net-(IC101-Pad71)">
+      <node ref="IC101" pin="71"/>
+    </net>
+    <net code="30" name="Net-(IC101-Pad56)">
+      <node ref="IC101" pin="56"/>
+    </net>
+    <net code="31" name="Net-(IC101-Pad15)">
+      <node ref="IC101" pin="15"/>
+    </net>
+    <net code="32" name="Net-(IC101-Pad81)">
+      <node ref="IC101" pin="81"/>
+    </net>
+    <net code="33" name="Net-(IC101-Pad4)">
+      <node ref="IC101" pin="4"/>
+    </net>
+    <net code="34" name="Net-(IC101-Pad3)">
+      <node ref="IC101" pin="3"/>
+    </net>
+    <net code="35" name="Net-(IC101-Pad2)">
+      <node ref="IC101" pin="2"/>
+    </net>
+    <net code="36" name="Net-(IC101-Pad1)">
+      <node ref="IC101" pin="1"/>
+    </net>
+    <net code="37" name="Net-(IC101-Pad98)">
+      <node ref="IC101" pin="98"/>
+    </net>
+    <net code="38" name="Net-(IC101-Pad55)">
+      <node ref="IC101" pin="55"/>
+    </net>
+    <net code="39" name="Net-(IC101-Pad86)">
+      <node ref="IC101" pin="86"/>
+    </net>
+    <net code="40" name="Net-(IC101-Pad85)">
+      <node ref="IC101" pin="85"/>
+    </net>
+    <net code="41" name="Net-(IC101-Pad84)">
+      <node ref="IC101" pin="84"/>
+    </net>
+    <net code="42" name="/Datalogging &amp; Pyros/PY4_TRG">
+      <node ref="IC101" pin="44"/>
+      <node ref="R512" pin="1"/>
+    </net>
+    <net code="43" name="Net-(IC101-Pad9)">
+      <node ref="IC101" pin="9"/>
+    </net>
+    <net code="44" name="Net-(IC101-Pad8)">
+      <node ref="IC101" pin="8"/>
+    </net>
+    <net code="45" name="Net-(IC101-Pad7)">
+      <node ref="IC101" pin="7"/>
+    </net>
+    <net code="46" name="Net-(IC101-Pad64)">
+      <node ref="IC101" pin="64"/>
+    </net>
+    <net code="47" name="Net-(IC101-Pad63)">
+      <node ref="IC101" pin="63"/>
+    </net>
+    <net code="48" name="Net-(IC101-Pad18)">
+      <node ref="IC101" pin="18"/>
+    </net>
+    <net code="49" name="Net-(IC101-Pad17)">
+      <node ref="IC101" pin="17"/>
+    </net>
+    <net code="50" name="Net-(IC101-Pad16)">
+      <node ref="IC101" pin="16"/>
+    </net>
+    <net code="51" name="/Datalogging &amp; Pyros/~PY2_CHK">
+      <node ref="IC101" pin="41"/>
+      <node ref="R519" pin="2"/>
+    </net>
+    <net code="52" name="Net-(IC101-Pad13)">
+      <node ref="R101" pin="1"/>
+      <node ref="IC101" pin="13"/>
+    </net>
+    <net code="53" name="Net-(C107-Pad1)">
+      <node ref="C107" pin="1"/>
+      <node ref="R101" pin="2"/>
+      <node ref="X101" pin="2"/>
+    </net>
+    <net code="54" name="/Datalogging &amp; Pyros/BUZZER">
+      <node ref="R608" pin="2"/>
+      <node ref="IC101" pin="24"/>
+    </net>
+    <net code="55" name="Net-(C113-Pad1)">
+      <node ref="IC101" pin="73"/>
+      <node ref="C113" pin="1"/>
+    </net>
+    <net code="56" name="+3V3">
+      <node ref="C105" pin="1"/>
+      <node ref="C201" pin="1"/>
+      <node ref="C709" pin="1"/>
+      <node ref="R707" pin="2"/>
+      <node ref="C702" pin="1"/>
+      <node ref="IC702" pin="15"/>
+      <node ref="IC702" pin="16"/>
+      <node ref="IC704" pin="2"/>
+      <node ref="R705" pin="2"/>
+      <node ref="R703" pin="1"/>
+      <node ref="IC702" pin="4"/>
+      <node ref="IC702" pin="5"/>
+      <node ref="R607" pin="1"/>
+      <node ref="R706" pin="1"/>
+      <node ref="C704" pin="1"/>
+      <node ref="R702" pin="2"/>
+      <node ref="IC704" pin="4"/>
+      <node ref="R701" pin="2"/>
+      <node ref="IC702" pin="1"/>
+      <node ref="C104" pin="1"/>
+      <node ref="IC704" pin="13"/>
+      <node ref="C705" pin="1"/>
+      <node ref="C703" pin="1"/>
+      <node ref="C701" pin="1"/>
+      <node ref="IC701" pin="1"/>
+      <node ref="C708" pin="1"/>
+      <node ref="IC703" pin="1"/>
+      <node ref="C101" pin="1"/>
+      <node ref="C112" pin="1"/>
+      <node ref="C114" pin="1"/>
+      <node ref="IC701" pin="6"/>
+      <node ref="C108" pin="1"/>
+      <node ref="IC101" pin="28"/>
+      <node ref="IC201" pin="7"/>
+      <node ref="IC201" pin="8"/>
+      <node ref="P102" pin="1"/>
+      <node ref="C117" pin="1"/>
+      <node ref="IC201" pin="6"/>
+      <node ref="R403" pin="1"/>
+      <node ref="IC101" pin="19"/>
+      <node ref="IC101" pin="100"/>
+      <node ref="R404" pin="1"/>
+      <node ref="P103" pin="1"/>
+      <node ref="U401" pin="4"/>
+      <node ref="IC102" pin="3"/>
+      <node ref="C116" pin="1"/>
+      <node ref="IC101" pin="6"/>
+      <node ref="C102" pin="1"/>
+      <node ref="IC101" pin="22"/>
+      <node ref="IC101" pin="50"/>
+      <node ref="IC101" pin="21"/>
+      <node ref="IC101" pin="11"/>
+      <node ref="IC102" pin="2"/>
+      <node ref="C203" pin="1"/>
+      <node ref="C204" pin="1"/>
+      <node ref="R402" pin="1"/>
+      <node ref="U202" pin="8"/>
+      <node ref="IC102" pin="1"/>
+      <node ref="C103" pin="1"/>
+      <node ref="C401" pin="1"/>
+      <node ref="IC101" pin="75"/>
+      <node ref="C109" pin="1"/>
+      <node ref="R401" pin="1"/>
+      <node ref="C110" pin="1"/>
+    </net>
+    <net code="57" name="+BATT">
+      <node ref="IC102" pin="6"/>
+      <node ref="IC102" pin="7"/>
+      <node ref="IC102" pin="8"/>
+      <node ref="Q503" pin="2"/>
+      <node ref="R506" pin="2"/>
+      <node ref="C115" pin="1"/>
+      <node ref="R507" pin="2"/>
+      <node ref="R517" pin="2"/>
+      <node ref="Q502" pin="2"/>
+      <node ref="R518" pin="2"/>
+      <node ref="R508" pin="2"/>
+      <node ref="R515" pin="2"/>
+      <node ref="P101" pin="2"/>
+      <node ref="R505" pin="2"/>
+      <node ref="Q505" pin="2"/>
+      <node ref="Q506" pin="2"/>
+      <node ref="R516" pin="2"/>
+    </net>
+    <net code="58" name="Net-(C116-Pad2)">
+      <node ref="IC102" pin="5"/>
+      <node ref="C116" pin="2"/>
+    </net>
+    <net code="59" name="/Inertial Measurement/ACCEL_INT">
+      <node ref="IC101" pin="34"/>
+      <node ref="IC701" pin="8"/>
+    </net>
+    <net code="60" name="/Radio/RADIO_CS">
+      <node ref="U202" pin="15"/>
+      <node ref="IC101" pin="88"/>
+    </net>
+    <net code="61" name="/Radio/RADIO_IRQ">
+      <node ref="U202" pin="2"/>
+      <node ref="IC101" pin="87"/>
+    </net>
+    <net code="62" name="/Radio/GPS_nRST">
+      <node ref="IC101" pin="70"/>
+      <node ref="IC201" pin="9"/>
+    </net>
+    <net code="63" name="/Radio/RX">
+      <node ref="IC201" pin="3"/>
+      <node ref="IC101" pin="68"/>
+    </net>
+    <net code="64" name="/Radio/TX">
+      <node ref="IC201" pin="2"/>
+      <node ref="IC101" pin="69"/>
+    </net>
+    <net code="65" name="/Inertial Measurement/ACCEL_SCK">
+      <node ref="IC101" pin="30"/>
+      <node ref="IC701" pin="14"/>
+    </net>
+    <net code="66" name="/Inertial Measurement/ACCEL_MISO">
+      <node ref="IC101" pin="31"/>
+      <node ref="IC701" pin="12"/>
+    </net>
+    <net code="67" name="/Inertial Measurement/ACCEL_MOSI">
+      <node ref="IC101" pin="32"/>
+      <node ref="IC701" pin="13"/>
+    </net>
+    <net code="68" name="/Inertial Measurement/ACCEL_CS">
+      <node ref="IC701" pin="7"/>
+      <node ref="R703" pin="2"/>
+      <node ref="IC101" pin="33"/>
+    </net>
+    <net code="69" name="/EXT_RX">
+      <node ref="IC101" pin="26"/>
+      <node ref="P102" pin="2"/>
+    </net>
+    <net code="70" name="/Inertial Measurement/MAGNO_SCL">
+      <node ref="IC704" pin="1"/>
+      <node ref="IC101" pin="47"/>
+      <node ref="R705" pin="1"/>
+    </net>
+    <net code="71" name="/Inertial Measurement/MAGNO_SDA">
+      <node ref="R707" pin="1"/>
+      <node ref="IC704" pin="16"/>
+      <node ref="IC101" pin="48"/>
+    </net>
+    <net code="72" name="/Inertial Measurement/MAGNO_DRDY">
+      <node ref="IC101" pin="46"/>
+      <node ref="IC704" pin="15"/>
+    </net>
+    <net code="73" name="/Inertial Measurement/BARO_MOSI">
+      <node ref="IC703" pin="7"/>
+      <node ref="IC101" pin="54"/>
+    </net>
+    <net code="74" name="/Inertial Measurement/BARO_MISO">
+      <node ref="IC703" pin="6"/>
+      <node ref="IC101" pin="53"/>
+    </net>
+    <net code="75" name="/Inertial Measurement/BARO_SCK">
+      <node ref="IC703" pin="8"/>
+      <node ref="IC101" pin="52"/>
+    </net>
+    <net code="76" name="/Inertial Measurement/BARO_CS">
+      <node ref="R706" pin="2"/>
+      <node ref="IC703" pin="4"/>
+      <node ref="IC101" pin="51"/>
+      <node ref="IC703" pin="5"/>
+    </net>
+    <net code="77" name="/Inertial Measurement/GYRO_DRDY">
+      <node ref="IC702" pin="6"/>
+      <node ref="IC101" pin="97"/>
+    </net>
+    <net code="78" name="/Datalogging &amp; Pyros/PY3_TRG">
+      <node ref="R502" pin="1"/>
+      <node ref="IC101" pin="43"/>
+    </net>
+    <net code="79" name="/Datalogging &amp; Pyros/~PY3_CHK">
+      <node ref="R510" pin="2"/>
+      <node ref="IC101" pin="42"/>
+    </net>
+    <net code="80" name="/Datalogging &amp; Pyros/PY2_TRG">
+      <node ref="R511" pin="1"/>
+      <node ref="IC101" pin="40"/>
+    </net>
+    <net code="81" name="/Datalogging &amp; Pyros/PY1_TRG">
+      <node ref="IC101" pin="39"/>
+      <node ref="R501" pin="1"/>
+    </net>
+    <net code="82" name="/Datalogging &amp; Pyros/~PY1_CHK">
+      <node ref="IC101" pin="38"/>
+      <node ref="R509" pin="2"/>
+    </net>
+    <net code="83" name="/Datalogging &amp; Pyros/µSD_DAT0">
+      <node ref="IC101" pin="65"/>
+      <node ref="R401" pin="2"/>
+      <node ref="U401" pin="7"/>
+    </net>
+    <net code="84" name="/Datalogging &amp; Pyros/µSD_DAT1">
+      <node ref="U401" pin="8"/>
+      <node ref="IC101" pin="66"/>
+      <node ref="R402" pin="2"/>
+    </net>
+    <net code="85" name="/Datalogging &amp; Pyros/µSD_DAT2">
+      <node ref="U401" pin="1"/>
+      <node ref="R403" pin="2"/>
+      <node ref="IC101" pin="78"/>
+    </net>
+    <net code="86" name="/Inertial Measurement/GYRO_SCL">
+      <node ref="R701" pin="1"/>
+      <node ref="IC702" pin="2"/>
+      <node ref="IC101" pin="95"/>
+    </net>
+    <net code="87" name="/Radio/RADIO_CLK">
+      <node ref="IC101" pin="89"/>
+      <node ref="U202" pin="12"/>
+    </net>
+    <net code="88" name="/Radio/RADIO_MISO">
+      <node ref="U202" pin="13"/>
+      <node ref="IC101" pin="90"/>
+    </net>
+    <net code="89" name="/Radio/RADIO_MOSI">
+      <node ref="U202" pin="14"/>
+      <node ref="IC101" pin="91"/>
+    </net>
+    <net code="90" name="/EXT_TX">
+      <node ref="IC101" pin="25"/>
+      <node ref="P102" pin="3"/>
+    </net>
+    <net code="91" name="/Inertial Measurement/GYRO_SDA">
+      <node ref="R702" pin="1"/>
+      <node ref="IC702" pin="3"/>
+      <node ref="IC101" pin="96"/>
+    </net>
+    <net code="92" name="Net-(P103-Pad7)">
+      <node ref="P103" pin="7"/>
+    </net>
+    <net code="93" name="Net-(P103-Pad8)">
+      <node ref="P103" pin="8"/>
+    </net>
+    <net code="94" name="Net-(IC201-Pad4)">
+      <node ref="IC201" pin="4"/>
+    </net>
+    <net code="95" name="Net-(IC201-Pad5)">
+      <node ref="IC201" pin="5"/>
+    </net>
+    <net code="96" name="Net-(IC201-Pad11)">
+      <node ref="P201" pin="1"/>
+      <node ref="IC201" pin="11"/>
+    </net>
+    <net code="97" name="Net-(IC201-Pad13)">
+      <node ref="IC201" pin="13"/>
+    </net>
+    <net code="98" name="Net-(IC201-Pad14)">
+      <node ref="IC201" pin="14"/>
+    </net>
+    <net code="99" name="Net-(IC201-Pad15)">
+      <node ref="IC201" pin="15"/>
+    </net>
+    <net code="100" name="Net-(IC201-Pad16)">
+      <node ref="IC201" pin="16"/>
+    </net>
+    <net code="101" name="Net-(IC201-Pad17)">
+      <node ref="IC201" pin="17"/>
+    </net>
+    <net code="102" name="Net-(IC201-Pad18)">
+      <node ref="IC201" pin="18"/>
+    </net>
+    <net code="103" name="Net-(U202-Pad1)">
+      <node ref="U202" pin="1"/>
+    </net>
+    <net code="104" name="Net-(U202-Pad3)">
+      <node ref="U202" pin="3"/>
+    </net>
+    <net code="105" name="Net-(U202-Pad4)">
+      <node ref="U202" pin="4"/>
+    </net>
+    <net code="106" name="Net-(U202-Pad5)">
+      <node ref="U202" pin="5"/>
+    </net>
+    <net code="107" name="Net-(U202-Pad6)">
+      <node ref="U202" pin="6"/>
+    </net>
+    <net code="108" name="Net-(U202-Pad7)">
+      <node ref="U202" pin="7"/>
+    </net>
+    <net code="109" name="Net-(P202-Pad1)">
+      <node ref="P202" pin="1"/>
+      <node ref="U202" pin="10"/>
+    </net>
+    <net code="110" name="Net-(C707-Pad1)">
+      <node ref="R704" pin="1"/>
+      <node ref="C707" pin="1"/>
+    </net>
+    <net code="111" name="Net-(IC701-Pad9)">
+      <node ref="IC701" pin="9"/>
+    </net>
+    <net code="112" name="Net-(IC702-Pad7)">
+      <node ref="IC702" pin="7"/>
+    </net>
+    <net code="113" name="Net-(IC704-Pad3)">
+      <node ref="IC704" pin="3"/>
+    </net>
+    <net code="114" name="Net-(IC701-Pad3)">
+      <node ref="IC701" pin="3"/>
+    </net>
+    <net code="115" name="Net-(IC701-Pad10)">
+      <node ref="IC701" pin="10"/>
+    </net>
+    <net code="116" name="Net-(IC701-Pad11)">
+      <node ref="IC701" pin="11"/>
+    </net>
+    <net code="117" name="Net-(IC704-Pad5)">
+      <node ref="IC704" pin="5"/>
+    </net>
+    <net code="118" name="Net-(IC704-Pad6)">
+      <node ref="IC704" pin="6"/>
+    </net>
+    <net code="119" name="Net-(IC704-Pad7)">
+      <node ref="IC704" pin="7"/>
+    </net>
+    <net code="120" name="Net-(C711-Pad1)">
+      <node ref="IC704" pin="8"/>
+      <node ref="C711" pin="1"/>
+    </net>
+    <net code="121" name="Net-(C710-Pad1)">
+      <node ref="C710" pin="1"/>
+      <node ref="IC704" pin="10"/>
+    </net>
+    <net code="122" name="Net-(C711-Pad2)">
+      <node ref="C711" pin="2"/>
+      <node ref="IC704" pin="12"/>
+    </net>
+    <net code="123" name="Net-(IC704-Pad14)">
+      <node ref="IC704" pin="14"/>
+    </net>
+    <net code="124" name="Net-(C706-Pad2)">
+      <node ref="C707" pin="2"/>
+      <node ref="C706" pin="2"/>
+      <node ref="IC702" pin="14"/>
+    </net>
+    <net code="125" name="Net-(D501-Pad1)">
+      <node ref="P501" pin="1"/>
+      <node ref="D501" pin="1"/>
+      <node ref="R509" pin="1"/>
+      <node ref="R507" pin="1"/>
+      <node ref="Q502" pin="3"/>
+    </net>
+    <net code="126" name="Net-(Q501-Pad4)">
+      <node ref="R503" pin="2"/>
+      <node ref="R501" pin="2"/>
+      <node ref="Q501" pin="4"/>
+    </net>
+    <net code="127" name="Net-(Q501-Pad2)">
+      <node ref="R513" pin="2"/>
+      <node ref="Q501" pin="2"/>
+      <node ref="R511" pin="2"/>
+    </net>
+    <net code="128" name="Net-(D502-Pad1)">
+      <node ref="Q505" pin="3"/>
+      <node ref="R517" pin="1"/>
+      <node ref="R519" pin="1"/>
+      <node ref="D502" pin="1"/>
+      <node ref="P502" pin="1"/>
+    </net>
+    <net code="129" name="Net-(Q504-Pad2)">
+      <node ref="Q504" pin="2"/>
+      <node ref="R512" pin="2"/>
+      <node ref="R514" pin="2"/>
+    </net>
+    <net code="130" name="Net-(Q504-Pad4)">
+      <node ref="Q504" pin="4"/>
+      <node ref="R502" pin="2"/>
+      <node ref="R504" pin="2"/>
+    </net>
+    <net code="131" name="Net-(Q501-Pad7)">
+      <node ref="Q505" pin="1"/>
+      <node ref="R515" pin="1"/>
+      <node ref="Q501" pin="7"/>
+      <node ref="Q501" pin="8"/>
+    </net>
+    <net code="132" name="Net-(Q504-Pad7)">
+      <node ref="Q506" pin="1"/>
+      <node ref="Q504" pin="8"/>
+      <node ref="Q504" pin="7"/>
+      <node ref="R516" pin="1"/>
+    </net>
+    <net code="133" name="Net-(Q501-Pad5)">
+      <node ref="R505" pin="1"/>
+      <node ref="Q501" pin="5"/>
+      <node ref="Q501" pin="6"/>
+      <node ref="Q502" pin="1"/>
+    </net>
+    <net code="134" name="Net-(Q503-Pad1)">
+      <node ref="Q504" pin="6"/>
+      <node ref="R506" pin="1"/>
+      <node ref="Q503" pin="1"/>
+      <node ref="Q504" pin="5"/>
+    </net>
+    <net code="135" name="Net-(D504-Pad1)">
+      <node ref="R520" pin="1"/>
+      <node ref="Q506" pin="3"/>
+      <node ref="R518" pin="1"/>
+      <node ref="P504" pin="1"/>
+      <node ref="D504" pin="1"/>
+    </net>
+    <net code="136" name="Net-(D503-Pad1)">
+      <node ref="R510" pin="1"/>
+      <node ref="Q503" pin="3"/>
+      <node ref="D503" pin="1"/>
+      <node ref="P503" pin="1"/>
+      <node ref="R508" pin="1"/>
+    </net>
+    <net code="137" name="Net-(ABI-042-RC601-Pad1)">
+      <node ref="R608" pin="1"/>
+      <node ref="ABI-042-RC601" pin="1"/>
+    </net>
+    <net code="138" name="Net-(D606-Pad1)">
+      <node ref="D606" pin="1"/>
+      <node ref="R606" pin="2"/>
+    </net>
+    <net code="139" name="Net-(D605-Pad1)">
+      <node ref="D605" pin="1"/>
+      <node ref="R605" pin="2"/>
+    </net>
+    <net code="140" name="Net-(D604-Pad1)">
+      <node ref="D604" pin="1"/>
+      <node ref="R604" pin="2"/>
+    </net>
+    <net code="141" name="Net-(D603-Pad1)">
+      <node ref="D603" pin="1"/>
+      <node ref="R603" pin="2"/>
+    </net>
+    <net code="142" name="Net-(D601-Pad1)">
+      <node ref="R601" pin="2"/>
+      <node ref="D601" pin="1"/>
+    </net>
+    <net code="143" name="Net-(D602-Pad1)">
+      <node ref="R602" pin="2"/>
+      <node ref="D602" pin="1"/>
+    </net>
+    <net code="144" name="Net-(D607-Pad1)">
+      <node ref="R607" pin="2"/>
+      <node ref="D607" pin="1"/>
+    </net>
+  </nets>
+</export>
