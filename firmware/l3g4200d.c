@@ -2,13 +2,16 @@
  * L3G4200D Driver 
  * Cambridge University Spaceflight
  *
+ * Assumption made that the address 
+ * of the I2C driver is &I2CD1.
+ *
+ * In config, must call wakeup function
+ * on DRDY/INT2 interrupt.
  */
 
 #include <stdlib.h>
 #include "l3g4200d.h"  
-#include "i2c_util.h"
 
-#include <string.h>
 
 // Register Addresses
 #define L3G4200D_RA_WHO_AM_I          0x0F
@@ -72,47 +75,90 @@
 #define L3G4200D_FIFO_MODE_STF        0x03 // Stream To FIFO
 #define L3G4200D_FIFO_MODE_BTS        0x04 // Bypass to Stream
 
-#define L3G4200D_DEFAULT_ADDRESS      0x69
-#define L3G4200D_I2CDRIVERPOINTER &I2CD1
-
-void l3g4200d_enableDataReadyInterrupt(uint8_t enabled);
-
-void l3g4200d_setFifoEnabled(uint8_t enabled);
-
-void l3g4200D_setFifoMode(uint8_t mode);
-
-static const uint16_t L3G4200D_READY_FOR_I2C_COMMAND = 200;
+#define L3G4200D_I2C_WRITE_ADDR    0x69 
+#define L3G4200D_I2C_READ_ADDR     0x69
 
 static Thread *tpL3G4200D = NULL;
 
-uint8_t l3g4200d_buffer[6];
-
-static const I2CConfig i2cfg = {
-	OPMODE_I2C,
-	400000,
-	FAST_DUTY_CYCLE_2,
+/* 10000 Hz might need to be changed to 100000 Hz */
+static const I2CConfig i2cconfig = {
+	OPMODE_I2C, 10000, STD_DUTY_CYCLE
 };
 
-static void l3g4200d_init(void) {
-	memset((void *)&l3g4200d_buffer, 0, sizeof(l3g4200d_buffer));
-	chThdSleepMicroseconds(L3G4200D_READY_FOR_I2C_COMMAND);
+static bool_t l3g4200d_writeRegister(uint8_t address, uint8_t data) {
+	uint8_t buffer[2];
+	buffer[0] = address;
+	buffer[1] = data;
 
-	//CTRL REG 1
-	i2c_writeByte(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1,
-		((uint8_t)(L3G4200D_DATA_RATE_800HZ << (L3G4200D_CR1_RATE_BIT - L3G4200D_CR1_RATE_LENGTH + 1))) | 0x0F); // 0x0F -> device active and all axes enabled
+	msg_t rv;
 
-	//CTRL REG 2 -> Defaults fine
+	/* Transmit message */
+	rv = i2cMasterTransmit(&I2CD1, L3G4200D_I2C_WRITE_ADDR, buffer,
+		2, NULL, 0);
 
-	//CTRL REG 3
-	l3g4200d_enableDataReadyInterrupt(1);
+	if (rv == RDY_OK) {
+		return TRUE;
+    } else {
+        i2cflags_t errs = i2cGetErrors(&I2CD1);
+		return FALSE;
+    }
+}
 
-	//CTRL REG 4 -> Defaults fine
+static bool_t l3g4200d_receive(uint8_t readAddress, uint8_t *buf, uint8_t size)
+{
+    msg_t rv;
+	
+    rv = i2cMasterTransmit(&I2CD1, L3G4200D_I2C_READ_ADDR, &readAddress, 
+	                          1, buf, size);
+    
+    if  (rv == RDY_OK)
+	      return TRUE;
+  	else
+	      return FALSE;
+}
 
-	//CTRL REG 5
-	l3g4200d_setFifoEnabled(1);
+static bool_t l3g4200d_init(void)
+{
+    bool_t success;
+  
+    /* Configure CTRL_REG1: Highest Data Rate- 800 Hz, Bandwidth- 50 (UNSURE) */
+	success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0xFF);
 
-	//FIFO CTRL REG
-	l3g4200D_setFifoMode(L3G4200D_FIFO_MODE_STREAM);
+    /* Configure CTRL_REG2: Normal mode for filter, 1 Hz for high pass filter */
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG2, 0x26);
+
+    /* 
+     * Configure CTRL_REG3:
+     * This allows interrupts on DRDY/INT2
+     * when the FIFO has filled to a watermark
+     * level specified in the FIFO_CTRL_REG.
+     */
+
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG3, 0x04);
+
+	/* Configure CTRL_REG5: Enable FIFO operation */
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG5, 0x40);
+	
+    /* 
+     * Configure FIFO_CTRL_REG: 
+     * Set the FIFO to operate in Stream Mode.
+     * Set the Watermark level to be 4.
+     * Interrupts on DRDY/INT2 occur when
+     * the FIFO has filled to this level.
+     */
+	success &= l3g4200d_writeRegister(L3G4200D_RA_FIFO_CTRL_REG, 0x44);
+
+	// TODO check connection
+
+    return success;
+}
+
+bool_t l3g4200d_testConnection(void) {
+	uint8_t buffer;
+	if (l3g4200d_receive(L3G4200D_RA_WHO_AM_I, &buffer, 1) == RDY_OK) {
+		return buffer == 0xD3;
+	}
+	return 0;
 }
 
 /* 
@@ -132,99 +178,30 @@ void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel)
     chSysUnlockFromIsr();
 }
 
-bool_t l3g4200d_testConnection(void) {
-	if (i2c_readBytes(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_WHO_AM_I, 1, l3g4200d_buffer) == RDY_OK) {
-		return l3g4200d_buffer[0] == 0xD3;
-	}
-	return 0;
-}
-
-void l3g4200d_setDataRate(uint8_t rate) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1, L3G4200D_CR1_RATE_BIT, L3G4200D_CR1_RATE_LENGTH, rate);
-}
-
-uint8_t l3g4200d_getDataRate(void) {
-	i2c_readBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1, L3G4200D_CR1_RATE_BIT, L3G4200D_CR1_RATE_LENGTH, l3g4200d_buffer);
-	return l3g4200d_buffer[0];
-}
-
-void l3g4200d_setBandwidth(uint8_t bw) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1, L3G4200D_CR1_BW_BIT, L3G4200D_CR1_BW_LENGTH, bw);
-}
-
-uint8_t l3g4200d_getBandwidth(void) {
-	i2c_readBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1, L3G4200D_CR1_BW_BIT, L3G4200D_CR1_BW_LENGTH, l3g4200d_buffer);
-	return l3g4200d_buffer[0];
-}
-
-void l3g4200d_setActive(uint8_t poweredUp) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG1, L3G4200D_CR1_PD_ENABLE_BIT, 1, poweredUp);
-}
-
-void l3g4200d_enableDataReadyInterrupt(uint8_t enabled) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG3, L3G4200D_CR3_DRDY_ENABLE_BIT, 1, enabled);
-}
-
-void l3g4200d_enableWatermarkInterrupt(uint8_t enabled) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG3, L3G4200D_CR3_WTM_ENABLE_BIT, 1, enabled);
-}
-
-void l3g4200d_enableFifoOverflowInterrupt(uint8_t enabled) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG3, L3G4200D_CR3_OF_ENABLE_BIT, 1, enabled);
-}
-
-void l3g4200d_enableFifoEmptyInterrupt(uint8_t enabled) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG3, L3G4200D_CR3_EMPTY_ENABLE_BIT, 1, enabled);
-}
-
-void l3g4200d_setMode(uint8_t mode) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG4, L3G4200D_CR4_DATA_MODE_BIT, 1, mode);
-}
-
-void l3g4200d_setScale(uint8_t scale) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG4, L3G4200D_CR4_SCALE_BIT, L3G4200D_CR4_SCALE_LENGTH, scale);
-}
-
-uint8_t l3g4200d_getScale(void) {
-	i2c_readBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG4, L3G4200D_CR4_SCALE_BIT, L3G4200D_CR4_SCALE_LENGTH, l3g4200d_buffer);
-	return l3g4200d_buffer[0];
-}
-
-void l3g4200d_setFifoEnabled(uint8_t enabled) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_CTRL_REG5, L3G4200D_CR5_FIFO_ENABLE_BIT, 1, enabled);
-}
-
-void l3g4200D_setFifoMode(uint8_t mode) {
-	i2c_writeBits(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_FIFO_CTRL_REG, L3G4200D_FIFO_CTRL_FM_BIT, L3G4200D_FIFO_CTRL_FM_LENGTH, mode);
-}
-
-void l3g4200d_getRawAngularRate(int16_t* x, int16_t* y, int16_t* z) {
-	i2c_readBytes(L3G4200D_I2CDRIVERPOINTER, L3G4200D_DEFAULT_ADDRESS, L3G4200D_RA_OUT_BURST, 6, l3g4200d_buffer);
-
-	*x = (((int16_t)l3g4200d_buffer[1]) << 8) | l3g4200d_buffer[0];
-	*y = (((int16_t)l3g4200d_buffer[3]) << 8) | l3g4200d_buffer[2];
-	*z = (((int16_t)l3g4200d_buffer[5]) << 8) | l3g4200d_buffer[4];
-}
-
 msg_t l3g4200d_thread(void *arg)
 {
-    chRegSetThreadName("L3G4200D");
-    
-	i2cStart(L3G4200D_I2CDRIVERPOINTER, &i2cfg);
+    (void)arg;
+    const int bufsize = 6;
+    uint8_t buf_data[bufsize];
 	
-	l3g4200d_init();
+    chRegSetThreadName("L3G4200D");
 
-	if (l3g4200d_testConnection() != 1)
-		chDbgPanic("L3G4200D not responding!");
+    i2cStart(&I2CD1, &i2cconfig);
 
-	while(true)
-	{   
-		//TODO Read data and do stuff with it
+	while (!l3g4200d_init()) {
+		chThdSleepMilliseconds(5);
+	}
+    
+	while(TRUE) {   
+		if (l3g4200d_receive(0xA8,buf_data, bufsize)) {
+			//TODO do something with received data
+		} else
+		    chThdSleepMilliseconds(20);
 		
 		/* Sleep until DRDY */
 		chSysLock();
 		tpL3G4200D = chThdSelf();
-		chSchGoSleepS(THD_STATE_SUSPENDED);
+		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
 		chSysUnlock();
 	}
 	

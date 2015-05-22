@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16 -fsingle-precision-constant
+  USE_OPT = -O0 -ggdb -fomit-frame-pointer -falign-functions=16
 endif
 
 # C specific options here (added to USE_OPT).
@@ -65,20 +65,19 @@ endif
 #
 
 # Define project name here
-PROJECT = Avionics
+PROJECT = badger3
 
 # Imported source files and paths
 CHIBIOS = ../ChibiOS-RT
-include $(CHIBIOS)/boards/ST_STM32F429I_DISCOVERY/board.mk
+include board.mk
 include $(CHIBIOS)/os/hal/platforms/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/ports/GCC/ARMCMx/STM32F4xx/port.mk
 include $(CHIBIOS)/os/kernel/kernel.mk
-include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 include $(CHIBIOS)/test/test.mk
 
 # Define linker script file here
-LDSCRIPT= $(PORTLD)/STM32F429xI.ld
+LDSCRIPT= STM32F407xG_CCM.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -88,13 +87,8 @@ CSRC = $(PORTSRC) \
        $(HALSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
-	   $(FATFSSRC) \
-       $(CHIBIOS)/os/various/shell.c \
        $(CHIBIOS)/os/various/chprintf.c \
-       main.c \
-	   hmc5883l.c \
-	   i2c_util.c \
-	   l3g4200d.c
+       main.c ms5611.c adxl3x5.c hmc5883l.c l3g4200d.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -125,9 +119,7 @@ ASMSRC = $(PORTASM)
 
 INCDIR = $(PORTINC) $(KERNINC) $(TESTINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) \
-         $(CHIBIOS)/os/various/devices_lib/accel \
-         $(CHIBIOS)/os/various \
-		 $(FATFSINC)
+         $(CHIBIOS)/os/various
 
 #
 # Project, sources and paths
@@ -162,8 +154,7 @@ AOPT =
 TOPT = -mthumb -DTHUMB
 
 # Define C warning options here
-CWARN = -Wall -Wextra -Wshadow -Wimplicit-function-declaration               \
-		-Wstrict-prototypes -Wredundant-decls -Wundef -Wdouble-promotion
+CWARN = -Wall -Wextra -Wstrict-prototypes
 
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra
@@ -220,3 +211,39 @@ ULIBS =
 
 RULESPATH = $(CHIBIOS)/os/ports/GCC/ARMCMx
 include $(RULESPATH)/rules.mk
+
+##############################################################################
+# Black Magic Probe flashing via GDB
+#
+flash: build/$(PROJECT).elf
+	arm-none-eabi-gdb --batch \
+		              -ex 'target extended-remote /dev/ttyACM0' \
+					  -ex 'monitor version' \
+					  -ex 'monitor swdp_scan' \
+					  -ex 'attach 1' \
+					  -ex 'load' build/$(PROJECT).elf \
+
+debug: build/$(PROJECT).elf
+	arm-none-eabi-gdb -ex 'target extended-remote /dev/ttyACM0' \
+		              -ex 'monitor swdp_scan' \
+					  -ex 'attach 1' \
+					  -ex "file build/$(PROJECT).elf"
+power:
+	arm-none-eabi-gdb --batch \
+	                  -ex 'target extended-remote /dev/ttyACM0' \
+		              -ex 'monitor tpwr enable'
+unpower:
+	arm-none-eabi-gdb --batch \
+		              -ex 'target extended-remote /dev/ttyACM0' \
+		              -ex 'monitor tpwr disable'
+
+run:
+	arm-none-eabi-gdb --batch \
+	                  -ex 'target extended-remote /dev/ttyACM0' \
+		              -ex 'monitor swdp_scan' \
+					  -ex 'attach 1' \
+					  -ex 'run'
+
+#
+# End BMP flashing
+##############################################################################
