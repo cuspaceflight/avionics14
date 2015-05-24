@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "ms5611.h"
 
 static void cmd_baro(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
