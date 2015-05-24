@@ -20,6 +20,8 @@ static void ms5611_init(MS5611CalData* cal_data);
 static void ms5611_read_cal(MS5611CalData* cal_data);
 static void ms5611_read(MS5611CalData* cal_data,
                         int32_t* temperature, int32_t* pressure);
+int32_t global_temperature;
+int32_t global_pressure;
 
 /*
  * Resets the MS5611. Sends 0x1E, waits 5ms.

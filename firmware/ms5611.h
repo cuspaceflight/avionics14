@@ -14,8 +14,8 @@ typedef struct {
 } MS5611CalData;
 
 /* global variables of temperature and pressure for easy access */
-int32_t global_temperature;
-int32_t global_pressure;
+extern int32_t global_temperature;
+extern int32_t global_pressure;
 
 /* The main thread. Run this. */
 msg_t ms5611_thread(void *arg);
