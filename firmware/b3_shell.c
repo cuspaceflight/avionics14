@@ -3,12 +3,12 @@
 #include "chprintf.h"
 #include "ms5611.h"
 
-static void cmd_baro(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_barotest(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
     
-    chprintf(chp, "Current Pressure: global_pressure\r\n");
-    chprintf(chp, "Current Temperature: global_pressure\r\n");
+    chprintf(chp, "Current Pressure: %d\r\n", global_pressure);
+    chprintf(chp, "Current Temperature: %d\r\n", global_temperature);
 }
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -83,6 +83,7 @@ void b3_shell_run()
         {"threads", cmd_threads},
         {"rt", cmd_rt},
         {"beep", cmd_beep},
+        {"barotest", cmd_barotest},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
