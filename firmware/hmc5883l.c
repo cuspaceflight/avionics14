@@ -8,10 +8,10 @@
 #include "hmc5883l.h"
 
 /* Config Values */
-#define HMC5883L_ADDRESS            0x1E // this device only has one address
+#define HMC5883L_ADDRESS            0x1E /* this device only has one address */
 #define HMC5883L_DEFAULT_ADDRESS    0x1E
 
-#define HMC5883L_MEASUREMENT_PERIOD 6 // From receiving command to data ready (ms)
+#define HMC5883L_MEASUREMENT_PERIOD 6 /* From receiving command to data ready (ms) */
 
 #define HMC5883L_RA_CONFIG_A        0x00
 #define HMC5883L_RA_CONFIG_B        0x01
@@ -136,7 +136,7 @@ static bool_t hmc5883l_init(void)
     /* Configure Reg A - Highest Data Rate- 75 Hz */
 	success &= hmc5883l_writeRegister(HMC5883L_RA_CONFIG_A, 0x18);
 
-	// TODO check connection
+	/* TODO check connection */
 
 
     return success;
@@ -186,7 +186,11 @@ msg_t hmc5883l_thread(void *arg) {
     
     while(TRUE) {   
 		if (hmc5883l_receive(0x06, buf, bufsize)) {
-			// TODO do something with the data
+			/* TODO do something with the data */
+            /* send it to the global variable by concatenating */
+            global_magnoxyz[0] = (buf[0] << 8) | buf[1];
+            global_magnoxyz[1] = (buf[2] << 8) | buf[3];
+            global_magnoxyz[2] = (buf[4] << 8) | buf[5];
 		} else {   
 		    chThdSleepMilliseconds(20);
 		}

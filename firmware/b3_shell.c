@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "hmc5883l.h"
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
@@ -9,6 +10,15 @@ static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     palSetPad(GPIOA, GPIOA_BUZZER);
     chThdSleepMilliseconds(500);
     palClearPad(GPIOA, GPIOA_BUZZER);
+}
+
+static void cmd_magnotest(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    (void)argc;
+    
+    chprintf(chp, "Magno X: %u \r\n", global_magnoxyz[0]);
+    chprintf(chp, "Magno Y: %u \r\n", global_magnoxyz[1]);
+    chprintf(chp, "Magno Z: %u \r\n", global_magnoxyz[2]);
 }
 
 static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -74,6 +84,7 @@ void b3_shell_run()
         {"threads", cmd_threads},
         {"rt", cmd_rt},
         {"beep", cmd_beep},
+        {"magnotest", cmd_magnotest},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
