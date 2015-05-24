@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "pyro.h"
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
@@ -65,6 +66,43 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
     halclock_t f = halGetCounterFrequency();
     chprintf(chp, "Current real time clock ticks: %u\r\n", t);
     chprintf(chp, "Real time clock frequency: %u\r\n", f);
+}
+
+static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    bool p1, p2, p3, p4 ;
+    
+    /* Continuity Check */
+    p1 = pyro_continuity(GPIOE_PY1_CHK);
+    p2 = pyro_continuity(GPIOE_PY2_CHK);
+    p3 = pyro_continuity(GPIOE_PY3_CHK);
+    p4 = pyro_continuity(GPIOE_PY4_CHK);
+    
+    chprintf(chp, "Results of Continuity Check: %u, %u, %u, %u\n", p1,
+                                                    p2, p3, p4);
+                                                    
+    if (argc > 0) 
+    {
+        if (argv[1] == 1) 
+        {
+            pyro_fire_drogue();
+        }
+        
+        else if (argv[1] == 2) 
+        {
+            pyro_fire_main();
+        }
+        
+        if (argv[1] == 3) 
+        {
+            pyro_fire_separation();
+        }  
+      
+        if (argv[1] == 4) 
+        {
+            pyro_fire_second_stage();
+        }
+    }
 }
 
 void b3_shell_run()

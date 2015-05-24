@@ -56,11 +56,10 @@
 
 
 
-/* Not defined, so I've commented them out
-*void pyro_off_1(void* arg);
-*void pyro_off_2(void* arg);
-*void pyro_off_3(void* arg);
-*/
+void pyro_off_1(void* arg);
+void pyro_off_2(void* arg);
+void pyro_off_3(void* arg);
+void pyro_off_4(void* arg);
 
 int board_location = TOP_BOARD ;
 
@@ -76,7 +75,6 @@ bool_t pyro_continuity(uint8_t pad)
     else
         return FALSE ;
 }
-
 
 
 /* Checks continuity of all pyro input channels
@@ -116,120 +114,106 @@ bool_t pyro_continuity_check()
  * Fire the e-match pyro output channels for a specified time
  * NOTE: This is specifically for e-match channels, not metrons
  */
+
+
+static VirtualTimer vt1, vt2, vt3, vt4;
 void pyro_fire(uint8_t channel, uint16_t duration_ms)
 {
-    palSetPad(GPIOE, channel);
+    uint8_t pad, pad_2 = 0;
 
-    /* Log this event */
-    /* microsd_log_s16(CHAN_PYRO_F, channel, 0); */
-    chThdSleepMilliseconds(duration_ms);
+    if(channel == GPIOE_PYRO_DROGUE_F) {
+        pad = GPIOE_PYRO_DROGUE_F;
+        chVTReset(&vt1);
+        chVTSet(&vt1, MS2ST(duration_ms), pyro_off_1, NULL);
+        /* microsd_log_s16(GPIOE_PYRO_DROGUE_F, 1, 0, 0, 0); */
+    } else if(channel == GPIOE_PYRO_MAIN_F) {
+        pad = GPIOE_PYRO_MAIN_F;
+        chVTReset(&vt2);
+        chVTSet(&vt2, MS2ST(duration_ms), pyro_off_2, NULL);
+        /* microsd_log_s16(CHAN_PYRO_F, 0, 1, 0, 0);*/
+    } else if(channel == GPIOE_PYRO_SEPARATION_1_F) {
+        pad = GPIOE_PYRO_SEPARATION_1_F;
+        pad_2 = GPIOE_PYRO_SEPARATION_2_F;
+        chVTReset(&vt3);
+        chVTSet(&vt3, MS2ST(duration_ms), pyro_off_3, NULL);
+        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+    } else if(channel == GPIOE_PYRO_FIRE_SECOND_STAGE_F) {
+        pad = GPIOE_PYRO_FIRE_SECOND_STAGE_F;
+        chVTReset(&vt4);
+        chVTSet(&vt4, MS2ST(duration_ms), pyro_off_4, NULL);
+        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/    
+    } else {
+        return;
+    }
 
-    palClearPad(GPIOE, channel);
-
-    chThdSleepMilliseconds(duration_ms);
+    palSetPad(GPIOE, pad);
 }
+
 
 /*
- * Fire the metron pyro output channels for a specified time
- * NOTE: This is specifically for metron channels, 
- * not e-matches
+ * Turn off a pyro channel. Called by the virtual timer.
  */
-void pyro_fire_metron(uint8_t channel_1, uint8_t channel_2, 
-                      uint16_t duration_ms)
+void pyro_off_1(void* arg)
 {
-    palSetPad(GPIOE, channel_1);
-    palSetPad(GPIOE, channel_2);
-
-    /* Log this event */
-    /* microsd_log_s16(CHAN_PYRO_F, channel_1, 0); */
-    /* microsd_log_s16(CHAN_PYRO_F, channel_2, 0); */
-    chThdSleepMilliseconds(duration_ms);
-
-    palSetPad(GPIOE, channel_1);
-    palSetPad(GPIOE, channel_2);
-
-    chThdSleepMilliseconds(duration_ms);
+    (void)arg;
+    palClearPad(GPIOE, GPIOE_PYRO_DROGUE_F);
 }
 
-/* SPECIFIC FIRING FUNCTIONS
- * Keep firing the circuit until continuity of that
- * particular firing channel breaks.
- * This indicates a successful fire.
- */
+void pyro_off_2(void* arg)
+{
+    (void)arg;
+    palClearPad(GPIOE, GPIOE_PYRO_MAIN_F);
+}
 
-/* Fire the drogue deployment pyros 
- * This is a simple e match, so try firing 10 times.
- * E matches require a DC step, so fire the channel
- * for a reasonable time- 50 ms (TBC)
- * If continuity breaks, stop firing
- */
+void pyro_off_3(void* arg)
+{
+    (void)arg;
+    palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_1_F);
+    palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_2_F);
+}
+
+
+void pyro_off_4(void* arg)
+{
+    (void)arg;
+    palClearPad(GPIOE, GPIOE_PYRO_FIRE_SECOND_STAGE_F);
+}
+
+
+
+/* SPECIFIC FIRING FUNCTIONS */
+
+/* Fire the drogue deployment pyros */
+
 void pyro_fire_drogue()
 {
-    int i;
-    for(i=0; i<10; i++) 
-    {  
-        pyro_fire(GPIOE_PYRO_DROGUE_F, 50) ;
-        if(!pyro_continuity(GPIOE_PYRO_DROGUE_C))
-            break;
-    }
+    pyro_fire(GPIOE_PYRO_DROGUE_F, 1000) ;
+
 }
 
-/* Fire  main chute deployment pyro
- * This is a simple e match, so try firing 10 times.
- * E matches require a DC step, so fire the channel
- * for a reasonable time- 50 ms (TBC)
- * If continuity breaks, stop firing
- */
+/* Fire  main chute deployment pyro */
 void pyro_fire_main()
 {
-    int i;
-    for(i=0; i<10; i++) 
-    {  
-        pyro_fire(GPIOE_PYRO_MAIN_F, 50) ;
-        if(!pyro_continuity(GPIOE_PYRO_MAIN_C))
-            break;
-    }
+    pyro_fire(GPIOE_PYRO_MAIN_F, 1000) ;
+
 }
 
-/* Fire  separation pyro 
- * This involves 2 metrons, so try firing 50 times.
- * Firing involves a pulsed input
- * for a reasonable time- 10 ms 
- * If continuity breaks, stop firing
- */
+/* Fire  separation pyro */
 void pyro_fire_separation()
 {
-    int i;
-    for(i=0; i<50; i++) 
-    {  
-        pyro_fire_metron(GPIOE_PYRO_SEPARATION_1_F, 
-        GPIOE_PYRO_SEPARATION_2_F, 10) ;
-        
-        if(!pyro_continuity(GPIOE_PYRO_SEPARATION_1_C)
-        && !pyro_continuity(GPIOE_PYRO_SEPARATION_2_C)) 
-            break;
-    }
+    pyro_fire(GPIOE_PYRO_SEPARATION_1_F, 1000);
+   
 }
 
-/* Fire  second stage pyro
- * This is a simple e match, so try firing 10 times.
- * E matches require a DC step, so fire the channel
- * for a reasonable time- 50 ms (TBC)
- * If continuity breaks, stop firing
- */
+
+/* Fire  second stage pyro */
 void pyro_fire_second_stage()
 {
-    int i;
-    for(i=0; i<10; i++) 
-    {  
-        pyro_fire(GPIOE_PYRO_FIRE_SECOND_STAGE_F, 50) ;
-        if(!pyro_continuity(GPIOE_PYRO_FIRE_SECOND_STAGE_C))
-            break;
-    }
+    pyro_fire(GPIOE_PYRO_FIRE_SECOND_STAGE_F, 1000) ;
+
 }
 
-/* Have left in the original implementation
- * Continuously checks continuity
+/* Continuously checks continuity
  * If at launch there's a problem, we should therefore know
  */
 
