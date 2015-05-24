@@ -16,9 +16,9 @@ static void cmd_magnotest(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
     
-    chprintf(chp, "Magno X: %u \r\n", global_magnoxyz[0]);
-    chprintf(chp, "Magno Y: %u \r\n", global_magnoxyz[1]);
-    chprintf(chp, "Magno Z: %u \r\n", global_magnoxyz[2]);
+    chprintf(chp, "Magno X: %u\r\n", global_magnoxyz[0]);
+    chprintf(chp, "Magno Y: %u\r\n", global_magnoxyz[1]);
+    chprintf(chp, "Magno Z: %u\r\n", global_magnoxyz[2]);
 }
 
 static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {

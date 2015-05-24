@@ -188,9 +188,9 @@ msg_t hmc5883l_thread(void *arg) {
 		if (hmc5883l_receive(0x06, buf, bufsize)) {
 			/* TODO do something with the data */
             /* send it to the global variable by concatenating */
-            global_magnoxyz[0] = (buf[0] << 8) | buf[1];
-            global_magnoxyz[1] = (buf[2] << 8) | buf[3];
-            global_magnoxyz[2] = (buf[4] << 8) | buf[5];
+            global_magnoxyz[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
+            global_magnoxyz[1] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
+            global_magnoxyz[2] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
 		} else {   
 		    chThdSleepMilliseconds(20);
 		}
