@@ -147,6 +147,10 @@ static void ms5611_read(MS5611CalData* cal_data,
            ((int64_t)cal_data->c3 * dt) / (1<<8);
 
     *pressure = ((d1 * sens) / (1<<21) - off) / (1<<15);
+    
+    /*update the global variables with the pressure and temperature information*/
+    global_pressure = *pressure;
+    global_temperature = *temperature;
 
     /*microsd_log_s32(CHAN_IMU_BARO, *pressure, *temperature);*/
 }

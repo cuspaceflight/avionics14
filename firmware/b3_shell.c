@@ -2,6 +2,14 @@
 #include <hal.h>
 #include "chprintf.h"
 
+static void cmd_baro(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    (void)argc;
+    
+    chprintf(chp, "Current Pressure: global_pressure\r\n");
+    chprintf(chp, "Current Temperature: global_pressure\r\n");
+}
+
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
