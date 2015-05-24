@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "adxl3x5.h"
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
@@ -65,6 +66,16 @@ static void cmd_led(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 }
 
+static void cmd_accel(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    
+    chprintf(chp," x: %d, y: %d, z: %d \n", global_accel[0], global_accel[1], global_accel[2]);
+
+    return;
+}
+
 static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   static const char *states[] = {THD_STATE_NAMES};
   uint64_t busy = 0, total = 0;
@@ -114,6 +125,7 @@ void b3_shell_run()
         {"rt", cmd_rt},
         {"beep", cmd_beep},
         {"led", cmd_led},
+        {"accel", cmd_accel},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
