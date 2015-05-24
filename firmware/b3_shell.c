@@ -2,6 +2,7 @@
 #include <hal.h>
 #include "chprintf.h"
 #include "adxl3x5.h"
+#include "l3g4200d.h" 
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
@@ -66,13 +67,19 @@ static void cmd_led(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 }
 
+static void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    chprintf(chp," x: %d, y: %d, z: %d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
+    return;
+}
+
 static void cmd_accel(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;	
     (void)argv;
 
-    
     chprintf(chp," x: %d, y: %d, z: %d \n", global_accel[0], global_accel[1], global_accel[2]);
-
     return;
 }
 
@@ -126,6 +133,7 @@ void b3_shell_run()
         {"beep", cmd_beep},
         {"led", cmd_led},
         {"accel", cmd_accel},
+        {"gyro", cmd_gyro},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
