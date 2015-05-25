@@ -11,7 +11,8 @@
 /* ------------------------------------------------------------------------- */
 
 /* SDMODE takes the value of BYTE, which are the possible file opening modes.
- * FA_READ for read access, FA_WRITE for write access, etc.
+ * FA_READ for read access, FA_WRITE for write access, FA_CREATE_NEW to create
+ * file that doesn't already exist, etc.
  * See FatFS documentation for all possible modes, or look in
  * ChibiOS-RT/ext/fatfs/src/ff.h.
  */
@@ -52,18 +53,20 @@ SDRESULT microsd_open_file_inc(SDFILE* fp, const char* path, const char* ext,
 SDRESULT microsd_close_file(SDFILE* fp);
 
 /* Assumes file is open.
- * Writes at most <btw> bytes from <buff> to <fp>.
+ * Writes exactly <btw> bytes from <buff> to <fp>, or until disk is full.
  */
-SDRESULT microsd_write(SDFILE* fp, const void* buff, unsigned int btw);
+SDRESULT microsd_write(SDFILE* fp, const char* buff, unsigned int btw);
 
 /* Assumes file is open.
- * Reads at most <btr> bytes from <fp> to <buf>
+ * Reads exactly <btr> bytes from <fp> to <buf>, or until reached end of file.
  */
-SDRESULT microsd_read(SDFILE* fp, void* buf, unsigned int btr);
+SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr);
 
 /* Assumes file is open.
- * Reads at most <size> chars from <fp> to <buf>, stopping at newlines/EOF.
- * Returns FR_OK if succesfully read, returns something else if error/EOF.
+ * Reads at most <size-1> chars from <fp> to <buf>, or until reaching a
+ * newline/EOF. The string read into <buf> is null-terminated.
+ * Returns FR_OK if succesfully read, returns something else if error/EOF, this
+ * can be checked with f_error(fp) and f_eof(fp).
  */
 SDRESULT microsd_gets(SDFILE* fp, char* buf, int size);
 

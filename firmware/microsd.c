@@ -56,15 +56,16 @@ static void microsd_card_deinit(void)
 /* open file in <path> to <fp>.
  * mounts the file system and everything; blocking (see try_init function).
  * NOTE!!! Assumes only one file opened at a time - might want to check if the
- * sd card/file system is already connected/mounted when opening.
+ * sd card/file system is already connected/mounted when opening (is this even
+ * possible though).
  */
 SDRESULT microsd_open_file(SDFILE* fp, const char* path, SDMODE mode,
     SDFS* sd)
 {
-    SDRESULT retval;
-    microsd_card_try_init((FATFS*)sd);
-    retval = f_open((FIL*)fp, (TCHAR*)path, (BYTE)mode);
-    return retval;
+    SDRESULT err;
+    microsd_card_try_init(sd);
+    err = f_open(fp, path, mode);
+    return err;
 }
 
 /* Open/create file using incremental naming scheme that follows the format
@@ -75,12 +76,12 @@ SDRESULT microsd_open_file(SDFILE* fp, const char* path, SDMODE mode,
 SDRESULT microsd_open_file_inc(FIL* fp, const char* path, const char* ext,
     SDFS* sd)
 {
+    SDRESULT err;
+    SDMODE mode = FA_WRITE | FA_CREATE_NEW;
     uint32_t file_idx = 0;
     char fname[25];
-    FRESULT err;
-    BYTE mode = FA_WRITE | FA_CREATE_NEW;
 
-    microsd_card_try_init((FATFS*)sd);
+    microsd_card_try_init(sd);
 
     while (TRUE) {
 
@@ -94,7 +95,6 @@ SDRESULT microsd_open_file_inc(FIL* fp, const char* path, const char* ext,
         if (file_idx > 99999) return FR_INT_ERR; // internal error
         if (err == FR_EXIST) continue;
 
-        // some unspecified error
         return err;
     }
 }
@@ -104,37 +104,42 @@ SDRESULT microsd_open_file_inc(FIL* fp, const char* path, const char* ext,
  */
 SDRESULT microsd_close_file(SDFILE* fp)
 {
-    SDRESULT retval;
-    retval = f_close(fp);
+    SDRESULT err;
+    err = f_close(fp);
     microsd_card_deinit();
-    return retval;
+    return err;
 }
 
 /* Write <btw> bytes from <buf> to <fp>.
  * Number of bytes written is currently not used for anything ...
+ * If bytes_written < btw aftewards, disk is full.
  */
-SDRESULT microsd_write(SDFILE* fp, const void* buf, unsigned int btw)
+SDRESULT microsd_write(SDFILE* fp, const char* buf, unsigned int btw)
 {
+    SDRESULT err;
     unsigned int bytes_written;
-    FRESULT res = f_write(fp, buf, btw, &bytes_written);
-    f_sync(fp); // flush write buffer immediately for safety
-    return res;
+    err = f_write(fp, (void*) buf, btw, &bytes_written);
+    f_sync(fp); // flush write buffer immediately to make sure it's written
+    return err;
 }
 
 /* Read <btr> bytes from <fp> to <buf>.
  * Number of bytes read is currently not used for anything ...
+ * If bytes_read < btr afterwards, reached end of file.
  */
-SDRESULT microsd_read(SDFILE* fp, void* buf, unsigned int btr)
+SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr)
 {
+    SDRESULT err;
     unsigned int bytes_read;
-    FRESULT res = f_read(fp, buf, btr, &bytes_read);
-    return res;
+    err = f_read(fp, (void*)buf, btr, &bytes_read);
+    return err;
 }
 
-
+/* Same as microsd_read, except reads only up to newline.
+ */
 SDRESULT microsd_gets(SDFILE* fp, char* buf, int size)
 {
-    TCHAR* res = f_gets((TCHAR*)buf, size, fp);
+    TCHAR* res = f_gets(buf, size, fp);
     return res != NULL ? FR_OK : FR_INT_ERR;
     // if res is null then either an error occurred (check with f_error(fp))
     // or it reached end of file (check with f_eof(fp))
