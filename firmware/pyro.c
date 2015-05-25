@@ -147,6 +147,11 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
     }
 
     palSetPad(GPIOE, pad);
+    if (pad_2 != 0) 
+    {
+        palSetPad(GPIOE, pad_2);
+    }
+         
 }
 
 

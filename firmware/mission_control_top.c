@@ -26,11 +26,10 @@
  
 #include <math.h>
 #include "mission_control_top.h"
-#include "state_estimation.h"
+/* #include "state_estimation.h" */
 #include "pyro.h"
-#include "microsd.h"
-#include "config.h"
-#include "sbp_io.h"
+/* #include "microsd.h" */
+
 
 /* #define AGREED_TIME_DELAY = 1 second ?? NEEDS CLARIFICATION */
 
