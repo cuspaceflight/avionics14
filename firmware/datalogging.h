@@ -24,7 +24,11 @@
 #define CHAN_PYRO_C     0x60
 #define CHAN_PYRO_F     0x61
 
-/* max log counters before we draw a sample for radio transmission. */
+/* max log counters before we draw a sample for radio transmission.
+ * 0 means that it is not sampled for radio.
+ * 1 means that it is sampled every time data is logged.
+ * 2 means every second time, etc.
+ */
 #define LOG_INIT           0
 #define LOG_CAL_TFREQ      0
 #define LOG_CAL_LGA        0

@@ -100,13 +100,13 @@ msg_t microsd_thread(void* arg)
     static const int packet_size = sizeof(packet_t);
     volatile char* cache_ptr = log_cache; // pointer to keep track of cache
 
-    static SDFS file_system; // struct that encapsulates file system state
-    static SDFILE file;      // file struct thing
+    SDFS file_system;        // struct that encapsulates file system state
+    SDFILE file;             // file struct thing
     msg_t mailbox_res;       // mailbox fetch result
     msg_t data_msg;          // buffer to store the fetched mailbox item
-    char* packet_msg;        // data_msg cast to char*
+    char* packet_msg;        // data_msg to be logged cast to char*
     SDRESULT write_res;      // result of writing data to file system
-    bool cache_full;         // if cache is full, in which case write to sd
+    bool cache_not_full;     // true if still space in cache (write when full)
     (void)arg;
 
     // initialise stuff
@@ -131,14 +131,15 @@ msg_t microsd_thread(void* arg)
         memcpy((void*) cache_ptr, packet_msg, packet_size);
         chPoolFree(&log_mempool, (void*) data_msg);
 
-        cache_full = cache_ptr + packet_size < log_cache + LOG_CACHE_SIZE;
-        if (!cache_full) {
+        // if the cache is full, write it all to the sd card
+        cache_not_full = cache_ptr + packet_size < log_cache + LOG_CACHE_SIZE;
+        if (cache_not_full) {
 
-            cache_ptr += 16;
+            cache_ptr += packet_size;
 
         } else {
 
-            write_res = microsd_write(&file, (void*)log_cache, LOG_CACHE_SIZE);
+            write_res = microsd_write(&file, (char*)log_cache, LOG_CACHE_SIZE);
 
             // if the microsd write fails, we just skip this data ...
             if (write_res != FR_OK) {
@@ -160,7 +161,7 @@ static void mem_init(void)
 {
     int i;
 
-    // initialise counters to max value so radio transmission starts immediately
+    // initialise counters to max value to start radio transmission immediately
     for (i = 0; i < CHANNEL_NUM; i++) {
         counter[i] = log_counter[i];
     }
@@ -172,7 +173,6 @@ static void mem_init(void)
     // ie. prevent dynamic core memory allocation (which cannot be freed), we
     // just want the "bookkeeping" that memory pools provide
     chPoolLoadArray(&log_mempool, (void*)mempool_buffer, LOG_MEMPOOL_ITEMS);
-
 }
 
 /* ------------------------------------------------------------------------- */
@@ -275,7 +275,7 @@ void log_error(uint8_t channel, const char* data)
  */
 static uint16_t checksum(data_t data)
 {
-   // todo: http://en.wikipedia.org/wiki/Cyclic_redundancy_check
+   // TODO: http://en.wikipedia.org/wiki/Cyclic_redundancy_check
     data = data;
     return 1;
 }
@@ -288,7 +288,6 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
 {
     void* msg;
     msg_t retval;
-    bool radio = false; // determines if this data should be sampled to radio
 
     packet_t packet = {
         .timestamp = halGetCounterValue(),
@@ -310,17 +309,15 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
         return;
     }
 
-    // update counter; if reached max value, we sample this data
+    // update counter; if reached max value, we sample this data for radio
     // assumption: only one thread per channel (otherwise needs lock)
     if (log_counter[channel] != 0) {
+
         counter[channel]++;
         if (counter[channel] == log_counter[channel]) {
-            radio = true;
+
+            // TODO: send packet to radio transmission
             counter[channel] = 0;
         }
-    }
-
-    if (radio) {
-        // TODO: send packet to radio transmission
     }
 }
