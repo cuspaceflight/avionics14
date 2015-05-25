@@ -68,8 +68,8 @@ int main(void) {
     /*chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,*/
                       /*adxl345_thread, NULL);*/
 
-    /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
-                      /*hmc5883l_thread, NULL);*/
+    chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,
+                      hmc5883l_thread, NULL);
 
     /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
                       /*l3g4200d_thread,NULL);*/

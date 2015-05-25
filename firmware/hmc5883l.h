@@ -9,7 +9,7 @@
 #include "ch.h"
 #include "hal.h"
 
-uint16_t global_magnoxyz[3];
+extern uint16_t global_magnoxyz[3];
 
 /* The main thread*/
 msg_t hmc5883l_thread(void *arg) ;
