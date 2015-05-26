@@ -13,7 +13,7 @@
 #define LOG_CACHE_SIZE 16384    // 16KB
 #define CHANNEL_NUM 256         // 1-byte channel number -> 256 channel numbers
 
-/* 8 bytes of actual data */
+/* 8 bytes of data to be logged */
 typedef union data_ {
     char       c[8];
     int8_t    s8[8];
@@ -28,7 +28,7 @@ typedef union data_ {
     double     d[1];
 } data_t;
 
-/* 16 byte packet: 8 bytes of packet metadata + 8 bytes of actual data */
+/* 16 byte packet: 8 bytes of packet metadata + 8 bytes of logging data */
 typedef struct packet_ {
     uint32_t timestamp;
     uint8_t       type;
@@ -112,6 +112,7 @@ msg_t microsd_thread(void* arg)
     // initialise stuff
     chRegSetThreadName("datalogging");
     mem_init();
+    while (microsd_open_file_inc(&file, "log", "bin", &file_system) != FR_OK) ;
 
     if (STAGE == 1) {
         log_c(CHAN_INIT, "STAGEONE");
@@ -119,7 +120,7 @@ msg_t microsd_thread(void* arg)
         log_c(CHAN_INIT, "STAGETWO");
     }
 
-    while (TRUE) {
+    while (true) {
 
         mailbox_res = chMBFetch(&log_mailbox, &data_msg, TIME_INFINITE);
 
