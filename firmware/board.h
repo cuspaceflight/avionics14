@@ -57,9 +57,9 @@
 #define GPIOB_PIN0                  0
 #define GPIOB_PIN1                  1
 #define GPIOB_PIN2                  2
-#define GPIOB_PIN3                  3
-#define GPIOB_PIN4                  4
-#define GPIOB_PIN5                  5
+#define GPIOB_RADIO_SCK              3
+#define GPIOB_RADIO_MISO             4
+#define GPIOB_RADIO_MOSI             5
 #define GPIOB_PIN6                  6
 #define GPIOB_PIN7                  7
 #define GPIOB_GYRO_SCL              8
@@ -95,7 +95,7 @@
 #define GPIOD_PIN4                  4
 #define GPIOD_EXT_TX                  5
 #define GPIOD_PIN6                  6
-#define GPIOD_PIN7                  7
+#define GPIOD_RADIO_CS              7
 #define GPIOD_PIN8                  8
 #define GPIOD_PIN9                  9
 #define GPIOD_PYRO_GRN              10
@@ -312,9 +312,9 @@
 #define VAL_GPIOB_MODER             (PIN_MODE_INPUT(GPIOB_PIN0)             |\
                                      PIN_MODE_INPUT(GPIOB_PIN1)             |\
                                      PIN_MODE_INPUT(GPIOB_PIN2)             |\
-                                     PIN_MODE_INPUT(GPIOB_PIN3)     |\
-                                     PIN_MODE_INPUT(GPIOB_PIN4)    |\
-                                     PIN_MODE_INPUT(GPIOB_PIN5)    |\
+                                     PIN_MODE_ALTERNATE(GPIOB_RADIO_SCK)     |\
+                                     PIN_MODE_ALTERNATE(GPIOB_RADIO_MISO)    |\
+                                     PIN_MODE_ALTERNATE(GPIOB_BARO_MOSI)   |\
                                      PIN_MODE_INPUT(GPIOB_PIN6)    |\
                                      PIN_MODE_INPUT(GPIOB_PIN7)     |\
                                      PIN_MODE_ALTERNATE(GPIOB_GYRO_SCL)    |\
@@ -328,9 +328,9 @@
 #define VAL_GPIOB_OTYPER            (PIN_OTYPE_PUSHPULL(GPIOB_PIN0)         |\
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN1)         |\
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN2)         |\
-                                     PIN_OTYPE_PUSHPULL(GPIOB_PIN3)     |\
-                                     PIN_OTYPE_PUSHPULL(GPIOB_PIN4)    |\
-                                     PIN_OTYPE_PUSHPULL(GPIOB_PIN5)    |\
+                                     PIN_OTYPE_PUSHPULL(GPIOB_RADIO_SCK)     |\
+                                     PIN_OTYPE_PUSHPULL(GPIOB_RADIO_MISO)    |\
+                                     PIN_OTYPE_PUSHPULL(GPIOB_RADIO_MOSI)    |\
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN6)    |\
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN7)     |\
                                      PIN_OTYPE_OPENDRAIN(GPIOB_GYRO_SCL)   |\
@@ -344,9 +344,9 @@
 #define VAL_GPIOB_OSPEEDR           (PIN_OSPEED_2M(GPIOB_PIN0)              |\
                                      PIN_OSPEED_2M(GPIOB_PIN1)              |\
                                      PIN_OSPEED_2M(GPIOB_PIN2)              |\
-                                     PIN_OSPEED_2M(GPIOB_PIN3)         |\
-                                     PIN_OSPEED_2M(GPIOB_PIN4)        |\
-                                     PIN_OSPEED_2M(GPIOB_PIN5)        |\
+                                     PIN_OSPEED_100M(GPIOB_RADIO_SCK)         |\
+                                     PIN_OSPEED_100M(GPIOB_RADIO_MISO)        |\
+                                     PIN_OSPEED_100M(GPIOB_RADIO_MOSI)        |\
                                      PIN_OSPEED_2M(GPIOB_PIN6)         |\
                                      PIN_OSPEED_2M(GPIOB_PIN7)          |\
                                      PIN_OSPEED_100M(GPIOB_GYRO_SCL)         |\
@@ -360,9 +360,9 @@
 #define VAL_GPIOB_PUPDR             (PIN_PUPDR_FLOATING(GPIOB_PIN0)           |\
                                      PIN_PUPDR_FLOATING(GPIOB_PIN1)           |\
                                      PIN_PUPDR_FLOATING(GPIOB_PIN2)           |\
-                                     PIN_PUPDR_FLOATING(GPIOB_PIN3)     |\
-                                     PIN_PUPDR_FLOATING(GPIOB_PIN4)    |\
-                                     PIN_PUPDR_FLOATING(GPIOB_PIN5)    |\
+                                     PIN_PUPDR_FLOATING(GPIOB_RADIO_SCK)     |\
+                                     PIN_PUPDR_FLOATING(GPIOB_RADIO_MISO)    |\
+                                     PIN_PUPDR_FLOATING(GPIOB_RADIO_MOSI)    |\
                                      PIN_PUPDR_FLOATING(GPIOB_PIN6)    |\
                                      PIN_PUPDR_FLOATING(GPIOB_PIN7)     |\
                                      PIN_PUPDR_FLOATING(GPIOB_GYRO_SCL)    |\
@@ -376,9 +376,9 @@
 #define VAL_GPIOB_ODR               (PIN_ODR_LOW(GPIOB_PIN0)               |\
                                      PIN_ODR_LOW(GPIOB_PIN1)               |\
                                      PIN_ODR_LOW(GPIOB_PIN2)               |\
-                                     PIN_ODR_LOW(GPIOB_PIN3)           |\
-                                     PIN_ODR_LOW(GPIOB_PIN4)          |\
-                                     PIN_ODR_LOW(GPIOB_PIN5)          |\
+                                     PIN_ODR_LOW(GPIOB_RADIO_SCK)           |\
+                                     PIN_ODR_LOW(GPIOB_RADIO_MISO)          |\
+                                     PIN_ODR_LOW(GPIOB_RADIO_MOSI)          |\
                                      PIN_ODR_LOW(GPIOB_PIN6)          |\
                                      PIN_ODR_LOW(GPIOB_PIN7)           |\
                                      PIN_ODR_LOW(GPIOB_GYRO_SCL)          |\
@@ -392,9 +392,9 @@
 #define VAL_GPIOB_AFRL              (PIN_AFIO_AF(GPIOB_PIN0, 0)             |\
                                      PIN_AFIO_AF(GPIOB_PIN1, 0)             |\
                                      PIN_AFIO_AF(GPIOB_PIN2, 0)             |\
-                                     PIN_AFIO_AF(GPIOB_PIN3, 0)         |\
-                                     PIN_AFIO_AF(GPIOB_PIN4, 0)        |\
-                                     PIN_AFIO_AF(GPIOB_PIN5, 0)        |\
+                                     PIN_AFIO_AF(GPIOB_RADIO_SCK, 6)         |\
+                                     PIN_AFIO_AF(GPIOB_RADIO_MISO, 6)        |\
+                                     PIN_AFIO_AF(GPIOB_RADIO_MOSI, 6)        |\
                                      PIN_AFIO_AF(GPIOB_PIN6, 0)        |\
                                      PIN_AFIO_AF(GPIOB_PIN7, 0))
 #define VAL_GPIOB_AFRH              (PIN_AFIO_AF(GPIOB_GYRO_SCL, 4)        |\
@@ -511,7 +511,7 @@
                                      PIN_MODE_INPUT(GPIOD_PIN4)             |\
                                      PIN_MODE_ALTERNATE(GPIOD_EXT_TX)    |\
                                      PIN_MODE_INPUT(GPIOD_PIN6)     |\
-                                     PIN_MODE_INPUT(GPIOD_PIN7)         |\
+                                     PIN_MODE_OUTPUT(GPIOD_RADIO_CS)         |\
                                      PIN_MODE_INPUT(GPIOD_PIN8)    |\
                                      PIN_MODE_INPUT(GPIOD_PIN9)    |\
                                      PIN_MODE_OUTPUT(GPIOD_PYRO_GRN)      |\
@@ -527,7 +527,7 @@
                                      PIN_OTYPE_PUSHPULL(GPIOD_PIN4)         |\
                                      PIN_OTYPE_PUSHPULL(GPIOD_EXT_TX)    |\
                                      PIN_OTYPE_PUSHPULL(GPIOD_PIN6)     |\
-                                     PIN_OTYPE_PUSHPULL(GPIOD_PIN7)      |\
+                                     PIN_OTYPE_PUSHPULL(GPIOD_RADIO_CS)      |\
                                      PIN_OTYPE_PUSHPULL(GPIOD_PIN8)|\
                                      PIN_OTYPE_PUSHPULL(GPIOD_PIN9)|\
                                      PIN_OTYPE_PUSHPULL(GPIOD_PYRO_GRN)  |\
@@ -543,7 +543,7 @@
                                      PIN_OSPEED_2M(GPIOD_PIN4)              |\
                                      PIN_OSPEED_100M(GPIOD_EXT_TX)         |\
                                      PIN_OSPEED_2M(GPIOD_PIN6)          |\
-                                     PIN_OSPEED_2M(GPIOD_PIN7)          |\
+                                     PIN_OSPEED_100M(GPIOD_RADIO_CS)          |\
                                      PIN_OSPEED_2M(GPIOD_PIN8)     |\
                                      PIN_OSPEED_2M(GPIOD_PIN9)     |\
                                      PIN_OSPEED_2M(GPIOD_PYRO_GRN)      |\
@@ -559,7 +559,7 @@
                                      PIN_PUPDR_FLOATING(GPIOD_PIN4)           |\
                                      PIN_PUPDR_FLOATING(GPIOD_EXT_TX)    |\
                                      PIN_PUPDR_FLOATING(GPIOD_PIN6)     |\
-                                     PIN_PUPDR_FLOATING(GPIOD_PIN7)      |\
+                                     PIN_PUPDR_FLOATING(GPIOD_RADIO_CS)      |\
                                      PIN_PUPDR_FLOATING(GPIOD_PIN8)|\
                                      PIN_PUPDR_FLOATING(GPIOD_PIN9)|\
                                      PIN_PUPDR_FLOATING(GPIOD_PYRO_GRN)  |\
@@ -575,7 +575,7 @@
                                      PIN_ODR_LOW(GPIOD_PIN4)               |\
                                      PIN_ODR_HIGH(GPIOD_EXT_TX)          |\
                                      PIN_ODR_LOW(GPIOD_PIN6)           |\
-                                     PIN_ODR_LOW(GPIOD_PIN7)            |\
+                                     PIN_ODR_HIGH(GPIOD_RADIO_CS)            |\
                                      PIN_ODR_LOW(GPIOD_PIN8)      |\
                                      PIN_ODR_LOW(GPIOD_PIN9)      |\
                                      PIN_ODR_LOW(GPIOD_PYRO_GRN)        |\
@@ -591,7 +591,7 @@
                                      PIN_AFIO_AF(GPIOD_PIN4, 0)             |\
                                      PIN_AFIO_AF(GPIOD_EXT_TX, 7)        |\
                                      PIN_AFIO_AF(GPIOD_PIN6, 0)         |\
-                                     PIN_AFIO_AF(GPIOD_PIN7, 0))
+                                     PIN_AFIO_AF(GPIOD_RADIO_CS, 0))
 #define VAL_GPIOD_AFRH              (PIN_AFIO_AF(GPIOD_PIN8, 0)    |\
                                      PIN_AFIO_AF(GPIOD_PIN9, 0)    |\
                                      PIN_AFIO_AF(GPIOD_PYRO_GRN, 0)      |\
