@@ -106,39 +106,33 @@ static void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[])
     SDFS sd;
     SDRESULT res;
 
-    int len = 110;
+    static const int len = 110;
+    static const char* test_string = "Here is a string.\nIt tests the \
+functionality\n of the micro sd card\nIf this comes out right, it was \
+successful.\n";
     char result[len];
-    char* test_string = "Here is a string.\nIt tests the functionality\n\
-of the micro sd card\nIf this comes out right, it was successful.\n";
 
     chprintf(chp, "Opening file\n");
     res = microsd_open_file(&file, "testfile", FA_CREATE_ALWAYS, &sd);
-    if (res != FR_OK) {
-        chprintf(chp, "returned error! %d\n", res);
-        return;
-    }
+    if (res != FR_OK) goto error;
 
     chprintf(chp, "Writing test string to sd\n");
     res = microsd_write(&file, test_string, len);
-    if (res != FR_OK) {
-        chprintf(chp, "returned error! %d\n", res);
-        return;
-    }
+    if (res != FR_OK) goto error;
 
     chprintf(chp, "Reading the following from sd:\n");
     res = microsd_read(&file, result, len);
+    if (res != FR_OK) goto error;
     chprintf(chp, "%s\n", result);
-    if (res != FR_OK) {
-        chprintf(chp, "returned error! %d\n", res);
-        return;
-    }
 
     chprintf(chp, "Closing file\n");
     res = microsd_close_file(&file);
-    if (res != FR_OK) {
+    if (res != FR_OK) goto error;
+
+    return;
+
+    error:
         chprintf(chp, "returned error! %d\n", res);
-        return;
-    }
 }
 
 void b3_shell_run()
