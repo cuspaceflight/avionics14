@@ -300,7 +300,7 @@ msg_t rfm69_thread(void *arg) {
 
 //Test thread: for the moment just try and send a string
 	
-	msg_t rfm69_test_thread(void *arg) {
+msg_t rfm69_test_thread(void *arg) {
 
 	(void) arg;
 	chRegSetThreadName("RFM69");
