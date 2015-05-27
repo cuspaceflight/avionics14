@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "microsd.h"
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -97,6 +98,49 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Real time clock frequency: %u\r\n", f);
 }
 
+static void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[])
+{
+    (void)argv;
+    (void)argc;
+    SDFILE file;
+    SDFS sd;
+    SDRESULT res;
+
+    int len = 110;
+    char result[len];
+    char* test_string = "Here is a string.\nIt tests the functionality\n\
+of the micro sd card\nIf this comes out right, it was successful.\n";
+
+    chprintf(chp, "Opening file\n");
+    res = microsd_open_file(&file, "testfile", FA_CREATE_ALWAYS, &sd);
+    if (res != FR_OK) {
+        chprintf(chp, "returned error! %d\n", res);
+        return;
+    }
+
+    chprintf(chp, "Writing test string to sd\n");
+    res = microsd_write(&file, test_string, len);
+    if (res != FR_OK) {
+        chprintf(chp, "returned error! %d\n", res);
+        return;
+    }
+
+    chprintf(chp, "Reading the following from sd:\n");
+    res = microsd_read(&file, result, len);
+    chprintf(chp, "%s\n", result);
+    if (res != FR_OK) {
+        chprintf(chp, "returned error! %d\n", res);
+        return;
+    }
+
+    chprintf(chp, "Closing file\n");
+    res = microsd_close_file(&file);
+    if (res != FR_OK) {
+        chprintf(chp, "returned error! %d\n", res);
+        return;
+    }
+}
+
 void b3_shell_run()
 {
     static const ShellCommand commands[] = {
@@ -105,6 +149,7 @@ void b3_shell_run()
         {"rt", cmd_rt},
         {"beep", cmd_beep},
         {"gps_passthrough", cmd_gps_passthrough},
+        {"microsd", cmd_microsd},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
