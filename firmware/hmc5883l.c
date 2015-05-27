@@ -82,6 +82,27 @@ static bool_t hmc5883l_init(uint8_t *buf, uint8_t *buf_data)
     return success;
 }
 
+/*This reads the identification registers on the magno and returns true if they match expected. The ID contents can also be accessed later if required.*/
+static bool_t hmc58831_identify(uint8_t *buf_data)
+{
+    msg_t rv;
+    bool_t success = TRUE;
+    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, 0x0A, 1, buf_data, 3, 1000);
+    
+    if  (rv == RDY_OK)
+    {
+        success &= (buf_data[0] == 0x48)
+        success &= (buf_data[1] == 0x34)
+        success &= (buf_data[2] == 0x33)
+        return success;
+    }
+	else
+    {
+	    return FALSE;
+    }
+}
+
+
 /* 
  * buf_data contains 3 pairs of 8 bit entries.
  * Each pair corresponds to field strength along X, Y, and Z axes.
