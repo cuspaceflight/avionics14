@@ -2,7 +2,37 @@
 #include <hal.h>
 #include "chprintf.h"
 
+static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;
+    (void)argv;
+    static const SerialConfig sc = {9600};
+    sdStart(&SD1, &sc);
+    EventListener elSerData;
+    flagsmask_t flags;
+    chEvtRegisterMask(chnGetEventSource(&SD1), &elSerData, EVENT_MASK(1));
+
+    while (TRUE)
+    {
+       chEvtWaitOneTimeout(EVENT_MASK(1), MS2ST(10));
+       flags = chEvtGetAndClearFlags(&elSerData);
+       if (flags & CHN_INPUT_AVAILABLE)
+       {
+          msg_t charbuf;
+          do
+          {
+             charbuf = chnGetTimeout(&SD1, TIME_IMMEDIATE);
+             if ( charbuf != Q_TIMEOUT )
+             {
+               chSequentialStreamPut(chp, charbuf);
+             }
+          }
+          while (charbuf != Q_TIMEOUT);
+       }
+    }
+}
+
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)chp;
     (void)argv;
     (void)argc;
 
@@ -74,6 +104,7 @@ void b3_shell_run()
         {"threads", cmd_threads},
         {"rt", cmd_rt},
         {"beep", cmd_beep},
+        {"gps_passthrough", cmd_gps_passthrough},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
