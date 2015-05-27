@@ -17,15 +17,14 @@
 
 #include <stdint.h>
 #include "rfm69.h"
-#include "rfm69_config.h"
-
 #include "err.h" 
 #include "hal.h"
 #include "config.h"
+#include "rfm69_config.h"
 
 //change as needed
-#define RFM69_SPID SPID3 
-#define RFM69_SPI_CS_PORT GPIOD 
+#define RFM69_SPID SPID3
+#define RFM69_SPI_CS_PORT GPIOD
 #define RFM69_SPI_CS_PIN GPIOD_RADIO_CS
 
 #define RFM69_MEMPOOL_ITEMS 32
@@ -44,7 +43,7 @@ void rfm69_log_c(uint8_t channel, const char* data)
 {
     volatile char *msg;
     msg = (char*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(0 | conf.location << 4);
+    msg[4] = (uint8_t)(0);
     msg[5] = (char)channel;
     memcpy((void*)msg, (void*)&halGetCounterValue(), 4);
     memcpy((void*)&msg[8], data, 8);
@@ -55,7 +54,7 @@ void rfm69_log_s64(uint8_t channel, int64_t data)
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(1 | conf.location << 4);
+    msg[4] = (char)(1 | conf.stage << 4);
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8], &data, 8);
@@ -66,7 +65,7 @@ void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b)
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(3 | conf.location << 4);
+    msg[4] = (char)(3 | conf.stage << 4);
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 4);
@@ -79,7 +78,7 @@ void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(5 | conf.location << 4);
+    msg[4] = (char)(5 | conf.stage << 4);
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 2);
@@ -94,7 +93,7 @@ void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(6 | conf.location << 4);
+    msg[4] = (char)(6 | conf.stage << 4);
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 2);
@@ -108,7 +107,7 @@ void rfm69_log_f(uint8_t channel, float data_a, float data_b)
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(9 | conf.location << 4);
+    msg[4] = (char)(9 | conf.stage << 4);
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 4);
@@ -128,7 +127,31 @@ static void rfm69_mem_init()
 /**
  * Wait for a register bit to go high, with timeout.
  */
-int rfm69_wait_for_bit_high (*SPID SPID, uint8_t reg_addr, uint8_t mask) {
+
+uint8_t rfm69_spi_transfer_byte(SPIDriver* SPID, uint8_t out) {
+	//the spi_transfer_byte function in this library is an SPI exchange: out is sent and MISO is sampled synchronously, so think can be replaced with the CHiBiOS spiExchange method
+	uint8_t val; 	
+	spiExchange(SPID, 1, &out, &val);
+	
+	return val;
+}
+
+uint8_t rfm69_register_read (SPIDriver* SPID, uint8_t reg_addr) {
+	spiSelect(SPID);
+	rfm69_spi_transfer_byte(SPID, reg_addr);
+	uint8_t reg_value = rfm69_spi_transfer_byte(SPID, 0xff);
+	spiUnselect(SPID);
+	return reg_value;
+}
+
+void rfm69_register_write (SPIDriver* SPID, uint8_t reg_addr, uint8_t reg_value) {
+	spiSelect(SPID);
+	rfm69_spi_transfer_byte (SPID, reg_addr | 0x80); // Set bit 7 to indicate write op
+	rfm69_spi_transfer_byte (SPID, reg_value);
+	spiUnselect(SPID);
+}
+
+int rfm69_wait_for_bit_high (SPIDriver* SPID, uint8_t reg_addr, uint8_t mask) {
 	int niter=50000;
 	while ( (rfm69_register_read(SPID, reg_addr) & mask) == 0) {
 		if (--niter == 0) {
@@ -141,7 +164,7 @@ int rfm69_wait_for_bit_high (*SPID SPID, uint8_t reg_addr, uint8_t mask) {
 /** 
  * Test for presence of RFM69
  */
-int rfm69_test (*SPID SPID) {
+int rfm69_test (SPIDriver* SPID) {
 	// Backup AES key register 1
 	int aeskey1 = rfm69_register_read(SPID, 0x3E);
 
@@ -161,7 +184,7 @@ int rfm69_test (*SPID SPID) {
 /**
  * Configure RFM69 radio module for use. Assumes SPI interface is already configured.
  */
-void rfm69_config(*SPID SPID) {
+void rfm69_config(SPIDriver* SPID) {
 	int i;
 	for (i = 0; RFM69_CONFIG[i][0] != 255; i++) {
 	    rfm69_register_write(SPID, RFM69_CONFIG[i][0], RFM69_CONFIG[i][1]);
@@ -171,7 +194,7 @@ void rfm69_config(*SPID SPID) {
 /**
  * Set RFM69 operating mode. Use macro values RFM69_OPMODE_Mode_xxxx as arg.
  */
-int rfm69_mode (*SPID SPID, uint8_t mode) {
+int rfm69_mode (SPIDriver* SPID, uint8_t mode) {
 	uint8_t regVal = rfm69_register_read(SPID, RFM69_OPMODE);
 	regVal &= ~RFM69_OPMODE_Mode_MASK;
 	regVal |= RFM69_OPMODE_Mode_VALUE(mode);
@@ -185,7 +208,7 @@ int rfm69_mode (*SPID SPID, uint8_t mode) {
 /**
  * Transmit a frame stored in buf
  */
-void rfm69_frame_tx(*SPID SPID, uint8_t *buf, int len) {
+void rfm69_frame_tx(SPIDriver* SPID, uint8_t *buf, int len) {
 
 	// Turn off receiver before writing to FIFO
 	rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
@@ -211,29 +234,6 @@ void rfm69_frame_tx(*SPID SPID, uint8_t *buf, int len) {
 	rfm69_wait_for_bit_high(SPID, RFM69_IRQFLAGS2, RFM69_IRQFLAGS2_PacketSent);
 }
 
-uint8_t rfm69_register_read (*SPID SPID, uint8_t reg_addr) {
-	spiSelect(SPID);
-	rfm69_spi_transfer_byte(SPID, reg_addr);
-	uint8_t reg_value = rfm69_spi_transfer_byte(SPID, 0xff);
-	spiUnselect(SPID);
-	return reg_value;
-}
-
-void rfm69_register_write (*SPID SPID, uint8_t reg_addr, uint8_t reg_value) {
-	spiSelect(SPID);
-	rfm69_spi_transfer_byte (SPID, reg_addr | 0x80); // Set bit 7 to indicate write op
-	rfm69_spi_transfer_byte (SPID, reg_value);
-	spiUnselect(SPID);
-}
-
-uint8_t rfm69_spi_transfer_byte(*SPID SPID, uint8_t out) {
-	//the spi_transfer_byte function in this library is an SPI exchange: out is sent and MISO is sampled synchronously, so think can be replaced with the CHiBiOS spiExchange method
-	uint8_t val; 	
-	spiExchange(SPID, 1, (void*) &out, (void*) &val);
-	
-	return val;
-}
-
 /*----------------------------Thread-------------------------------------------------*/
 
 msg_t rfm69_thread(void *arg) {
@@ -249,17 +249,38 @@ msg_t rfm69_thread(void *arg) {
 		NULL,
 		RFM69_SPI_CS_PORT,
 		RFM69_SPI_CS_PIN,
-		SPI_CR1_BR_2 | 0 | 0 
+		SPI_CR1_BR_2 | 0 | 0
 	};
+	
 	spiStart(&RFM69_SPID, &spi_cfg);
-	rfm69_config(SPID);
+	rfm69_config(&RFM69_SPID);
 	
 	rfm69_mem_init();
 	
-	if(conf.stage == 2)
-		rfm69_log_c(0x00, "TOP");
-	else if(conf.stage == 1)
-		rfm69_log_c(0x00, "BOTTOM");
+		int i;
+	
+	if(rfm69_test(&RFM69_SPID) == 0) {
+		//five blinks to show correct initialisation:
+		for(i = 0; i<5; i++) {
+			palClearPad(GPIOD, GPIOD_RADIO_GRN);
+			chThdSleepMilliseconds(500);
+			palSetPad(GPIOD, GPIOD_RADIO_GRN);
+			chThdSleepMilliseconds(500);
+		}
+	} else {
+		//five blinks red to show incorrect initialisation
+		for(i = 0; i<5; i++) {
+			palClearPad(GPIOD, GPIOD_RADIO_RED);
+			chThdSleepMilliseconds(500);
+			palSetPad(GPIOA, GPIOD_RADIO_RED);
+			chThdSleepMilliseconds(500);
+		}
+	}
+	
+	if(conf.stage == 1)
+		rfm69_log_c(0, "BOTTOM");
+	else if(conf.stage == 2)
+		rfm69_log_c(0, "TOP");
 
 	while(TRUE) {
 		status = chMBFetch(&rfm69_mb, &msgp, TIME_INFINITE);
@@ -267,18 +288,66 @@ msg_t rfm69_thread(void *arg) {
 			continue;
 		}
 		
-		/**
-		 * cast the msgp pointer to be uint8_t so data can be sent using tx function 
-		 * on ground station end cast the message back to type char
-		**/
-		
+	//cast the msgp pointer to be uint8_t so data can be sent using tx function 		
 		msg = (uint8_t*) msgp;  
-		rfm69_frame_tx(SPID, msg, 16);
+		rfm69_frame_tx(&RFM69_SPID, msg, 16);
 		chPoolFree(&rfm69_mp, (void*)msg);
-		rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
+		rfm69_mode(&RFM69_SPID, RFM69_OPMODE_Mode_STDBY);
 	}
 	return (msg_t)NULL;
 }
+
+
+//Test thread: for the moment just try and send a string
 	
+	msg_t rfm69_test_thread(void *arg) {
+
+	(void) arg;
+	chRegSetThreadName("RFM69");
+	
+	//setup SPI: CPHA = 0, CPOL = 0;
+	const SPIConfig spi_cfg = { 
+		NULL,
+		RFM69_SPI_CS_PORT,
+		RFM69_SPI_CS_PIN,
+		SPI_CR1_BR_2 | 0 | 0
+	};
+	
+	spiStart(&RFM69_SPID, &spi_cfg);
+	rfm69_config(&RFM69_SPID);
+	
+	int i;
+	
+	if(rfm69_test(&RFM69_SPID) == 0) {
+		//five blinks to show correct initialisation:
+		for(i = 0; i<5; i++) {
+			palClearPad(GPIOD, GPIOD_RADIO_GRN);
+			chThdSleepMilliseconds(500);
+			palSetPad(GPIOD, GPIOD_RADIO_GRN);
+			chThdSleepMilliseconds(500);
+		}
+	} else {
+		//five blinks red to show incorrect initialisation
+		for(i = 0; i<5; i++) {
+			palClearPad(GPIOD, GPIOD_RADIO_RED);
+			chThdSleepMilliseconds(500);
+			palSetPad(GPIOD, GPIOD_RADIO_RED);
+			chThdSleepMilliseconds(500);
+		}
+	}
+	
+	/*test if the rfm69 registers are actually being set*/
+		
+	/*test data*/
+	uint8_t data[] = "Hello World";
+
+	while(TRUE) { 
+		
+		rfm69_frame_tx(&RFM69_SPID, data, sizeof(data));
+		//rfm69_mode(&RFM69_SPID, RFM69_OPMODE_Mode_STDBY);
+		chThdSleepMilliseconds(300);
+	}
+	return (msg_t)NULL;
+}
 
 
