@@ -38,8 +38,8 @@ extern const uint8_t RFM69_CONFIG[][2] = {
 	// Ref Table 9, page 20.
 	// For (default) 4.8kbps (MSB=0x1a, LSB=0x0b, 16 bit value 6667)
 	// For 1200bps want 0x682B
-	{ RFM69_BITRATEMSB, 0x3E},
-	{ RFM69_BITRATELSB, 0x80},
+	{ RFM69_BITRATEMSB, 0x68},
+	{ RFM69_BITRATELSB, 0x2B},
 
 	// Carrier frequency (x3 registers for MSB 0x7, MID 0x8, LSB 0x9)
 	// 433MHz operation
@@ -49,8 +49,8 @@ extern const uint8_t RFM69_CONFIG[][2] = {
 
 	// Power Amplifier, 10dBm to comply with regulations
 	{ RFM69_PALEVEL,
-    	RFM69_PALEVEL_Pa1On
-    	| RFM69_PALEVEL_OutputPower_VALUE(28)
+    	RFM69_PALEVEL_Pa0On
+    	| RFM69_PALEVEL_OutputPower_VALUE(31)
 	},
 
 
