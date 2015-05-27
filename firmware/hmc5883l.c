@@ -46,7 +46,7 @@ static bool_t hmc5883l_transmit(uint8_t *buf)
  */
 
  /* Draw data from the sensor in 6 consecutive bytes. Make sure that the registry is pointing to 0x03 first! */
-static bool_t hmc5883l_receive(uint8_t *buf, uint8_t *buf_data)
+static bool_t hmc5883l_receive(uint8_t *buf_data)
 {
     msg_t rv;
     uint8_t txbuf = 0x03;
@@ -55,17 +55,18 @@ static bool_t hmc5883l_receive(uint8_t *buf, uint8_t *buf_data)
     Location of measurements are X,Z,Y in 0x03,0x04,0x05 respectively. (note the order!) */
     rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, txbuf, 1, buf_data, 6, 1000);
     
-	if  (rv == RDY_OK)
-	    return TRUE;
-	else
+    if  (rv == RDY_OK)
+        return TRUE;
+    else
 	    return FALSE;
 }
 
 static bool_t hmc5883l_init(uint8_t *buf, uint8_t *buf_data)
 {
     bool_t success = TRUE;
+    size_t n = 2;
 
-    i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000)
+    i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000);
     
     buf[0] = 0x00; /*Register 00 (1Byte): [0][00=avg ovr 1 sample][100=15Hz][00=normal operation]*/
     buf[1] = 0x10; /*Send 00010000*/
@@ -91,9 +92,9 @@ static bool_t hmc58831_identify(uint8_t *buf_data)
     
     if  (rv == RDY_OK)
     {
-        success &= (buf_data[0] == 0x48)
-        success &= (buf_data[1] == 0x34)
-        success &= (buf_data[2] == 0x33)
+        success &= (buf_data[0] == 0x48);
+        success &= (buf_data[1] == 0x34);
+        success &= (buf_data[2] == 0x33);
         return success;
     }
 	else
@@ -174,10 +175,12 @@ msg_t hmc5883l_thread(void *arg)
         while(1) chThdSleepMilliseconds(5);
     }
     
+    bool_t id_ok = hmc58831_identify(buf_data);
+    
     
     while(TRUE)
     {   
-        if (hmc5883l_receive(buf, buf_data))
+        if (hmc5883l_receive(buf_data))
         {
             /*hmc5883l_field_convert(buf_data, field);*/
             /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
