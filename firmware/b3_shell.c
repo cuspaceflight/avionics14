@@ -2,6 +2,7 @@
 #include <hal.h>
 #include "chprintf.h"
 #include "pyro.h"
+#include "board.h"
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;

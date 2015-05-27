@@ -123,7 +123,7 @@ static state_t do_state_time_delay(instance_data_t *data)
     else if (data->state.h < MAIN_DEPLOY_ALTITUDE) /* edit this constant */
     {
 	pyro_fire_main();                     /* check this is functional */
-        return STATE_MAIN_PARACHUTE_FIRED_BOTTOM
+        return STATE_MAIN_PARACHUTE_FIRED_BOTTOM ;
     }
     else
         return STATE_TIME_DELAY;

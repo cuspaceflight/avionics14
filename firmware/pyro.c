@@ -1,7 +1,4 @@
 /* Pyrotechnics Channel
- * Need to confirm pin/pad allocation
- * I've just defined a few different output channels
- * and have assumed we're using GPIO E (as Adam did)
  *
  * NOTE: Separation requires 2 channels 
  * (both input & output)
@@ -9,30 +6,18 @@
  * Output Channels:
  * GPIOE_PYRO_MAIN_F : for parachute. 
  * GPIOE_PYRO_SEPARATION_1_F : for separation. 
- * GPIOE_PYRO_OTHER_2_F : for separation in bottom stage
- *                        for launching second stage in top
+ * GPIOE_PYRO_SEPARATION_2_F : for separation in bottom stage
+ * GPIOE_PYRO_FIRE_SECOND_STAGE_F   : for launching second stage in top
  * GPIOE_PYRO_DROGUE_F : for drogue. 
  *
  * Input Channels:
  * GPIOE_PYRO_MAIN_C : for parachute. 
  * GPIOE_PYRO_SEPARATION_1_C : for separation.
- * GPIOE_PYRO_OTHER_2_F : for separation in bottom stage
- *                        for launching second stage in top
+ * GPIOE_PYRO_SEPARATION_2_F : for separation in bottom stage
+ * GPIOE_PYRO_FIRE_SECOND_STAGE_F  : for launching second stage in top
  * GPIOE_PYRO_DROGUE_C : for drogue. 
  */
 
-
- /*
- * In config file, we'll need to define:
- *
- * extern int board_location
- *
- * and:
- * 
- * #define TOP_BOARD = 1
- * #define BOTTOM_BOARD = 0
- * or something to that effect
- */
  
  
 /* Header files need defining */ 
@@ -55,13 +40,13 @@
 #define GPIOE_PYRO_DROGUE_C               GPIOE_PY4_CHK  
 
 
-
+/* TODO: Tidy this up and put into one function? */
 void pyro_off_1(void* arg);
 void pyro_off_2(void* arg);
 void pyro_off_3(void* arg);
 void pyro_off_4(void* arg);
 
-int board_location = TOP_BOARD ;
+int board_location = TOP_BOARD ; /* CHANGE THIS IF NECESSARY */
 
 /* Checks the input channels for continuity.
  * The pad will be low if the e-match is intact
@@ -120,6 +105,7 @@ static VirtualTimer vt1, vt2, vt3, vt4;
 void pyro_fire(uint8_t channel, uint16_t duration_ms)
 {
     uint8_t pad, pad_2 = 0;
+    bool fire_separation = FALSE;
 
     if(channel == GPIOE_PYRO_DROGUE_F) {
         pad = GPIOE_PYRO_DROGUE_F;
@@ -134,6 +120,7 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
     } else if(channel == GPIOE_PYRO_SEPARATION_1_F) {
         pad = GPIOE_PYRO_SEPARATION_1_F;
         pad_2 = GPIOE_PYRO_SEPARATION_2_F;
+        fire_separation = TRUE;
         chVTReset(&vt3);
         chVTSet(&vt3, MS2ST(duration_ms), pyro_off_3, NULL);
         /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
@@ -147,7 +134,7 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
     }
 
     palSetPad(GPIOE, pad);
-    if (pad_2 != 0) 
+    if (fire_separation) 
     {
         palSetPad(GPIOE, pad_2);
     }
