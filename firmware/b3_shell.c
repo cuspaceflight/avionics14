@@ -1,6 +1,7 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "rfm69.h"
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -39,6 +40,24 @@ static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     palSetPad(GPIOA, GPIOA_BUZZER);
     chThdSleepMilliseconds(500);
     palClearPad(GPIOA, GPIOA_BUZZER);
+}
+
+
+static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void)chp;
+	(void)argv;
+	(void)argc;
+	
+	static WORKING_AREA(waRadio, 512);
+	
+	char* data = "Hello";
+	chThdCreateStatic(waRadio, sizeof(waRadio), HIGHPRIO, rfm69_thread, NULL);
+	
+	int i;
+	for (i = 0; i<10; i++) {
+		rfm69_log_c(8, data);
+		chThdSleepMilliseconds(500);
+	}
 }
 
 static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
