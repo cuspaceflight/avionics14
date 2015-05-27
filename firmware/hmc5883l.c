@@ -10,8 +10,7 @@
 
 #include "hmc5883l.h"  
 
-#define HMC5883L_I2C_WRITE_ADDR    0x1E
-#define HMC5883L_I2C_READ_ADDR     0x1E
+#define HMC5883L_I2C_ADDR    0x1E
 
 static Thread *tpHMC5883L = NULL;
 static float counts_to_Tesla = 9.2E-8;
@@ -25,20 +24,15 @@ static const I2CConfig i2cconfig = {
 };
 
 
-/* Transmit data to sensor */
+/* Transmit data to sensor (used in init function only) */
 static bool_t hmc5883l_transmit(uint8_t *buf)
 {
     size_t n = 2;  /* Transmit 2 bytes */
-    systime_t timeout;
     msg_t rv;
 
-    /* Determine timeout in systicks (ms) - UNSURE ABOUT THIS */
-    timeout = n / 100 + 10; 
-
     /* Transmit message */
-    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_WRITE_ADDR, buf, 
-	                              n, NULL, 0, timeout);
-								  
+    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000);
+    
 	if (rv == RDY_OK)
 	    return TRUE;
 	else
@@ -51,19 +45,15 @@ static bool_t hmc5883l_transmit(uint8_t *buf)
  * Place output data(6 bytes) into a (different) buffer
  */
 
+ /* Draw data from the sensor in 6 consecutive bytes. Make sure that the registry is pointing to 0x03 first! */
 static bool_t hmc5883l_receive(uint8_t *buf, uint8_t *buf_data)
 {
     msg_t rv;
-    //buf[0] = 0x06;
-	
-	/* Timeout is somewhat arbitrary- CHECK THIS */
-	
-    //rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_READ_ADDR, buf, 1, buf_data, 6, 100);
+    uint8_t txbuf = 0x03;
 
-//buf[0] = 0x03;
-    //rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_READ_ADDR, buf, 1, NULL, 0, 100);
-
-rv = i2cMasterReceiveTimeout(&I2CD2, HMC5883L_I2C_READ_ADDR, buf_data, 6, 100);
+    /* Sends 0x03 first, so that registry is pointing in correct location, then reads 6 consecutive bytes.
+    Location of measurements are X,Z,Y in 0x03,0x04,0x05 respectively. (note the order!) */
+    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, txbuf, 1, buf_data, 6, 1000);
     
 	if  (rv == RDY_OK)
 	    return TRUE;
@@ -74,38 +64,22 @@ rv = i2cMasterReceiveTimeout(&I2CD2, HMC5883L_I2C_READ_ADDR, buf_data, 6, 100);
 static bool_t hmc5883l_init(uint8_t *buf, uint8_t *buf_data)
 {
     bool_t success = TRUE;
-  
-      /* Configure Mode Register: High Speed, Continuous Measurement */
-    //buf[0] = 0x02;
-    //buf[1] = 0x00;
-    //success &= hmc5883l_transmit(buf) ;
+
+    i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000)
     
-    /* Configure Reg A - Highest Data Rate- 75 Hz */
-    //buf[0] = 0x00;
-    //buf[1] = 0x18;
-    //success &= hmc5883l_transmit(buf) ;
+    buf[0] = 0x00; /*Register 00 (1Byte): [0][00=avg ovr 1 sample][100=15Hz][00=normal operation]*/
+    buf[1] = 0x10; /*Send 00010000*/
+    success &= hmc5883l_transmit(buf);
 
-buf[0] = 0x00;
-buf[1] = 0x70;
-success &= hmc5883l_transmit(buf);
+    buf[0] = 0x01; /*Register 01 (1Byte): [001 = default gain][00000]*/
+    buf[1] = 0x20; /*Send 00100000*/
+    success &= hmc5883l_transmit(buf);
 
-buf[0] = 0x01;
-buf[1] = 0xA0;
-success &= hmc5883l_transmit(buf);
-
-buf[0] = 0x02;
-buf[1] = 0x00;
-success &= hmc5883l_transmit(buf);
- 
-								  
-  	
-    /* Wait for 20 ms whilst measurements are taken, then read them */
-    chThdSleepMilliseconds(20) ;
-    
-    success &= hmc5883l_receive(buf, buf_data) ;
+    buf[0] = 0x02; /*Register 02 (1Byte): [000000][00 = continuous measurement]*/
+    buf[1] = 0x00; /*Send 00000000*/
+    success &= hmc5883l_transmit(buf);
 
     return success;
-    
 }
 
 /* 
@@ -174,7 +148,7 @@ msg_t hmc5883l_thread(void *arg)
     i2cStart(&I2CD2, &i2cconfig);
     
 
-    if(!hmc5883l_init(buf, buf_data)) 
+    if(!hmc5883l_init(buf, buf_data))
     {
         while(1) chThdSleepMilliseconds(5);
     }
@@ -183,29 +157,30 @@ msg_t hmc5883l_thread(void *arg)
     while(TRUE)
     {   
         if (hmc5883l_receive(buf, buf_data))
-	{
-	    //hmc5883l_field_convert(buf_data, field);
-	global_magnoxyz[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
-        global_magnoxyz[1] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
-        global_magnoxyz[2] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
-	    /* microsd_log_s16(CHAN_IMU_MAGNO , 
-		    field[0], field[1], field[2], 0); */
-	    /*define this state estimation function 
-	    state_estimation_new_magno(field[0], 
+        {
+            /*hmc5883l_field_convert(buf_data, field);*/
+            /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
+            global_magnoxyz[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
+            global_magnoxyz[1] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
+            global_magnoxyz[2] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
+            /* microsd_log_s16(CHAN_IMU_MAGNO , 
+                field[0], field[1], field[2], 0); */
+            /*define this state estimation function 
+            state_estimation_new_magno(field[0], 
 			       field[1], field[2]); */
-	}
+        }
 
-	else
-	{   
-	    chThdSleepMilliseconds(20);
-	}
+        else
+        {   
+            chThdSleepMilliseconds(20);
+        }
 
-	/* Sleep until DRDY */
-	chSysLock();
-	tpHMC5883L = chThdSelf();
-	chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
-	chSysUnlock();
-     }
+        /* Sleep until DRDY */
+        chSysLock();
+        tpHMC5883L = chThdSelf();
+        chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+        chSysUnlock();
+    }
 
     return (msg_t)NULL;
 }
