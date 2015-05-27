@@ -48,7 +48,7 @@
 #define GPIOA_PIN8                  8
 #define GPIOA_GPS_RX                  9
 #define GPIOA_GPS_TX                 10
-#define GPIOA_PIN11                 11
+#define GPIOA_GPS_RESET                 11
 #define GPIOA_PIN12                 12
 #define GPIOA_SWDIO                 13
 #define GPIOA_SWCLK                 14
@@ -223,7 +223,7 @@
 									 PIN_MODE_INPUT(GPIOA_PIN8) | \
 									 PIN_MODE_ALTERNATE(GPIOA_GPS_RX) | \
 									 PIN_MODE_ALTERNATE(GPIOA_GPS_TX) | \
-									 PIN_MODE_INPUT(GPIOA_PIN11) | \
+									 PIN_MODE_OUTPUT(GPIOA_GPS_RESET) | \
 									 PIN_MODE_INPUT(GPIOA_PIN12) | \
 									 PIN_MODE_ALTERNATE(GPIOA_SWDIO) | \
 									 PIN_MODE_ALTERNATE(GPIOA_SWCLK) | \
@@ -239,7 +239,7 @@
 									 PIN_OTYPE_PUSHPULL(GPIOA_PIN8) | \
 									 PIN_OTYPE_PUSHPULL(GPIOA_GPS_RX) | \
 									 PIN_OTYPE_PUSHPULL(GPIOA_GPS_TX) | \
-									 PIN_OTYPE_PUSHPULL(GPIOA_PIN11) | \
+									 PIN_OTYPE_PUSHPULL(GPIOA_GPS_RESET) | \
 									 PIN_OTYPE_PUSHPULL(GPIOA_PIN12) | \
 									 PIN_OTYPE_PUSHPULL(GPIOA_SWDIO) | \
 									 PIN_OTYPE_PUSHPULL(GPIOA_SWCLK) | \
@@ -255,7 +255,7 @@
 									 PIN_OSPEED_2M(GPIOA_PIN8) | \
 									 PIN_OSPEED_100M(GPIOA_GPS_RX) | \
 									 PIN_OSPEED_100M(GPIOA_GPS_TX) | \
-									 PIN_OSPEED_2M(GPIOA_PIN11) | \
+									 PIN_OSPEED_2M(GPIOA_GPS_RESET) | \
 									 PIN_OSPEED_2M(GPIOA_PIN12) | \
 									 PIN_OSPEED_2M(GPIOA_SWDIO) | \
 									 PIN_OSPEED_2M(GPIOA_SWCLK) | \
@@ -271,7 +271,7 @@
 									 PIN_PUPDR_FLOATING(GPIOA_PIN8) | \
 									 PIN_PUPDR_FLOATING(GPIOA_GPS_RX) | \
 									 PIN_PUPDR_FLOATING(GPIOA_GPS_TX) | \
-									 PIN_PUPDR_FLOATING(GPIOA_PIN11) | \
+									 PIN_PUPDR_FLOATING(GPIOA_GPS_RESET) | \
 									 PIN_PUPDR_FLOATING(GPIOA_PIN12) | \
 									 PIN_PUPDR_FLOATING(GPIOA_SWDIO) | \
 									 PIN_PUPDR_FLOATING(GPIOA_SWCLK) | \
@@ -287,7 +287,7 @@
 									 PIN_ODR_LOW(GPIOA_PIN8) | \
 									 PIN_ODR_HIGH(GPIOA_GPS_RX) | \
 									 PIN_ODR_HIGH(GPIOA_GPS_TX) | \
-									 PIN_ODR_LOW(GPIOA_PIN11) | \
+									 PIN_ODR_HIGH(GPIOA_GPS_RESET) | \
 									 PIN_ODR_LOW(GPIOA_PIN12) | \
 									 PIN_ODR_LOW(GPIOA_SWDIO) | \
 									 PIN_ODR_LOW(GPIOA_SWCLK) | \
@@ -303,7 +303,7 @@
 #define VAL_GPIOA_AFRH              (PIN_AFIO_AF(GPIOA_PIN8, 0)  |\
                                      PIN_AFIO_AF(GPIOA_GPS_RX, 7)  |\
 									 PIN_AFIO_AF(GPIOA_GPS_TX, 7) |\
-									 PIN_AFIO_AF(GPIOA_PIN11, 0) |\
+									 PIN_AFIO_AF(GPIOA_GPS_RESET, 0) |\
 									 PIN_AFIO_AF(GPIOA_PIN12, 0) |\
 									 PIN_AFIO_AF(GPIOA_SWDIO, 0) |\
 									 PIN_AFIO_AF(GPIOA_SWCLK, 0) |\

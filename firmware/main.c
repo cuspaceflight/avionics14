@@ -7,12 +7,13 @@
 #include "hmc5883l.h"
 #include "l3g4200d.h"
 #include "b3_shell.h"
+#include "ublox.h"
 
-static WORKING_AREA(waIdleThread, 128);
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
 static WORKING_AREA(waHMC5883L, 512);
 static WORKING_AREA(waL3G4200D, 512);
+static WORKING_AREA(waGPS, 4096);
 
 /*
  * Set up pin change interrupts for the various sensors that react to them.
@@ -47,20 +48,12 @@ static const EXTConfig extcfg = {{
     {EXT_CH_MODE_DISABLED, NULL}  /* 22 - RTC Wakeup */
 }};
 
-static msg_t IdleThread(void *arg) {
-
-  (void)arg;
-  chRegSetThreadName("blinker");
-}
-
 int main(void) {
     halInit();
     chSysInit();
     chRegSetThreadName("main");
 
     extStart(&EXTD1, &extcfg);
-
-    chThdCreateStatic(waIdleThread, sizeof(waIdleThread), NORMALPRIO, IdleThread, NULL);
 
     /*chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,*/
                       /*ms5611_thread, NULL);*/
@@ -74,15 +67,15 @@ int main(void) {
     /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
                       /*l3g4200d_thread,NULL);*/
 
+    chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
+
     b3_shell_run();
 
     while (TRUE) {
         palSetPad(GPIOD, GPIOD_PYRO_GRN);
         palClearPad(GPIOD, GPIOD_PYRO_RED);
         chThdSleepMilliseconds(500);
-        
         palClearPad(GPIOD, GPIOD_PYRO_GRN);
-        palSetPad(GPIOD, GPIOD_PYRO_RED);
         chThdSleepMilliseconds(500);
     }
 }
