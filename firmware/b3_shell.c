@@ -124,6 +124,7 @@ void b3_shell_run()
         {"rt", cmd_rt},
         {"beep", cmd_beep},
         {"gps_passthrough", cmd_gps_passthrough},
+        {"radio_tx", cmd_radio_tx},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
