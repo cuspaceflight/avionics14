@@ -184,6 +184,39 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Real time clock frequency: %u\r\n", f);
 }
 
+static void cmd_test_all(BaseSequentialStream *chp, int argc, char *argv[]){
+	
+	chprintf(chp, " \n\nRunning thread function \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_threads(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning runtime test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_rt(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning beep test");
+    chThdSleepMilliseconds(1000);
+	cmd_beep(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning memory test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_mem(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning LED test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_led(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning accelerometer test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_accel(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning barometer test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_barotest(chp, argc, argv);
+
+	return;
+}
+
 void b3_shell_run()
 {
     static const ShellCommand commands[] = {
@@ -197,6 +230,7 @@ void b3_shell_run()
         {"accel", cmd_accel},
         {"gyro", cmd_gyro},
         {"barotest", cmd_barotest},
+		{"test_all", cmd_test_all},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
