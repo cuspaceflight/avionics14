@@ -75,6 +75,45 @@ static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
   chprintf(chp, "heap free total  : %u bytes\r\n", size);
 }
 
+static void cmd_led(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    palSetPad(GPIOD, GPIOD_PYRO_GRN);
+    chprintf(chp, "PYRO_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_PYRO_GRN);
+
+
+    palSetPad(GPIOD, GPIOD_PYRO_RED);
+    chprintf(chp, "PYRO_LED_RED is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_PYRO_RED);
+
+    palSetPad(GPIOD, GPIOD_RADIO_GRN);
+    chprintf(chp, "RADIO_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_RADIO_GRN);
+
+    palSetPad(GPIOD, GPIOD_RADIO_RED);
+    chprintf(chp, "RADIO_LED_RED is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_RADIO_RED);
+
+    palSetPad(GPIOD, GPIOD_IMU_GRN);
+    chprintf(chp, "IMU_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_IMU_GRN);
+
+    palSetPad(GPIOD, GPIOD_IMU_RED);
+    chprintf(chp, "IMU_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_IMU_RED);
+    
+    return;
+
+}
+
 static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
   static const char *states[] = {THD_STATE_NAMES};
   uint64_t busy = 0, total = 0;
@@ -125,6 +164,7 @@ void b3_shell_run()
         {"beep", cmd_beep},
         {"gps_passthrough", cmd_gps_passthrough},
         {"radio_tx", cmd_radio_tx},
+        {"led", cmd_led},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
