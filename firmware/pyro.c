@@ -45,9 +45,8 @@ void pyro_off_1(void* arg);
 void pyro_off_2(void* arg);
 void pyro_off_3(void* arg);
 void pyro_off_4(void* arg);
+void pyro_off_5(void* arg);
 
-/*for testing */
-void pyro_check(uint8_t channel, uint16_t duration_ms);
 
 int board_location = TOP_BOARD ; /* CHANGE THIS IF NECESSARY */
 
@@ -111,43 +110,46 @@ void pyro_check(uint8_t channel, uint16_t duration_ms)
 }
     
 
-static VirtualTimer vt1, vt2, vt3, vt4;
+static VirtualTimer vt1, vt2, vt3, vt4, vt5;
 void pyro_fire(uint8_t channel, uint16_t duration_ms)
 {
-    uint8_t pad, pad_2 = 0;
-    bool fire_separation = FALSE;
-
+    uint8_t pad;
+    
     if(channel == GPIOE_PYRO_MAIN_F) {
         pad = GPIOE_PYRO_MAIN_F;
         chVTReset(&vt1);
         chVTSet(&vt1, MS2ST(duration_ms), pyro_off_1, NULL);
         /* microsd_log_s16(GPIOE_PYRO_DROGUE_F, 1, 0, 0, 0); */
+        
     } else if(channel == GPIOE_PYRO_DROGUE_F) {
         pad = GPIOE_PYRO_DROGUE_F;
         chVTReset(&vt2);
         chVTSet(&vt2, MS2ST(duration_ms), pyro_off_2, NULL);
         /* microsd_log_s16(CHAN_PYRO_F, 0, 1, 0, 0);*/
+        
     } else if(channel == GPIOE_PYRO_SEPARATION_1_F) {
         pad = GPIOE_PYRO_SEPARATION_1_F;
-        pad_2 = GPIOE_PYRO_SEPARATION_2_F;
-        fire_separation = TRUE;
         chVTReset(&vt3);
         chVTSet(&vt3, MS2ST(duration_ms), pyro_off_3, NULL);
         /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
-    } else if(channel == GPIOE_PYRO_FIRE_SECOND_STAGE_F) {
-        pad = GPIOE_PYRO_FIRE_SECOND_STAGE_F;
+        
+    } else if(channel == GPIOE_PYRO_SEPARATION_2_F) {
+        pad = GPIOE_PYRO_SEPARATION_2_F;
         chVTReset(&vt4);
         chVTSet(&vt4, MS2ST(duration_ms), pyro_off_4, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/    
+        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+        
+    } else if(channel == GPIOE_PYRO_FIRE_SECOND_STAGE_F) {
+        pad = GPIOE_PYRO_FIRE_SECOND_STAGE_F;
+        chVTReset(&vt5);
+        chVTSet(&vt5, MS2ST(duration_ms), pyro_off_5, NULL);
+        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/     
+       
     } else {
         return;
     }
 
     palSetPad(GPIOE, pad);
-    if (fire_separation) 
-    {
-        palSetPad(GPIOE, pad_2);
-    }
          
 }
 
@@ -171,11 +173,15 @@ void pyro_off_3(void* arg)
 {
     (void)arg;
     palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_1_F);
+}
+
+void pyro_off_4(void* arg)
+{
+    (void)arg;
     palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_2_F);
 }
 
-
-void pyro_off_4(void* arg)
+void pyro_off_5(void* arg)
 {
     (void)arg;
     palClearPad(GPIOE, GPIOE_PYRO_FIRE_SECOND_STAGE_F);
@@ -204,6 +210,7 @@ void pyro_fire_main()
 void pyro_fire_separation()
 {
     pyro_fire(GPIOE_PYRO_SEPARATION_1_F, 1000);
+    pyro_fire(GPIOE_PYRO_SEPARATION_2_F, 1000);
    
 }
 

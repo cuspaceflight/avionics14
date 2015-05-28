@@ -14,8 +14,6 @@ bool_t pyro_continuity(uint8_t pad);
 /* Check that all pyros that should be installed are installed. */
 bool_t pyro_continuity_check(void);
 
-/*for testing */
-void pyro_check(uint8_t channel, uint16_t duration_ms);
 
 /* Fire the pyro channel `channel` for `duration_ms` milliseconds.
  * Non-blocking.
