@@ -2,6 +2,7 @@
 #include "hal.h"
 #include "test.h"
 
+/*
 #include "ms5611.h"
 #include "adxl3x5.h"
 #include "hmc5883l.h"
@@ -14,43 +15,51 @@ static WORKING_AREA(waADXL345, 512);
 static WORKING_AREA(waHMC5883L, 512);
 static WORKING_AREA(waL3G4200D, 512);
 
-/*
- * Set up pin change interrupts for the various sensors that react to them.
- */
-static const EXTConfig extcfg = {{
-    {EXT_CH_MODE_AUTOSTART | EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOE,
-        l3g4200d_wakeup},         /* Pin 0 - PE0 is Gyro DRDY */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 1 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 2 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 3 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 4 */
-    {EXT_CH_MODE_AUTOSTART | EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC,
-        adxl345_wakeup},          /* Pin 5 - PC5 is the accel INT1 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 6 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 7 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 8 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 9 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 10 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 11 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 12 */
-    {EXT_CH_MODE_DISABLED, NULL}, /* Pin 13 */
-    {EXT_CH_MODE_AUTOSTART | EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOE, NULL},
-        /*l3g4200d_wakeup}, [> Pin 14 - PE14 is the gyro DRDY <]*/
-    {EXT_CH_MODE_AUTOSTART | EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOE,
-        hmc5883l_wakeup}, /* Pin 0 - PE15 is the magnetometer DRDY */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 16 - PVD */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 17 - RTC Alarm */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 18 - USB OTG FS Wakeup */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 19 - Ethernet Wakeup */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 20 - USB OTG HS Wakeup */
-    {EXT_CH_MODE_DISABLED, NULL}, /* 21 - RTC Tamper/Timestamp */
-    {EXT_CH_MODE_DISABLED, NULL}  /* 22 - RTC Wakeup */
-}};
+*/
 
-static msg_t IdleThread(void *arg) {
+static WORKING_AREA(waI2CTest, 256);
+msg_t i2c_test(void* args)
+{
+    (void)args;
+    static const I2CConfig i2cconfig = {
+        OPMODE_I2C, 100000, STD_DUTY_CYCLE
+    };
 
-  (void)arg;
-  chRegSetThreadName("blinker");
+    i2cStart(&I2CD2, &i2cconfig);
+
+    uint8_t txbuf[32];
+    uint8_t rxbuf[32];
+    int16_t x, y, z;
+    msg_t rv;
+
+    txbuf[0] = 0x02;
+    txbuf[1] = 0x01;
+    rv = i2cMasterTransmit(&I2CD2, 0x1E, txbuf, 2, rxbuf, 0);
+
+    txbuf[0] = 0x00;
+    txbuf[1] = 0x11;
+    rv = i2cMasterTransmit(&I2CD2, 0x1E, txbuf, 2, rxbuf, 0);
+
+    /*txbuf[0] = 0xA0;*/
+    /*rv = i2cMasterTransmitTimeout(&I2CD1, 0x1E, txbuf, 1, rxbuf, 3, 500);*/
+
+    while(1) {
+        chThdSleepMilliseconds(200);
+
+        txbuf[0] = 0x03;
+        rv = i2cMasterTransmitTimeout(&I2CD2, 0x1E, txbuf, 1, rxbuf, 6, 500);
+
+        x = rxbuf[0] << 8 | rxbuf[1];
+        y = rxbuf[4] << 8 | rxbuf[5];
+        z = rxbuf[2] << 8 | rxbuf[3];
+
+        txbuf[0] = 0x02;
+        txbuf[1] = 0x01;
+        rv = i2cMasterTransmit(&I2CD2, 0x1E, txbuf, 2, rxbuf, 0);
+
+    }
+
+    return 0;
 }
 
 int main(void) {
@@ -58,9 +67,11 @@ int main(void) {
     chSysInit();
     chRegSetThreadName("main");
 
-    extStart(&EXTD1, &extcfg);
+    /*extStart(&EXTD1, &extcfg);*/
 
-    chThdCreateStatic(waIdleThread, sizeof(waIdleThread), NORMALPRIO, IdleThread, NULL);
+    chThdCreateStatic(waI2CTest, sizeof(waI2CTest), NORMALPRIO, i2c_test, NULL);
+
+    /*chThdCreateStatic(waIdleThread, sizeof(waIdleThread), NORMALPRIO, IdleThread, NULL);*/
 
     /*chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,*/
                       /*ms5611_thread, NULL);*/
@@ -68,13 +79,14 @@ int main(void) {
     /*chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,*/
                       /*adxl345_thread, NULL);*/
 
-    chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,
-                      hmc5883l_thread, NULL);
+    /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
+                      /*hmc5883l_thread, NULL);*/
 
     /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
                       /*l3g4200d_thread,NULL);*/
 
-    b3_shell_run();
+    /*b3_shell_run();*/
+
 
     while (TRUE) {
         palSetPad(GPIOD, GPIOD_PYRO_GRN);
@@ -82,7 +94,6 @@ int main(void) {
         chThdSleepMilliseconds(500);
         
         palClearPad(GPIOD, GPIOD_PYRO_GRN);
-        palSetPad(GPIOD, GPIOD_PYRO_RED);
         chThdSleepMilliseconds(500);
     }
 }
