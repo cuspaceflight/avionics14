@@ -46,6 +46,9 @@ void pyro_off_2(void* arg);
 void pyro_off_3(void* arg);
 void pyro_off_4(void* arg);
 
+/*for testing */
+void pyro_check(uint8_t channel, uint16_t duration_ms);
+
 int board_location = TOP_BOARD ; /* CHANGE THIS IF NECESSARY */
 
 /* Checks the input channels for continuity.
@@ -100,6 +103,13 @@ bool_t pyro_continuity_check()
  * NOTE: This is specifically for e-match channels, not metrons
  */
 
+void pyro_check(uint8_t channel, uint16_t duration_ms)
+{
+    palSetPad(GPIOE, channel);
+    chThdSleepMilliseconds(duration_ms);
+    palClearPad(GPIOE, channel);    
+}
+    
 
 static VirtualTimer vt1, vt2, vt3, vt4;
 void pyro_fire(uint8_t channel, uint16_t duration_ms)
@@ -107,13 +117,13 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
     uint8_t pad, pad_2 = 0;
     bool fire_separation = FALSE;
 
-    if(channel == GPIOE_PYRO_DROGUE_F) {
-        pad = GPIOE_PYRO_DROGUE_F;
+    if(channel == GPIOE_PYRO_MAIN_F) {
+        pad = GPIOE_PYRO_MAIN_F;
         chVTReset(&vt1);
         chVTSet(&vt1, MS2ST(duration_ms), pyro_off_1, NULL);
         /* microsd_log_s16(GPIOE_PYRO_DROGUE_F, 1, 0, 0, 0); */
-    } else if(channel == GPIOE_PYRO_MAIN_F) {
-        pad = GPIOE_PYRO_MAIN_F;
+    } else if(channel == GPIOE_PYRO_DROGUE_F) {
+        pad = GPIOE_PYRO_DROGUE_F;
         chVTReset(&vt2);
         chVTSet(&vt2, MS2ST(duration_ms), pyro_off_2, NULL);
         /* microsd_log_s16(CHAN_PYRO_F, 0, 1, 0, 0);*/
@@ -148,13 +158,13 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
 void pyro_off_1(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_DROGUE_F);
+    palClearPad(GPIOE, GPIOE_PYRO_MAIN_F);
 }
 
 void pyro_off_2(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_MAIN_F);
+    palClearPad(GPIOE, GPIOE_PYRO_DROGUE_F);
 }
 
 void pyro_off_3(void* arg)
