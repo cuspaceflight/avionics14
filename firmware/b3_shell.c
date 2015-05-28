@@ -81,29 +81,29 @@ static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     
     chprintf(chp, "Results of Continuity Check: %u, %u, %u, %u\n", p1,
                                                     p2, p3, p4);
-    chprintf(chp,"Argument Code: 1 for Main: Channel 1, 2 for Separation: Channels 2 and 3");
-    chprintf(chp,"3 for Second Stage Fire: Channel 3, 4 for Drogue: Channel 4");
+    chprintf(chp,"Argument Code:\n1 for Main: Channel 1\n2 for Separation: Channels 2 and 3\n");
+    chprintf(chp,"3 for Second Stage Fire: Channel 3\n4 for Drogue: Channel 4\n");
                                                     
     if (argc > 0) 
     {
-        if (argv[1][0] == '1') 
+        if (argv[0][0] == '1') 
         {
             pyro_fire_main(); 
         }
         
-        else if (argv[1][0] == '2') 
+        else if (argv[0][0] == '2') 
         {
             pyro_fire_separation();
         
         }
         
-        if (argv[1][0] == '3') 
+        if (argv[0][0] == '3') 
         {
             pyro_fire_second_stage();
           
         }  
       
-        if (argv[1][0] == '4') 
+        if (argv[0][0] == '4') 
         {
             pyro_fire_drogue();    
                   
