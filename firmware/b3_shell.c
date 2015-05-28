@@ -86,22 +86,26 @@ static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     {
         if (argv[1][0] == '1') 
         {
-            pyro_fire_drogue();
+            /* pyro_fire_drogue(); */
+            pyro_fire(GPIOE_PY1_TRG, 1000);
         }
         
         else if (argv[1][0] == '2') 
         {
-            pyro_fire_main();
+            /*pyro_fire_main(); */
+            pyro_fire(GPIOE_PY2_TRG, 1000);
         }
         
         if (argv[1][0] == '3') 
         {
-            pyro_fire_separation();
+            /*pyro_fire_separation();*/
+            pyro_fire(GPIOE_PY3_TRG, 1000);
         }  
       
         if (argv[1][0] == '4') 
         {
-            pyro_fire_second_stage();
+            /*pyro_fire_second_stage();*/
+            pyro_fire(GPIOE_PY4_TRG, 1000);
         }
     }
 }
