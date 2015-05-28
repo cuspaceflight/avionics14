@@ -1,7 +1,11 @@
 #include "b3_shell.h"
 #include <hal.h>
 #include "chprintf.h"
+#include "adxl3x5.h"
+#include "l3g4200d.h" 
 #include "rfm69.h"
+#include "ms5611.h"
+
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -30,6 +34,15 @@ static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[
           while (charbuf != Q_TIMEOUT);
        }
     }
+}
+
+
+static void cmd_barotest(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    (void)argc;
+    
+    chprintf(chp, "Current Pressure: %d\r\n", global_pressure);
+    chprintf(chp, "Current Temperature: %d\r\n", global_temperature);
 }
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -72,6 +85,61 @@ static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
   chprintf(chp, "core free memory : %u bytes\r\n", chCoreStatus());
   chprintf(chp, "heap fragments   : %u\r\n", n);
   chprintf(chp, "heap free total  : %u bytes\r\n", size);
+}
+
+static void cmd_led(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    palSetPad(GPIOD, GPIOD_PYRO_GRN);
+    chprintf(chp, "PYRO_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_PYRO_GRN);
+
+
+    palSetPad(GPIOD, GPIOD_PYRO_RED);
+    chprintf(chp, "PYRO_LED_RED is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_PYRO_RED);
+
+    palSetPad(GPIOD, GPIOD_RADIO_GRN);
+    chprintf(chp, "RADIO_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_RADIO_GRN);
+
+    palSetPad(GPIOD, GPIOD_RADIO_RED);
+    chprintf(chp, "RADIO_LED_RED is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_RADIO_RED);
+
+    palSetPad(GPIOD, GPIOD_IMU_GRN);
+    chprintf(chp, "IMU_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_IMU_GRN);
+
+    palSetPad(GPIOD, GPIOD_IMU_RED);
+    chprintf(chp, "IMU_LED_GRN is lit \n");
+    chThdSleepMilliseconds(1000);
+    palClearPad(GPIOD, GPIOD_IMU_RED);
+    
+    return;
+
+}
+
+static void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    chprintf(chp," x: %d, y: %d, z: %d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
+    return;
+}
+
+static void cmd_accel(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argc;	
+    (void)argv;
+
+    chprintf(chp," x: %d, y: %d, z: %d \n", global_accel[0], global_accel[1], global_accel[2]);
+    return;
 }
 
 static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -124,6 +192,10 @@ void b3_shell_run()
         {"beep", cmd_beep},
         {"gps_passthrough", cmd_gps_passthrough},
         {"radio_tx", cmd_radio_tx},
+        {"led", cmd_led},
+        {"accel", cmd_accel},
+        {"gyro", cmd_gyro},
+        {"barotest", cmd_barotest},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {

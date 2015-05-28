@@ -78,6 +78,8 @@
 #define L3G4200D_I2C_WRITE_ADDR    0x69 
 #define L3G4200D_I2C_READ_ADDR     0x69
 
+int global_gyro[3];
+
 static Thread *tpL3G4200D = NULL;
 
 /* 10000 Hz might need to be changed to 100000 Hz */
@@ -180,13 +182,19 @@ void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel)
 
 msg_t l3g4200d_thread(void *arg)
 {
+
     (void)arg;
     const int bufsize = 6;
     uint8_t buf_data[bufsize];
 	
     chRegSetThreadName("L3G4200D");
-
+	
     i2cStart(&I2CD1, &i2cconfig);
+	
+	//remove when gyro is working
+    global_gyro[0] = 1;
+    global_gyro[1] = 2;
+    global_gyro[2] = 3;
 
 	while (!l3g4200d_init()) {
 		chThdSleepMilliseconds(5);
@@ -194,6 +202,11 @@ msg_t l3g4200d_thread(void *arg)
     
 	while(TRUE) {   
 		if (l3g4200d_receive(0xA8,buf_data, bufsize)) {
+			//remove when gyro is working 
+			global_gyro[0] = 1;
+			global_gyro[1] = 2;
+			global_gyro[2] = 3;
+
 			//TODO do something with received data
 		} else
 		    chThdSleepMilliseconds(20);

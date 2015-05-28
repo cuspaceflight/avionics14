@@ -18,6 +18,7 @@ static void adxl3x5_read_accel(SPIDriver* SPID, int16_t* accels);
 static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g);
 static void adxl3x5_sad(const uint8_t n);
 static float adxl3x5_accels_to_axis(int16_t *accels, int16_t axis, int16_t g);
+int16_t global_accel[3];
 
 static Thread *tp345 = NULL;
 
@@ -239,7 +240,7 @@ static float adxl3x5_accels_to_axis(int16_t *accels, int16_t axis, int16_t g)
 msg_t adxl345_thread(void *arg)
 {
     (void)arg;
-
+    int j;
     const SPIConfig spi_cfg = {
         NULL,
         ADXL345_SPI_CS_PORT,
@@ -257,6 +258,10 @@ msg_t adxl345_thread(void *arg)
 
     while(TRUE) {
         adxl3x5_read_accel(&ADXL345_SPID, accels);
+        for (j = 0; j < 3; j++){
+            global_accel[j] = accels[j];
+            }
+
         /*microsd_log_s16(CHAN_IMU_LGA, accels[0], accels[1], accels[2], 0);*/
         /*state_estimation_new_lg_accel(*/
             /*adxl3x5_accels_to_axis(accels, axis, g));*/

@@ -60,16 +60,25 @@ int main(void) {
     /*chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,*/
                       /*ms5611_thread, NULL);*/
 
-    /*chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,*/
-                      /*adxl345_thread, NULL);*/
+
+    chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,
+                      ms5611_thread, NULL);
+
+    chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,
+                      adxl345_thread, NULL);
 
     /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
                       /*hmc5883l_thread, NULL);*/
 
+<<<<<<< HEAD
     /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
                       /*l3g4200d_thread,NULL);*/
                       
     chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
+=======
+    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
+                      l3g4200d_thread,NULL);
+>>>>>>> e0943cf05b12ac11b4dd144dc7e2b2b0da3b6209
 
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
 
