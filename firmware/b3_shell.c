@@ -51,7 +51,6 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argc;
 	
 	char* data = "Hello  ";
-	chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);
 	
 	int i;
 	for (i = 0; i<10; i++) {
