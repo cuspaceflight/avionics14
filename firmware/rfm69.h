@@ -24,6 +24,7 @@ void rfm69_log_f(uint8_t channel, float data_a, float data_b);
 
 /*RFM69 Thread*/
 msg_t rfm69_thread(void* arg);
+msg_t rfm69_test_thread(void* arg);
 
 
 #endif /* end __RFM69_H */

@@ -1,12 +1,13 @@
-#include <err.h>
-#include <rfm69_rdl.h>
-#include <rfm69_config.h>
+#include "err.h"
+#include "rfm69_rdl.h"
+#include "rfm69_config.h"
 #include <stdint.h>
 #include "SPI.h"
 
 #define SS 10
 
 uint8_t bfr[67];
+uint8_t local[67];
 
 uint8_t rfm69_spi_transfer_byte(uint8_t out) {   
     uint8_t val = (uint8_t) SPI.transfer(out);
@@ -244,7 +245,7 @@ void recvFloat() {
  Serial.print("\n");
  Serial.print("Float two:");
  Serial.print(flt_b);
- Serial. print("\n");
+ Serial.print("\n");
 
  delay(1000);
 }
@@ -254,18 +255,17 @@ void loop() {
  uint8_t  *rssi;
   
  int recvFrmLen = rfm69_frame_rx(bfr, 66, rssi);
+ memcpy(local, bfr, 16);
  
- 
- for(int i = 0; i<8; i++){
-   Serial.print((uint8_t)bfr[i]);
+ /*for(int i = 0; i<8; i++){
+   Serial.print((int)local[i]);
  }
+ */
  
- for(int i = 8; i<16; i++) {
-   Serial.print((char)bfr[i]);
- }
+Serial.print((char*)local);
  
 Serial.print("\n");
 
-  delay(2000);
+  delay(500);
 }
 
