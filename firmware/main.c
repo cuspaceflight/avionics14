@@ -2,6 +2,7 @@
 #include "hal.h"
 #include "test.h"
 
+#include "rfm69.h"
 #include "ms5611.h"
 #include "adxl3x5.h"
 #include "hmc5883l.h"
@@ -14,6 +15,8 @@ static WORKING_AREA(waADXL345, 512);
 static WORKING_AREA(waHMC5883L, 512);
 static WORKING_AREA(waL3G4200D, 512);
 static WORKING_AREA(waGPS, 4096);
+
+static WORKING_AREA(waRadioTest, 512);
 
 /*
  * Set up pin change interrupts for the various sensors that react to them.
@@ -72,6 +75,8 @@ int main(void) {
                       l3g4200d_thread,NULL);
 
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
+
+    chThdCreateStatic(waRadioTest, sizeof(waRadioTest), NORMALPRIO, rfm69_test_thread, NULL);
 
     b3_shell_run();
 

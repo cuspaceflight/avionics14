@@ -314,7 +314,7 @@
                                      PIN_MODE_INPUT(GPIOB_PIN2)             |\
                                      PIN_MODE_ALTERNATE(GPIOB_RADIO_SCK)     |\
                                      PIN_MODE_ALTERNATE(GPIOB_RADIO_MISO)    |\
-                                     PIN_MODE_ALTERNATE(GPIOB_BARO_MOSI)   |\
+                                     PIN_MODE_ALTERNATE(GPIOB_RADIO_MOSI)   |\
                                      PIN_MODE_INPUT(GPIOB_PIN6)    |\
                                      PIN_MODE_INPUT(GPIOB_PIN7)     |\
                                      PIN_MODE_ALTERNATE(GPIOB_GYRO_SCL)    |\
