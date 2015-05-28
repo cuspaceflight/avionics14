@@ -367,8 +367,8 @@
                                      PIN_PUPDR_FLOATING(GPIOB_PIN7)     |\
                                      PIN_PUPDR_FLOATING(GPIOB_GYRO_SCL)    |\
                                      PIN_PUPDR_FLOATING(GPIOB_GYRO_SDA)    |\
-                                     PIN_PUPDR_FLOATING(GPIOB_MAGNO_SCL)     |\
-                                     PIN_PUPDR_FLOATING(GPIOB_MAGNO_SDA)     |\
+                                     PIN_PUPDR_PULLUP(GPIOB_MAGNO_SCL)     |\
+                                     PIN_PUPDR_PULLUP(GPIOB_MAGNO_SDA)     |\
                                      PIN_PUPDR_FLOATING(GPIOB_BARO_CS)  |\
                                      PIN_PUPDR_FLOATING(GPIOB_BARO_SCK) |\
                                      PIN_PUPDR_FLOATING(GPIOB_BARO_MISO)|\
@@ -383,8 +383,8 @@
                                      PIN_ODR_LOW(GPIOB_PIN7)           |\
                                      PIN_ODR_LOW(GPIOB_GYRO_SCL)          |\
                                      PIN_ODR_LOW(GPIOB_GYRO_SDA)          |\
-                                     PIN_ODR_LOW(GPIOB_MAGNO_SCL)           |\
-                                     PIN_ODR_LOW(GPIOB_MAGNO_SDA)           |\
+                                     PIN_ODR_HIGH(GPIOB_MAGNO_SCL)           |\
+                                     PIN_ODR_HIGH(GPIOB_MAGNO_SDA)           |\
                                      PIN_ODR_HIGH(GPIOB_BARO_CS)        |\
                                      PIN_ODR_LOW(GPIOB_BARO_SCK)       |\
                                      PIN_ODR_LOW(GPIOB_BARO_MISO)      |\
