@@ -9,12 +9,14 @@
 #include "l3g4200d.h"
 #include "b3_shell.h"
 #include "ublox.h"
+#include "rfm69.h"
 
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
 static WORKING_AREA(waHMC5883L, 512);
 static WORKING_AREA(waL3G4200D, 512);
 static WORKING_AREA(waGPS, 4096);
+static WORKING_AREA(waRadio, 512);
 
 static WORKING_AREA(waRadioTest, 512);
 
@@ -71,8 +73,15 @@ int main(void) {
     /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
                       /*hmc5883l_thread, NULL);*/
 
+<<<<<<< HEAD
+    /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
+                      /*l3g4200d_thread,NULL);*/
+                      
+    chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
+=======
     chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
                       l3g4200d_thread,NULL);
+>>>>>>> e0943cf05b12ac11b4dd144dc7e2b2b0da3b6209
 
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
 
