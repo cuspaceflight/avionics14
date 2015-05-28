@@ -6,7 +6,7 @@
 #define MISSION_CONTROL_TOP_H
 
 #include "ch.h"
-/* #include "state_estimation.h" */
+#include "state_estimation.h"
 
 typedef enum {
      STATE_STANDBY = 0, STATE_FIRST_STAGE_FIRED, STATE_SEPARATED, STATE_TIME_DELAY, STATE_SECOND_STAGE_FIRED,

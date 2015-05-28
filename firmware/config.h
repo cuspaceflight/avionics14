@@ -82,4 +82,23 @@ extern config_t conf;
 #define TOP_BOARD  1 
 #define BOTTOM_BOARD  0 
 
-#endif /* CONFIG_H */
+ 
+ /* Velocity (m/s) beyond which the rocket has left the pad */
+#define IGNITION_VELOCITY 10.0f
+/* Acceleration (m/s/s) below which the motor has ceased burning */
+#define BURNOUT_ACCELERATION 2.0f
+/* Time (ms) since launch beyond which the motor has ceased burning */
+#define BURNOUT_TIMER 5200
+/* Time (ms) since launch beyond which apogee has been reached */
+#define APOGEE_TIMER 55000
+/* Altitude (m ASL) below which to deploy main chute */
+#define MAIN_DEPLOY_ALTITUDE 1450.0f
+/* Time (ms) since apogee beyond which to deploy the main chute */
+#define MAIN_DEPLOY_TIMER 30000
+/* Time (ms) since apogee after which the rocket has landed */
+#define LANDED_TIMER 300000
+/* Duration (ms) to fire pyros for */
+#define PYRO_FIRETIME 5000
+
+ 
+ #endif  /* CONFIG_H */

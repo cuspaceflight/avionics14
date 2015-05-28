@@ -21,8 +21,9 @@
  
 #include <math.h>
 #include "mission_control_bottom.h"
-/*#include "state_estimation.h"*/
+#include "state_estimation.h"
 #include "pyro.h"
+#include "config.h"
 /*#include "microsd.h"*/
 
 
@@ -59,7 +60,6 @@ state_t run_state(state_t cur_state, instance_data_t *data)
 
 static state_t do_state_standby(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     if(chTimeNow() < 10000)
         return STATE_STANDBY;
     else if(data->state.v > IGNITION_VELOCITY)
@@ -83,7 +83,6 @@ static state_t do_state_standby(instance_data_t *data)
 static state_t do_state_first_stage_fired(instance_data_t *data) 
 {
        
-    state_estimation_trust_barometer = 0;
     if(data->state.a < BURNOUT_ACCELERATION)
     {
 	pyro_fire_separation(); /* THIS FUNCTION IS NOT YET DEFINED  */
@@ -132,7 +131,6 @@ static state_t do_state_time_delay(instance_data_t *data)
 
 static state_t do_state_main_parachute_fired_bottom(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     /* May be better to use an altitude/velocity check for this rather 
      * than a time check */
     if(chTimeElapsedSince(data->t_separation) > LANDED_TIMER) 
@@ -144,7 +142,6 @@ static state_t do_state_main_parachute_fired_bottom(instance_data_t *data)
 
 static state_t do_state_landed_bottom(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     (void)data;
     return STATE_LANDED_BOTTOM;
 }
@@ -170,10 +167,10 @@ msg_t mission_thread(void* arg)
 
         /* Log changes in state */
         if(new_state != cur_state) {
-            microsd_log_s32(CHAN_SM_MISSION,
-            (int32_t)cur_state, (int32_t)new_state);
+            /*microsd_log_s32(CHAN_SM_MISSION,
+            (int32_t)cur_state, (int32_t)new_state);*/
             cur_state = new_state;
-            SBP_SEND(0x30, new_state);
+           /* SBP_SEND(0x30, new_state);*/
         }
 
         /* Tick the state machine about every millisecond */
