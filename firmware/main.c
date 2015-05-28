@@ -74,12 +74,12 @@ int main(void) {
                       /*hmc5883l_thread, NULL);*/
 
     chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
-    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
+    
+/*    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
                       l3g4200d_thread,NULL);
-
+*/
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
-
-    chThdCreateStatic(waRadioTest, sizeof(waRadioTest), NORMALPRIO, rfm69_test_thread, NULL);
+    
 
     b3_shell_run();
 

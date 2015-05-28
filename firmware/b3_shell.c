@@ -185,43 +185,12 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Real time clock frequency: %u\r\n", f);
 }
 
-static void cmd_test_all(BaseSequentialStream *chp, int argc, char *argv[]){
-	
-	chprintf(chp, " \n\nRunning thread function \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_threads(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning runtime test \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_rt(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning beep test");
-    chThdSleepMilliseconds(1000);
-	cmd_beep(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning memory test \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_mem(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning LED test \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_led(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning accelerometer test \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_accel(chp, argc, argv);
-
-	chprintf(chp, "\n\nRunning barometer test \n \n");
-    chThdSleepMilliseconds(1000);
-	cmd_barotest(chp, argc, argv);
-
-	return;
-
 static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     bool p1, p2, p3, p4 ;
     
     /* Continuity Check */
+
     p1 = pyro_continuity(GPIOE_PY1_CHK);
     p2 = pyro_continuity(GPIOE_PY2_CHK);
     p3 = pyro_continuity(GPIOE_PY3_CHK);
@@ -258,6 +227,46 @@ static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
         }
     }
 }
+
+
+static void cmd_test_all(BaseSequentialStream *chp, int argc, char *argv[]){
+	
+	chprintf(chp, " \n\nRunning thread function \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_threads(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning runtime test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_rt(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning beep test");
+    chThdSleepMilliseconds(1000);
+	cmd_beep(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning memory test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_mem(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning LED test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_led(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning accelerometer test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_accel(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning barometer test \n \n");
+    chThdSleepMilliseconds(1000);
+	cmd_barotest(chp, argc, argv);
+
+	chprintf(chp, "\n\nRunning pyro channel test \n \n");
+    chThdSleepMilliseconds(1000);
+    cmd_pyro(chp, argc, argv);
+
+	return;
+}
+
+
 
 void b3_shell_run()
 {
