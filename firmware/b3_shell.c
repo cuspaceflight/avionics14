@@ -84,22 +84,22 @@ static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
                                                     
     if (argc > 0) 
     {
-        if (argv[1] == "1") 
+        if (argv[1][0] == '1') 
         {
             pyro_fire_drogue();
         }
         
-        else if (argv[1] == "2") 
+        else if (argv[1][0] == '2') 
         {
             pyro_fire_main();
         }
         
-        if (argv[1] == "3") 
+        if (argv[1][0] == '3') 
         {
             pyro_fire_separation();
         }  
       
-        if (argv[1] == "4") 
+        if (argv[1][0] == '4') 
         {
             pyro_fire_second_stage();
         }
