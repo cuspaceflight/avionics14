@@ -5,6 +5,8 @@
 #include "l3g4200d.h" 
 #include "rfm69.h"
 #include "ms5611.h"
+#include "pyro.h"
+#include "board.h"
 
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -183,6 +185,48 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp, "Real time clock frequency: %u\r\n", f);
 }
 
+static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    bool p1, p2, p3, p4 ;
+    
+    /* Continuity Check */
+    p1 = pyro_continuity(GPIOE_PY1_CHK);
+    p2 = pyro_continuity(GPIOE_PY2_CHK);
+    p3 = pyro_continuity(GPIOE_PY3_CHK);
+    p4 = pyro_continuity(GPIOE_PY4_CHK);
+    
+    chprintf(chp, "Results of Continuity Check: %u, %u, %u, %u\n", p1,
+                                                    p2, p3, p4);
+    chprintf(chp,"Argument Code:\n1 for Main: Channel 1\n2 for Separation: Channels 2 and 3\n");
+    chprintf(chp,"3 for Second Stage Fire: Channel 3\n4 for Drogue: Channel 4\n");
+                                                    
+    if (argc > 0) 
+    {
+        if (argv[0][0] == '1') 
+        {
+            pyro_fire_main(); 
+        }
+        
+        else if (argv[0][0] == '2') 
+        {
+            pyro_fire_separation();
+        
+        }
+        
+        if (argv[0][0] == '3') 
+        {
+            pyro_fire_second_stage();
+          
+        }  
+      
+        if (argv[0][0] == '4') 
+        {
+            pyro_fire_drogue();    
+                  
+        }
+    }
+}
+
 void b3_shell_run()
 {
     static const ShellCommand commands[] = {
@@ -196,6 +240,7 @@ void b3_shell_run()
         {"accel", cmd_accel},
         {"gyro", cmd_gyro},
         {"barotest", cmd_barotest},
+        {"pyro", cmd_pyro},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {

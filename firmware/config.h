@@ -79,4 +79,7 @@ typedef struct config_ {
  */
 extern config_t conf;
 
+#define TOP_BOARD  1 
+#define BOTTOM_BOARD  0 
+
 #endif /* CONFIG_H */
