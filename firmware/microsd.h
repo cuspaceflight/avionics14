@@ -59,6 +59,7 @@ SDRESULT microsd_write(SDFILE* fp, const char* buff, unsigned int btw);
 
 /* Assumes file is open.
  * Reads exactly <btr> bytes from <fp> to <buf>, or until reached end of file.
+ * Starts from beginning of file.
  */
 SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr);
 

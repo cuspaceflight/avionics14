@@ -106,33 +106,33 @@ static void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[])
     SDFS sd;
     SDRESULT res;
 
-    static const int len = 110;
-    static const char* test_string = "Here is a string.\nIt tests the \
-functionality\n of the micro sd card\nIf this comes out right, it was \
-successful.\n";
+    static const SDMODE mode = FA_CREATE_ALWAYS | FA_READ | FA_WRITE;
+    static const int len = 90;
+    static const char* test_string = "\n\tHere is a string.\n\tIt tests the \
+functionality\n\tof the micro sd card\n\tOne two three test\n";
     char result[len];
 
-    chprintf(chp, "Opening file\n");
-    res = microsd_open_file(&file, "testfile", FA_CREATE_ALWAYS, &sd);
+    chprintf(chp, "Opening file ...\n");
+    res = microsd_open_file(&file, "testfile", mode, &sd);
     if (res != FR_OK) goto error;
 
-    chprintf(chp, "Writing test string to sd\n");
+    chprintf(chp, "Writing test string to SD card ...\n");
     res = microsd_write(&file, test_string, len);
     if (res != FR_OK) goto error;
 
-    chprintf(chp, "Reading the following from sd:\n");
+    chprintf(chp, "Reading the following from SD card ...\n");
     res = microsd_read(&file, result, len);
     if (res != FR_OK) goto error;
     chprintf(chp, "%s\n", result);
 
-    chprintf(chp, "Closing file\n");
+    chprintf(chp, "Closing file ...\n");
     res = microsd_close_file(&file);
     if (res != FR_OK) goto error;
 
     return;
 
     error:
-        chprintf(chp, "returned error! %d\n", res);
+        chprintf(chp, "SD result error!!! SDRESULT: %d\n", res);
 }
 
 void b3_shell_run()

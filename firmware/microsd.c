@@ -131,7 +131,10 @@ SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr)
 {
     SDRESULT err;
     unsigned int bytes_read;
-    err = f_read(fp, (void*)buf, btr, &bytes_read);
+    err = f_lseek(fp, 0);
+    if (err == FR_OK) {
+        err = f_read(fp, (void*)buf, btr, &bytes_read);
+    }
     return err;
 }
 
