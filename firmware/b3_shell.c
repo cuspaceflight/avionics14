@@ -4,6 +4,8 @@
 #include "adxl3x5.h"
 #include "l3g4200d.h" 
 #include "rfm69.h"
+#include "ms5611.h"
+
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -32,6 +34,14 @@ static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[
           while (charbuf != Q_TIMEOUT);
        }
     }
+
+
+static void cmd_barotest(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    (void)argc;
+    
+    chprintf(chp, "Current Pressure: %d\r\n", global_pressure);
+    chprintf(chp, "Current Temperature: %d\r\n", global_temperature);
 }
 
 static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -185,6 +195,7 @@ void b3_shell_run()
         {"led", cmd_led},
         {"accel", cmd_accel},
         {"gyro", cmd_gyro},
+        {"barotest", cmd_barotest},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {

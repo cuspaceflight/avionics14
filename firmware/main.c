@@ -58,6 +58,11 @@ int main(void) {
     /*chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,*/
                       /*ms5611_thread, NULL);*/
 
+    chThdCreateStatic(waIdleThread, sizeof(waIdleThread), NORMALPRIO, IdleThread, NULL);
+
+    chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,
+                      ms5611_thread, NULL);
+
     chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,
                       adxl345_thread, NULL);
 
