@@ -8,7 +8,7 @@
  */
 
 #include <stdint.h>
-#include <rfm69_rdl.h>
+#include "rfm69_rdl.h"
 
 /**
  * Using a 2 byte sync word: 0x2D, NETWORK_ID. Can run multiple networks by changing NETWORK_ID.
