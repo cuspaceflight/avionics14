@@ -34,6 +34,7 @@ static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[
           while (charbuf != Q_TIMEOUT);
        }
     }
+}
 
 
 static void cmd_barotest(BaseSequentialStream *chp, int argc, char *argv[]) {
