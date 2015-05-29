@@ -83,6 +83,8 @@ extern config_t conf;
 #define BOTTOM_BOARD  0 
 
  
+ extern int board_location;
+ 
  /* Velocity (m/s) beyond which the rocket has left the pad */
 #define IGNITION_VELOCITY 10.0f
 /* Acceleration (m/s/s) below which the motor has ceased burning */

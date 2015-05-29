@@ -92,8 +92,7 @@ CSRC = $(PORTSRC) \
        $(CHIBIOS)/os/various/chprintf.c \
        $(CHIBIOS)/os/various/shell.c \
        main.c microsd.c config.c datalogging.c ms5611.c adxl3x5.c hmc5883l.c \
-       b3_shell.c rfm69.c ublox.c pyro.c mission_control_bottom.c mission_control_top.c 
-
+       b3_shell.c rfm69.c ublox.c pyro.c mission_control_final.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
