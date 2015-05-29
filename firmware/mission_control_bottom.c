@@ -27,7 +27,7 @@
 /*#include "microsd.h"*/
 
 
-/* #define AGREED_TIME_DELAY = 1 second ?? NEEDS CLARIFICATION */
+#define AGREED_TIME_DELAY 1
 
 
 /* function prototypes for the different states.
@@ -106,6 +106,7 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 
 static state_t do_state_separated(instance_data_t *data)
 {
+    (void) data ;
     return STATE_TIME_DELAY;
 }
 

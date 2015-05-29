@@ -32,7 +32,10 @@
 /* #include "microsd.h" */
 
 
-#define AGREED_TIME_DELAY = 1
+#define AGREED_TIME_DELAY 1
+
+
+
 
 
 /* function prototypes for the different states.
@@ -109,6 +112,7 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 
 static state_t do_state_separated(instance_data_t *data)
 {
+    (void) data;
     return STATE_TIME_DELAY;
 }
 
@@ -131,9 +135,9 @@ static state_t do_state_second_stage_fired(instance_data_t *data)
      * free on error tolerance in its value */
     /* May be better to use a range of values and an inequality instead. */
     if((data->state.a) == GRAVITATIONAL_ACCELERATION ) 
-	return STATE_COASTING;						   
+	    return STATE_COASTING;						   
     else
-	return STATE_SECOND_STAGE_FIRED ;
+	    return STATE_SECOND_STAGE_FIRED ;
 }
 
 static state_t do_state_coasting(instance_data_t *data)
@@ -146,7 +150,6 @@ static state_t do_state_coasting(instance_data_t *data)
 
 static state_t do_state_apogee(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     data->t_apogee = chTimeNow();
     pyro_fire_drogue(); 					/* check this is functional */
     return STATE_DROGUE_PARACHUTE_FIRED;
@@ -181,7 +184,6 @@ static state_t do_state_main_parachute_fired_top(instance_data_t *data)
 
 static state_t do_state_landed_top(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     (void)data;
     return STATE_LANDED_TOP;
 }

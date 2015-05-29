@@ -100,5 +100,8 @@ extern config_t conf;
 /* Duration (ms) to fire pyros for */
 #define PYRO_FIRETIME 5000
 
+#define GRAVITATIONAL_ACCELERATION 9.81f
+
+
  
  #endif  /* CONFIG_H */
