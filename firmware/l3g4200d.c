@@ -169,6 +169,7 @@ static void l3g4200d_rotation_convert(uint8_t *buf_data, float *rotation)
     int16_t total_rotation;
     for (i =0; i<3; i++) {
 	    total_rotation = (buf_data[(2*i+1)] << 8) | (buf_data[(2*i)]);
+        global_gyro[i] = total_rotation;
         rotation[i] = ((float)total_rotation) * sensitivity;
     }
 }
@@ -223,10 +224,6 @@ msg_t l3g4200d_thread(void *arg)
         /* Pull data from the gyro into buf_data. */
 		if (l3g4200d_receive(buf_data)) {
             l3g4200d_rotation_convert(buf_data, rotation);
-            int i;
-            for (i=0; i<3; i++) {
-                global_gyro[i] = rotation[i];
-            }
 		} else {
 		    chThdSleepMilliseconds(20);
         }
