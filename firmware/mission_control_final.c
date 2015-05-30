@@ -62,7 +62,7 @@ top_state_t run_state(top_state_t cur_state, instance_data_t *data)
 static top_state_t do_state_standby(instance_data_t *data)
 {
     if(chTimeNow() < 10000)
-        return STATE_STANDBY;
+        return TOP_STATE_STANDBY;
     else if(data->state.v > IGNITION_VELOCITY)
     {
         data->t_launch = chTimeNow() ;
