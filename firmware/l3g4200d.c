@@ -209,7 +209,7 @@ msg_t l3g4200d_thread(void *arg)
 		chSysLock();
         tpL3G4200D = chThdSelf();
         palClearPad(GPIOD, GPIOD_IMU_GRN);
-		chSchGoSleepS(THD_STATE_SUSPENDED);
+		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
 		chSysUnlock();
 	}
 	

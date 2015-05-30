@@ -187,6 +187,10 @@ msg_t hmc5883l_thread(void *arg) {
     while(TRUE) {   
 		if (hmc5883l_receive(0x06, buf, bufsize)) {
 			// TODO do something with the data
+            int16_t x = buf[0] << 8 | buf[1];
+            int16_t z = buf[2] << 8 | buf[3];
+            int16_t y = buf[4] << 8 | buf[5];
+            int16_t w = 0;
 		} else {   
 		    chThdSleepMilliseconds(20);
 		}
