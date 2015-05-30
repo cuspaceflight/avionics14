@@ -65,15 +65,15 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
 	
-	char* data = "12345678";
+    char* msg1 = "a234567a";
+    char* msg2 = "b765432b";
 	
 	int i;
     while(1) {
-        data[7] = 'A';
-        rfm69_log_c(8, data);
-        data[7] = 'B';
-        rfm69_log_c(8, data);
-        chThdSleepMilliseconds(1);
+        rfm69_log_c(8, msg1);
+        chThdSleepMilliseconds(50);
+        rfm69_log_c(8, msg2);
+        chThdSleepMilliseconds(50);
 	}
 }
 

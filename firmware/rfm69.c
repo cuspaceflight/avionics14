@@ -231,7 +231,11 @@ void rfm69_frame_tx(SPIDriver* SPID, uint8_t *buf, int len) {
 	// Power up TX
 	rfm69_mode(SPID, RFM69_OPMODE_Mode_TX);
 
+    // TX packet
 	rfm69_wait_for_bit_high(SPID, RFM69_IRQFLAGS2, RFM69_IRQFLAGS2_PacketSent);
+
+    // Back to standby
+	rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
 }
 
 /*----------------------------Thread-------------------------------------------------*/
@@ -260,16 +264,16 @@ msg_t rfm69_thread(void *arg) {
 		int i;
 	
 	if(rfm69_test(&RFM69_SPID) == 0) {
-		//five blinks to show correct initialisation:
-		for(i = 0; i<5; i++) {
+		//two blinks to show correct initialisation:
+		for(i = 0; i<2; i++) {
 			palClearPad(GPIOD, GPIOD_RADIO_GRN);
 			chThdSleepMilliseconds(500);
 			palSetPad(GPIOD, GPIOD_RADIO_GRN);
 			chThdSleepMilliseconds(500);
 		}
 	} else {
-		//five blinks red to show incorrect initialisation
-		for(i = 0; i<5; i++) {
+		//two blinks red to show incorrect initialisation
+		for(i = 0; i<2; i++) {
 			palClearPad(GPIOD, GPIOD_RADIO_RED);
 			chThdSleepMilliseconds(500);
 			palSetPad(GPIOA, GPIOD_RADIO_RED);
@@ -285,14 +289,15 @@ msg_t rfm69_thread(void *arg) {
 	while(TRUE) {
 		status = chMBFetch(&rfm69_mb, &msgp, TIME_INFINITE);
 		if(status != RDY_OK || msgp == 0) {
+            chThdSleepMilliseconds(1);
 			continue;
 		}
-		
-	//cast the msgp pointer to be uint8_t so data can be sent using tx function 		
 		msg = (uint8_t*) msgp;  
+	    palSetPad(GPIOD, GPIOD_RADIO_GRN);	
 		rfm69_frame_tx(&RFM69_SPID, msg, 16);
+	    palClearPad(GPIOD, GPIOD_RADIO_GRN);	
 		chPoolFree(&rfm69_mp, (void*)msg);
-		rfm69_mode(&RFM69_SPID, RFM69_OPMODE_Mode_STDBY);
+        chThdSleepMilliseconds(50);
 	}
 	return (msg_t)NULL;
 }
@@ -344,7 +349,6 @@ msg_t rfm69_test_thread(void *arg) {
 	while(TRUE) { 
 		
 		rfm69_frame_tx(&RFM69_SPID, data, sizeof(data));
-		//rfm69_mode(&RFM69_SPID, RFM69_OPMODE_Mode_STDBY);
 		chThdSleepMilliseconds(300);
 	}
 	return (msg_t)NULL;
