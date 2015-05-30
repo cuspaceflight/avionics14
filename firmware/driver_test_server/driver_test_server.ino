@@ -5,6 +5,7 @@
 #include "SPI.h"
 
 #define SS 10
+#define EXPECTED_PACKET_LENGTH 16
 
 uint8_t bfr[67];
 uint8_t local[67];
@@ -112,22 +113,11 @@ uint8_t rfm69_payload_ready() {
 }
 
 
-int rfm69_frame_rx(uint8_t *buf, int maxlen, uint8_t *rssi) {
-      //Serial.print("rx function started \n");
+bool rfm69_frame_rx(uint8_t *buf, int expctdLen) {
+    //copy into buffer if the message is of the expected length of 16 (or multiples of 16)
   
 	int i;
-
-	// TODO: this shouldn't be necessary
-	//rfm69_mode(RFM69_OPMODE_Mode_RX);
-
-
-	// Wait for IRQFLAGS2[2] PayloadReady
-	// TODO: implement timeout
-	//while ((rfm69_register_read(RFM69_IRQFLAGS2) & RFM69_IRQFLAGS2_PayloadReady_MASK) == 0) ;
-
     uint8_t frame_length;
-    
-    
     
     digitalWrite(SS, LOW);
     rfm69_spi_transfer_byte(RFM69_FIFO);
@@ -139,28 +129,21 @@ int rfm69_frame_rx(uint8_t *buf, int maxlen, uint8_t *rssi) {
 		return E_SPI;
 	}
 
+    /*
     if (frame_length > 66) {
     	// error condition really
     	frame_length = 66;
     }
-
-    for (i = 0; i < frame_length; i++) {
-    	if (i == maxlen) {
-    		return E_PKT_TOO_LONG;
-    	}
-    	buf[i] = rfm69_spi_transfer_byte(0);
-    }
+    * */
+	if(frame_length==expctdLen) {	
+		for (i = 0; i < frame_length; i++) {
+			buf[i] = rfm69_spi_transfer_byte(0);
+		}
+	}
+    
     digitalWrite(SS, HIGH);
-
     
-    if (rssi != 0) {
-    	*rssi = rfm69_rssi();
-    }
-    
-    
-   //Serial.print("rx function complete \n");
- 
-    return frame_length;
+    return (frame_length==expctdLen);
 }
 
 
@@ -252,20 +235,18 @@ void recvFloat() {
 
 void loop() {
   
- uint8_t  *rssi;
-  
- int recvFrmLen = rfm69_frame_rx(bfr, 66, rssi);
- memcpy(local, bfr, 16);
+ if(rfm69_frame_rx(bfr, EXPECTED_PACKET_LENGTH)) { 
  
- /*for(int i = 0; i<8; i++){
+ /* for print across serial for actual  receiver
+  *for(int i = 0; i<8; i++){
    Serial.print((int)local[i]);
  }
  */
- 
-Serial.print((char*)local);
- 
-Serial.print("\n");
+ //copy to a buffer and print out the characters for a test where a string is transmitted
+	memcpy(local, &bfr[8], 8);
+	Serial.print((char*)bfr);
+	Serial.print("\n");
+ }
 
-  delay(500);
 }
 
