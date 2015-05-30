@@ -65,12 +65,15 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)argv;
 	(void)argc;
 	
-	char* data = "Hello  ";
+	char* data = "12345678";
 	
 	int i;
-	for (i = 0; i<10; i++) {
-		chThdSleepMilliseconds(500);
+    while(1) {
+        data[7] = 'A';
         rfm69_log_c(8, data);
+        data[7] = 'B';
+        rfm69_log_c(8, data);
+        chThdSleepMilliseconds(1);
 	}
 }
 
@@ -133,8 +136,9 @@ static void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
 
     for(;;) {
-        chprintf(chp," x: %06d, y: %06d, z: %06d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
-        chThdSleepMilliseconds(100);
+        /*chprintf(chp," x: %09d, y: %09d, z: %09d \n", global_gyro[0], global_gyro[1], global_gyro[2]);*/
+        chprintf(chp,"%09d %09d %09d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
+        chThdSleepMilliseconds(1);
     }
     return;
 }

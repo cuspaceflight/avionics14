@@ -80,7 +80,6 @@
 int16_t global_gyro[3];
 
 static Thread *tpL3G4200D = NULL;
-int global_gyro[3];
 
 static const I2CConfig i2cconfig = {
     OPMODE_I2C, 100000, STD_DUTY_CYCLE
@@ -95,7 +94,7 @@ static bool_t l3g4200d_writeRegister(uint8_t address, uint8_t data) {
     msg_t rv;
 
     /* Transmit message */
-    rv = i2cMasterTransmit(&I2CD1, L3G4200D_I2C_ADDR, buffer, 2, NULL, 0, 1000);
+    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, buffer, 2, NULL, 0, 1000);
 
     if (rv == RDY_OK) {
         return TRUE;
@@ -111,7 +110,7 @@ static bool_t l3g4200d_receive(uint8_t *buf_data)
     msg_t rv;
     uint8_t address = L3G4200D_RA_OUT_BURST;
     
-    rv = i2cMasterTransmit(&I2CD1, L3G4200D_I2C_ADDR, &address, 1, buf_data, 6, 1000);
+    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, &address, 1, buf_data, 7, 1000);
     
     return rv == RDY_OK;
 }
@@ -120,10 +119,6 @@ static bool_t l3g4200d_receive(uint8_t *buf_data)
 static bool_t l3g4200d_init(void)
 {
     bool_t success;
-  
-    /* CTRL_REG1: Datarate, Filter Bandwidth, Enable each axis
-       Send 00011111 [00 = 100Hz samp][01 = 25Hz filter][1111 = enable all axis] */
-    success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0x1F);
 
     /* CTRL_REG2: Highpass filter mode, cut-off freq.
        Send 00100000 [00][10 = normal mode][0000 = highest cut-off] */
@@ -135,15 +130,19 @@ static bool_t l3g4200d_init(void)
     
     /* CTRL_REG4: Data config and self-test.
        Send 00010000 [0 = cont update][0 = L.Endian][01 = +-500dps max][x][00 = normal non-test mode]*/
-    success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG3, 0x10);
+    success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG4, 0x10);
 
     /* CTRL_REG5: FIFO configuration.
-       Send 00000000 [0 = normal mode][0 = disable FIFO][x][00000 = not using these]*/
-    success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG5, 0x00);
+       Send 01000000 [0 = normal mode][1 = enable FIFO][x][00000 = not using these]*/
+    success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG5, 0x40);
 
     /* FIFO_CTRL_REG: FIFO mode configuration.
        Send 00000000 [000 = Bypass mode][xxxxx = watermark level for interrupt] */
     success &= l3g4200d_writeRegister(L3G4200D_RA_FIFO_CTRL_REG, 0x00);
+  
+    /* CTRL_REG1: Datarate, Filter Bandwidth, Enable each axis
+       Send 00011111 [00 = 100Hz samp][01 = 25Hz filter][1111 = enable all axis] */
+    success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0x1F);
 
     return success;
 }
@@ -151,6 +150,7 @@ static bool_t l3g4200d_init(void)
 /* Checks the ID of the Gyro to ensure that we're actually talking to the Gyro and not some other component. */
 bool_t l3g4200d_ID_check(void) {
 	uint8_t id_reg = L3G4200D_RA_WHO_AM_I;
+    uint8_t buf[1];
     if (i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
         return buf[0] == 0xD3;
     } else {
@@ -196,7 +196,7 @@ void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel)
 msg_t l3g4200d_thread(void *arg)
 {
     (void)arg;
-    uint8_t buf_data[6];
+    uint8_t buf_data[8];
     float rotation[3];
 	
     chRegSetThreadName("L3G4200D");
@@ -213,6 +213,13 @@ msg_t l3g4200d_thread(void *arg)
 	}
     
 	while (TRUE) {
+		/* Sleep until DRDY */
+		chSysLock();
+        tpL3G4200D = chThdSelf();
+        palClearPad(GPIOD, GPIOD_IMU_GRN);
+		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+		chSysUnlock();
+
         /* Pull data from the gyro into buf_data. */
 		if (l3g4200d_receive(buf_data)) {
             l3g4200d_rotation_convert(buf_data, rotation);
@@ -224,12 +231,6 @@ msg_t l3g4200d_thread(void *arg)
 		    chThdSleepMilliseconds(20);
         }
 		
-		/* Sleep until DRDY */
-		chSysLock();
-        tpL3G4200D = chThdSelf();
-        palClearPad(GPIOD, GPIOD_IMU_GRN);
-		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
-		chSysUnlock();
 	}
 	
     return (msg_t)NULL;
