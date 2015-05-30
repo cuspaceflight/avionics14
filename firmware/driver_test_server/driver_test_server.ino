@@ -5,10 +5,11 @@
 #include "SPI.h"
 
 #define SS 10
-#define EXPECTED_PACKET_LENGTH 16
-
-uint8_t bfr[67];
-uint8_t local[67];
+  
+uint8_t expected_packet_length = 16;    
+uint8_t maxPktLen = 66;
+uint8_t bfr[18];
+uint8_t local[67]; 
 
 uint8_t rfm69_spi_transfer_byte(uint8_t out) {   
     uint8_t val = (uint8_t) SPI.transfer(out);
@@ -108,42 +109,33 @@ uint8_t rfm69_rssi () {
  * @return zero if no packet available, non-zero if packet available.
  */
 uint8_t rfm69_payload_ready() {
-	
-	return rfm69_register_read(RFM69_IRQFLAGS2) & RFM69_IRQFLAGS2_PayloadReady_MASK;
+	uint8_t reg  = rfm69_register_read(RFM69_IRQFLAGS2) & RFM69_IRQFLAGS2_PayloadReady_MASK;
+        return reg >> 2;
 }
 
 
-bool rfm69_frame_rx(uint8_t *buf, int expctdLen) {
+uint8_t rfm69_frame_rx(uint8_t *buf) {
     //copy into buffer if the message is of the expected length of 16 (or multiples of 16)
   
-	int i;
+    int i;
     uint8_t frame_length;
     
     digitalWrite(SS, LOW);
     rfm69_spi_transfer_byte(RFM69_FIFO);
+   
 	// Read frame length;
     frame_length = rfm69_spi_transfer_byte(0);
-
-    // Probably SPI bus problem
-	if (frame_length == 0xff) {
-		return E_SPI;
-	}
-
-    /*
-    if (frame_length > 66) {
-    	// error condition really
-    	frame_length = 66;
+   
+    //Serial.print(frame_length);
+    for (i = 0; i <expected_packet_length; i++) {
+          buf[i] = rfm69_spi_transfer_byte(0);
     }
-    * */
-	if(frame_length==expctdLen) {	
-		for (i = 0; i < frame_length; i++) {
-			buf[i] = rfm69_spi_transfer_byte(0);
-		}
-	}
+    
+    buf[16] = 0;
     
     digitalWrite(SS, HIGH);
     
-    return (frame_length==expctdLen);
+    return (frame_length);
 }
 
 
@@ -188,7 +180,8 @@ void rfm69_frame_tx(uint8_t *buf, int len) {
 void setup() {
   SPI.begin();
   SPI.setDataMode(SPI_MODE0);
-  Serial.begin(9600);
+ SPI.setClockDivider(2);
+  Serial.begin(115200);
   
   rfm69_config();
   
@@ -234,19 +227,20 @@ void recvFloat() {
 }
 
 void loop() {
-  
- if(rfm69_frame_rx(bfr, EXPECTED_PACKET_LENGTH)) { 
  
- /* for print across serial for actual  receiver
-  *for(int i = 0; i<8; i++){
-   Serial.print((int)local[i]);
- }
- */
- //copy to a buffer and print out the characters for a test where a string is transmitted
-	memcpy(local, &bfr[8], 8);
-	Serial.print((char*)bfr);
-	Serial.print("\n");
- }
+  uint8_t recv_ready = rfm69_payload_ready();
+  //Serial.print(recv_ready);
+  //Serial.print("\n");
+ if( recv_ready == 1 ) { 
+   
+      if(rfm69_frame_rx(bfr) == 16) {
+        for(int i = 0; i<16; i++) {
+          
+         Serial.print(bfr[i], HEX);
 
-}
+        }
+            	 Serial.print("\n");
+       }
+ }
+ }
 
