@@ -78,13 +78,13 @@
 #define L3G4200D_I2C_WRITE_ADDR    0x69 
 #define L3G4200D_I2C_READ_ADDR     0x69
 
-int global_gyro[3];
+int16_t global_gyro[3];
 
 static Thread *tpL3G4200D = NULL;
 
 /* 10000 Hz might need to be changed to 100000 Hz */
 static const I2CConfig i2cconfig = {
-	OPMODE_I2C, 10000, STD_DUTY_CYCLE
+	OPMODE_I2C, 100000, STD_DUTY_CYCLE
 };
 
 static bool_t l3g4200d_writeRegister(uint8_t address, uint8_t data) {
@@ -124,10 +124,10 @@ static bool_t l3g4200d_init(void)
     bool_t success;
   
     /* Configure CTRL_REG1: Highest Data Rate- 800 Hz, Bandwidth- 50 (UNSURE) */
-	success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0xFF);
+	success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0x0F);
 
     /* Configure CTRL_REG2: Normal mode for filter, 1 Hz for high pass filter */
-	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG2, 0x26);
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG2, 0x20);
 
     /* 
      * Configure CTRL_REG3:
@@ -136,19 +136,15 @@ static bool_t l3g4200d_init(void)
      * level specified in the FIFO_CTRL_REG.
      */
 
-	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG3, 0x04);
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG3, 0x08);
 
 	/* Configure CTRL_REG5: Enable FIFO operation */
-	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG5, 0x40);
+	success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG5, 0x00);
 	
     /* 
      * Configure FIFO_CTRL_REG: 
-     * Set the FIFO to operate in Stream Mode.
-     * Set the Watermark level to be 4.
-     * Interrupts on DRDY/INT2 occur when
-     * the FIFO has filled to this level.
      */
-	success &= l3g4200d_writeRegister(L3G4200D_RA_FIFO_CTRL_REG, 0x44);
+    success &= l3g4200d_writeRegister(L3G4200D_RA_FIFO_CTRL_REG, 0x00);
 
 	// TODO check connection
 
@@ -171,12 +167,13 @@ void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel)
 {
     (void)extp;
     (void)channel;
+    palSetPad(GPIOD, GPIOD_IMU_GRN);
     chSysLockFromIsr();
-    if(tpL3G4200D != NULL) 
+    if(tpL3G4200D != NULL && tpL3G4200D->p_state != THD_STATE_READY) 
     {
         chSchReadyI(tpL3G4200D);
-        tpL3G4200D = NULL;
     }
+    tpL3G4200D = NULL;
     chSysUnlockFromIsr();
 }
 
@@ -191,30 +188,28 @@ msg_t l3g4200d_thread(void *arg)
 	
     i2cStart(&I2CD1, &i2cconfig);
 	
-	//remove when gyro is working
-    global_gyro[0] = 1;
-    global_gyro[1] = 2;
-    global_gyro[2] = 3;
+    global_gyro[0] = 0;
+    global_gyro[1] = 0;
+    global_gyro[2] = 0;
 
 	while (!l3g4200d_init()) {
-		chThdSleepMilliseconds(5);
+		chThdSleepMilliseconds(100);
 	}
     
 	while(TRUE) {   
 		if (l3g4200d_receive(0xA8,buf_data, bufsize)) {
-			//remove when gyro is working 
-			global_gyro[0] = 1;
-			global_gyro[1] = 2;
-			global_gyro[2] = 3;
-
-			//TODO do something with received data
-		} else
+            global_gyro[0] = buf_data[0] | buf_data[1] << 8;
+            global_gyro[1] = buf_data[2] | buf_data[3] << 8;
+            global_gyro[2] = buf_data[4] | buf_data[5] << 8;
+		} else {
 		    chThdSleepMilliseconds(20);
+        }
 		
 		/* Sleep until DRDY */
 		chSysLock();
-		tpL3G4200D = chThdSelf();
-		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+        tpL3G4200D = chThdSelf();
+        palClearPad(GPIOD, GPIOD_IMU_GRN);
+		chSchGoSleepS(THD_STATE_SUSPENDED);
 		chSysUnlock();
 	}
 	

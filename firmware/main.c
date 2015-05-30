@@ -14,7 +14,7 @@
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
 static WORKING_AREA(waHMC5883L, 512);
-static WORKING_AREA(waL3G4200D, 512);
+static WORKING_AREA(waL3G4200D, 1024);
 static WORKING_AREA(waGPS, 4096);
 static WORKING_AREA(waRadio, 512);
 
@@ -73,11 +73,10 @@ int main(void) {
     /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
                       /*hmc5883l_thread, NULL);*/
 
-    chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
+    /*chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  */
     
-/*    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
+    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
                       l3g4200d_thread,NULL);
-*/
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
     
 

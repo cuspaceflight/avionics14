@@ -132,7 +132,10 @@ static void cmd_gyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;	
     (void)argv;
 
-    chprintf(chp," x: %d, y: %d, z: %d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
+    for(;;) {
+        chprintf(chp," x: %06d, y: %06d, z: %06d \n", global_gyro[0], global_gyro[1], global_gyro[2]);
+        chThdSleepMilliseconds(100);
+    }
     return;
 }
 
@@ -291,5 +294,5 @@ void b3_shell_run()
     };
     shellInit();
     sdStart(&SD2, NULL);
-    shellCreate(&shell_cfg, 2048, NORMALPRIO);
+    shellCreate(&shell_cfg, 4096, NORMALPRIO);
 }

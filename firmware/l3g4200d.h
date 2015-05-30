@@ -12,7 +12,7 @@
 /* The main thread*/
 msg_t l3g4200d_thread(void *arg);
 
-extern int global_gyro[3];
+extern int16_t global_gyro[3];
 
 /* Interrupt callbacks for EXTI. */
 void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel);
