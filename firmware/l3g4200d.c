@@ -110,7 +110,7 @@ static bool_t l3g4200d_receive(uint8_t *buf_data)
     msg_t rv;
     uint8_t address = L3G4200D_RA_OUT_BURST;
     
-    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, &address, 1, buf_data, 7, 1000);
+    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, &address, 1, buf_data, 6, 1000);
     
     return rv == RDY_OK;
 }
@@ -141,8 +141,8 @@ static bool_t l3g4200d_init(void)
     success &= l3g4200d_writeRegister(L3G4200D_RA_FIFO_CTRL_REG, 0x00);
   
     /* CTRL_REG1: Datarate, Filter Bandwidth, Enable each axis
-       Send 00011111 [00 = 100Hz samp][01 = 25Hz filter][1111 = enable all axis] */
-    success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0x1F);
+       Send 11111111 [11 = 800Hz samp][11 = 110Hz filter][1111 = enable all axis] */
+    success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0xFF);
 
     return success;
 }

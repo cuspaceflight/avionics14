@@ -72,7 +72,7 @@ int main(void) {
     
     chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
                       l3g4200d_thread,NULL);
-    /*chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);*/
+    chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
     
 
     b3_shell_run();
