@@ -14,7 +14,6 @@
  * Using a 2 byte sync word: 0x2D, NETWORK_ID. Can run multiple networks by changing NETWORK_ID.
  */
 #define NETWORK_ID (100)
-
 /*
  * RFM69 register configuration for packet operation on 433MHz
  */
@@ -38,8 +37,8 @@ extern const uint8_t RFM69_CONFIG[][2] = {
 	// Ref Table 9, page 20.
 	// For (default) 4.8kbps (MSB=0x1a, LSB=0x0b, 16 bit value 6667)
 	// For 1200bps want 0x682B
-	{ RFM69_BITRATEMSB, 0x68},
-	{ RFM69_BITRATELSB, 0x2B},
+	{ RFM69_BITRATEMSB, 0x1a},
+	{ RFM69_BITRATELSB, 0x0b},
 
 	// Carrier frequency (x3 registers for MSB 0x7, MID 0x8, LSB 0x9)
 	// 433MHz operation
@@ -77,12 +76,12 @@ extern const uint8_t RFM69_CONFIG[][2] = {
 	{ RFM69_SYNCVALUE2, NETWORK_ID},
 
 	{ RFM69_PACKETCONFIG1,
-		RFM69_PACKETCONFIG1_PacketFormat_VALUE(RFM69_PACKETCONFIG1_PacketFormat_Variable)
+		RFM69_PACKETCONFIG1_PacketFormat_VALUE(RFM69_PACKETCONFIG1_PacketFormat_Fixed)
     	| RFM69_PACKETCONFIG1_DcFree_VALUE(0)
     	| RFM69_PACKETCONFIG1_CrcOn_VALUE(1)
 	},
 
-    { RFM69_PAYLOADLENGTH, 66 },
+    { RFM69_PAYLOADLENGTH, 17},
 
     { RFM69_FIFOTHRESH, 0x8F},
 

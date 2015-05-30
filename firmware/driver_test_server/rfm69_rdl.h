@@ -291,7 +291,7 @@
 #define RFM69_SYNCCONFIG_SyncOn (1<<7)            /* Enables Sync word generation and detection */
 #define RFM69_SYNCCONFIG_SyncOn_MASK (0x1<<7)     /* SyncOn bit mask */
 #define RFM69_SYNCCONFIG_SyncOn_VALUE(x) (((x)<<7)&RFM69_SYNCCONFIG_SyncOn_MASK)
-#define RFM69_SYNCCONFIG_FifoFillCondition (1<<6) /* If 0 fills only if SyncAddress interrupt occurs */
+#define RFM69_SYNCCONFIG_FifoFillCondition (0) /* If 0 fills only if SyncAddress interrupt occurs */
 #define RFM69_SYNCCONFIG_FifoFillCondition_MASK (0x1<<6) /* FifoFillCondition bit mask */
 #define RFM69_SYNCCONFIG_FifoFillCondition_VALUE(x) (((x)<<6)&RFM69_SYNCCONFIG_FifoFillCondition_MASK)
 #define RFM69_SYNCCONFIG_SyncSize_MASK (0x7<<3)   /* SyncSize bit mask */
