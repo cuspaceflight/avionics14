@@ -15,7 +15,7 @@
 static Thread *tpHMC5883L = NULL;
 static float counts_to_Tesla = 9.2E-8;
 
-uint16_t global_magnoxyz[3];
+uint16_t global_magno[3];
 
 /* TODO: Validate timings against AN4235 */
 /* Magic I2C timing numbers. Computed via reference manual. */
@@ -25,19 +25,22 @@ static const I2CConfig i2cconfig = {
 
 
 /* Transmit data to sensor (used in init function only) */
-static bool_t hmc5883l_transmit(uint8_t *buf)
-{
-    size_t n = 2;  /* Transmit 2 bytes */
+static bool_t hmc5883l_transmit(uint8_t address, uint8_t data) {
+    uint8_t buffer[2];
+    buffer[0] = address;
+    buffer[1] = data;
+
     msg_t rv;
 
     /* Transmit message */
-    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000);
-    
-	if (rv == RDY_OK)
-	    return TRUE;
-	else
-	    return FALSE;
+    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, buffer, 2, NULL, 0, 1000);
 
+    if (rv == RDY_OK) {
+        return TRUE;
+    } else {
+        i2cflags_t errs = i2cGetErrors(&I2CD1);
+        return FALSE;
+    }
 }
 
 /* Read data about magnetic field from sensor into buffer.
@@ -65,42 +68,49 @@ static bool_t hmc5883l_init(uint8_t *buf, uint8_t *buf_data)
 {
     bool_t success = TRUE;
     size_t n = 2;
-
-    i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buf, n, NULL, 0, 1000);
     
-    buf[0] = 0x00; /*Register 00 (1Byte): [0][00=avg ovr 1 sample][100=15Hz][00=normal operation]*/
-    buf[1] = 0x10; /*Send 00010000*/
-    success &= hmc5883l_transmit(buf);
+    /* Register 00: Data Rates */
+    /* Send 00010000 [0][00=avg ovr 1 sample][100=15Hz][00=normal operation] */
+    success &= hmc5883l_transmit(0x00,0x10);
 
-    buf[0] = 0x01; /*Register 01 (1Byte): [001 = default gain][00000]*/
-    buf[1] = 0x20; /*Send 00100000*/
-    success &= hmc5883l_transmit(buf);
+    /* Register 01 (1Byte): Gain */
+    /* Send 00100000 [001 = default gain][00000] */
+    success &= hmc5883l_transmit(0x01,0x20);
 
-    buf[0] = 0x02; /*Register 02 (1Byte): [000000][00 = continuous measurement]*/
-    buf[1] = 0x00; /*Send 00000000*/
-    success &= hmc5883l_transmit(buf);
+    /*Register 02 (1Byte): Operating Mode */
+    /*Send 00000000 [000000][00 = continuous measurement]*/
+    success &= hmc5883l_transmit(0x02,0x00);
 
     return success;
 }
 
-/*This reads the identification registers on the magno and returns true if they match expected. The ID contents can also be accessed later if required.*/
-static bool_t hmc58831_identify(uint8_t *buf_data)
-{
+/*This reads the identification registers on the magno and returns true if they match expected.*/
+static bool_t hmc58831_identify(void) {
     msg_t rv;
+    uint8_t buf[1];
     bool_t success = TRUE;
-    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, 0x0A, 1, buf_data, 3, 1000);
     
-    if  (rv == RDY_OK)
-    {
-        success &= (buf_data[0] == 0x48);
-        success &= (buf_data[1] == 0x34);
-        success &= (buf_data[2] == 0x33);
-        return success;
+    uint8_t id_reg = 0x0A;
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
+        success = (buf[0] == 0x48);
+    } else {
+        return FALSE;
     }
-	else
-    {
-	    return FALSE;
+    
+    id_reg = 0x0B;
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
+        success &= (buf[1] == 0x34);
+    } else {
+        return FALSE;
     }
+    
+    id_reg = 0x0C;
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
+        success &= (buf[2] == 0x33);
+    } else {
+        return FALSE;
+    }
+    return success;
 }
 
 
@@ -119,8 +129,7 @@ static void hmc5883l_field_convert(uint8_t *buf_data, float *field)
     
     for (i =0; i<3; i++)
     {
-    	temp = ((int16_t) (buf_data[i*2]) << 8) | ((uint16_t) 
-                                                  (buf_data[i*2+1])) ;
+    	temp = ((int16_t) (buf_data[i*2]) << 8) | ((uint16_t) (buf_data[i*2+1]));
     	field [i] = ((float) (temp));// * counts_to_Tesla;
     }
     
@@ -169,14 +178,11 @@ msg_t hmc5883l_thread(void *arg)
 
     i2cStart(&I2CD2, &i2cconfig);
     
+    hmc58831_identify(buf_data);
 
-    if(!hmc5883l_init(buf, buf_data))
-    {
-        while(1) chThdSleepMilliseconds(5);
+    while(!hmc5883l_init(buf, buf_data)) {
+        chThdSleepMilliseconds(100);
     }
-    
-    bool_t id_ok = hmc58831_identify(buf_data);
-    
     
     while(TRUE)
     {   
@@ -184,9 +190,9 @@ msg_t hmc5883l_thread(void *arg)
         {
             /*hmc5883l_field_convert(buf_data, field);*/
             /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
-            global_magnoxyz[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
-            global_magnoxyz[1] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
-            global_magnoxyz[2] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
+            global_magno[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
+            global_magno[1] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
+            global_magno[2] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
             /* microsd_log_s16(CHAN_IMU_MAGNO , 
                 field[0], field[1], field[2], 0); */
             /*define this state estimation function 

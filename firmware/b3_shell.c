@@ -15,16 +15,13 @@ static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
 static void cmd_magnotest(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
     (void)argc;
-    
-    chprintf(chp, "Magno X: 0x%x %d\r\n", global_magnoxyz[0]);
-    chprintf(chp, "Magno Y: 0x%x %d\r\n", global_magnoxyz[1]);
-    chprintf(chp, "Magno Z: 0x%x %d\r\n", global_magnoxyz[2]);
-    chprintf(chp, "Wait 2 seconds \n");
-    chThdSleepMilliseconds(2000);
-    chprintf(chp, "Run 2: \n");
-    chprintf(chp, "Magno X: 0x%x %d\r\n", global_magnoxyz[0]);
-    chprintf(chp, "Magno Y: 0x%x %d\r\n", global_magnoxyz[1]);
-    chprintf(chp, "Magno Z: 0x%x %d\r\n", global_magnoxyz[2]);
+    for(;;) {
+        /* chprintf(chp, "Magno X: 0x%x %d\r\n", global_magno[0]);
+        chprintf(chp, "Magno Y: 0x%x %d\r\n", global_magno[1]);
+        chprintf(chp, "Magno Z: 0x%x %d\r\n", global_magno[2]); */
+        chprintf(chp,"%09d %09d %09d \n", global_magno[0], global_magno[1], global_magno[2]);
+        chThdSleepMilliseconds(1);
+    }
 
 }
 
