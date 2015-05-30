@@ -15,20 +15,18 @@
  *
  */
  
- 
- 
+  
 #include <math.h>
 #include "mission_control_final.h"
 #include "state_estimation.h"
 #include "pyro.h"
 #include "config.h"
-/* #include "microsd.h" */
-
+#include "datalogging.h"
 
 #define AGREED_TIME_DELAY 1
 
-
 /* TOP_BOARD MISSION CONTROL */
+
 
 #if board_location==TOP_BOARD
 
@@ -56,7 +54,7 @@ state_func_t* const state_table[TOP_NUM_STATES] =
 };
 
 
-top_state_t run_state(state_t cur_state, instance_data_t *data) 
+top_state_t run_state(top_state_t cur_state, instance_data_t *data) 
 {
     return state_table[cur_state](data);
 }
@@ -191,11 +189,10 @@ msg_t mission_thread(void* arg)
 
         /* Log changes in state */
         if(new_state != cur_state) {
-            /*microsd_log_s32(CHAN_SM_MISSION,
-            (int32_t)cur_state, (int32_t)new_state);*/
+            log_s32(CHAN_SM_MISSION,
+            (int32_t)cur_state, (int32_t)new_state);
             cur_state = new_state;
-           /* SBP_SEND(0x30, new_state);*/
-        }
+         }
 
         /* Tick the state machine about every millisecond */
         chThdSleepMilliseconds(1);
@@ -337,11 +334,10 @@ msg_t mission_thread(void* arg)
 
         /* Log changes in state */
         if(new_state != cur_state) {
-            /*microsd_log_s32(CHAN_SM_MISSION,
-            (int32_t)cur_state, (int32_t)new_state);*/
+            log_s32(CHAN_SM_MISSION,
+            (int32_t)cur_state, (int32_t)new_state);
             cur_state = new_state;
-           /* SBP_SEND(0x30, new_state);*/
-        }
+         }
 
         /* Tick the state machine about every millisecond */
         chThdSleepMilliseconds(1);

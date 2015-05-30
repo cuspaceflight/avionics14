@@ -47,8 +47,7 @@ void pyro_off_3(void* arg);
 void pyro_off_4(void* arg);
 void pyro_off_5(void* arg);
 
-
-/* int board_location = TOP_BOARD ; CHANGE THIS IF NECESSARY */
+/*int board_location; */
 
 /* Checks the input channels for continuity.
  * The pad will be low if the e-match is intact
