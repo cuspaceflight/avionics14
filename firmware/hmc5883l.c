@@ -5,15 +5,21 @@
 
 #include <stdlib.h>
 
-
 #include "hal.h"
-
 #include "hmc5883l.h"  
 
-#define HMC5883L_I2C_ADDR    0x1E
+
+#define HMC5883L_I2C_ADDR   0x1E
+
+#define HMC5883L_RA_OUT         0x03
+#define HMC5883L_RA_CONFIG_A    0x00
+#define HMC5883L_RA_CONFIG_B    0x01
+#define HMC5883L_RA_MODE        0x02
+#define HMC5883L_RA_ID_A        0x0A
+#define HMC5883L_RA_ID_B        0x0B
+#define HMC5883L_RA_ID_C        0x0C
 
 static Thread *tpHMC5883L = NULL;
-static float counts_to_Tesla = 9.2E-8;
 
 uint16_t global_magno[3];
 
@@ -30,81 +36,56 @@ static bool_t hmc5883l_transmit(uint8_t address, uint8_t data) {
     buffer[0] = address;
     buffer[1] = data;
 
-    msg_t rv;
-
     /* Transmit message */
-    rv = i2cMasterTransmitTimeout(&I2CD1, L3G4200D_I2C_ADDR, buffer, 2, NULL, 0, 1000);
-
-    if (rv == RDY_OK) {
-        return TRUE;
-    } else {
-        i2cflags_t errs = i2cGetErrors(&I2CD1);
-        return FALSE;
-    }
+    return (i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, buffer, 2, NULL, 0, 1000) == RDY_OK);
 }
 
-/* Read data about magnetic field from sensor into buffer.
- * Do so through a transmit operation.
- * Place output data(6 bytes) into a (different) buffer
- */
-
- /* Draw data from the sensor in 6 consecutive bytes. Make sure that the registry is pointing to 0x03 first! */
-static bool_t hmc5883l_receive(uint8_t *buf_data)
-{
-    msg_t rv;
-    uint8_t txbuf = 0x03;
-
-    /* Sends 0x03 first, so that registry is pointing in correct location, then reads 6 consecutive bytes.
-    Location of measurements are X,Z,Y in 0x03,0x04,0x05 respectively. (note the order!) */
-    rv = i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, txbuf, 1, buf_data, 6, 1000);
-    
-    if  (rv == RDY_OK)
-        return TRUE;
-    else
-	    return FALSE;
+/* When called, will read 6 bytes of XZY data into buf_data: [XH][XL][ZH][ZL][YH][YL] NOTE THE ORDER! */
+static bool_t hmc5883l_receive(uint8_t *buf_data) {
+    uint8_t address = HMC5883L_RA_OUT;
+    return (i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &address, 1, buf_data, 6, 1000) == RDY_OK);
 }
 
-static bool_t hmc5883l_init(uint8_t *buf, uint8_t *buf_data)
-{
+static bool_t hmc5883l_init(void) {
     bool_t success = TRUE;
-    size_t n = 2;
     
-    /* Register 00: Data Rates */
-    /* Send 00010000 [0][00=avg ovr 1 sample][100=15Hz][00=normal operation] */
-    success &= hmc5883l_transmit(0x00,0x10);
+    /* Config Reg A: Data Rates
+       Send 00010000 [0][00 = mov avg ovr 1 samp][100 = 15Hz][00 = normal operation] */
+    success &= hmc5883l_transmit(HMC5883L_RA_CONFIG_A,0x10);
 
-    /* Register 01 (1Byte): Gain */
-    /* Send 00100000 [001 = default gain][00000] */
-    success &= hmc5883l_transmit(0x01,0x20);
+    /* Config Reg B: Gain
+       Send 00100000 [001 = 1090 (reciprocal) gain][00000] */
+    success &= hmc5883l_transmit(HMC5883L_RA_CONFIG_B,0x20);
 
-    /*Register 02 (1Byte): Operating Mode */
-    /*Send 00000000 [000000][00 = continuous measurement]*/
-    success &= hmc5883l_transmit(0x02,0x00);
+    /* Mode Reg: Operating Mode
+       Send 00000000 [000000][00 = cont mode] */
+    success &= hmc5883l_transmit(HMC5883L_RA_MODE,0x00);
 
     return success;
 }
 
-/*This reads the identification registers on the magno and returns true if they match expected.*/
-static bool_t hmc58831_identify(void) {
-    msg_t rv;
+/* Checks the ID of the Magno to ensure we're actually talking to the Magno and not some other component. */
+static bool_t hmc58831_ID_check(void) {
     uint8_t buf[1];
+    uint8_t id_reg;
     bool_t success = TRUE;
     
-    uint8_t id_reg = 0x0A;
+    /* Forcefully try to read each ID register since it seems like they don't exist. */
+    id_reg = HMC5883L_RA_ID_A;
     if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
-        success = (buf[0] == 0x48);
+        success &= (buf[0] == 0x48);
     } else {
         return FALSE;
     }
     
-    id_reg = 0x0B;
+    id_reg = HMC5883L_RA_ID_B;
     if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
         success &= (buf[1] == 0x34);
     } else {
         return FALSE;
     }
     
-    id_reg = 0x0C;
+    id_reg = HMC5883L_RA_ID_C;
     if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
         success &= (buf[2] == 0x33);
     } else {
@@ -114,25 +95,31 @@ static bool_t hmc58831_identify(void) {
 }
 
 
-/* 
- * buf_data contains 3 pairs of 8 bit entries.
- * Each pair corresponds to field strength along X, Y, and Z axes.
- * Function generates three 16 bit readings and converts them into
- * floats corresponding to field strength along each axis.
- * Multiplication by constant necessary to account for the 
- * conversion factor from counts measured into Tesla.
- */
-static void hmc5883l_field_convert(uint8_t *buf_data, float *field)
-{
-    int16_t temp ;
+/* Conversion to meaningful units. Output in miligauss. (1G = 1e-4T)*/
+static void hmc5883l_field_convert(uint8_t *buf_data, float *field) {
+    /* 0.73 mG/LSB for 1370 (reciprocal) gain
+       0.92 mG/LSB for 1090 (reciprocal) gain
+       1.22 mG/LSB for 820 (reciprocal) gain
+       1.52 mG/LSB for 660 (reciprocal) gain
+       2.27 mG/LSB for 440 (reciprocal) gain
+       2.56 mG/LSB for 390 (reciprocal) gain
+       3.03 mG/LSB for 330 (reciprocal) gain
+       4.35 mG/LSB for 230 (reciprocal) gain */
+    static float sensitivity = 0.92f;
+    int16_t concatenated_field;
+    
     int i;
-    
-    for (i =0; i<3; i++)
+    for (i=0; i<3; i++)
     {
-    	temp = ((int16_t) (buf_data[i*2]) << 8) | ((uint16_t) (buf_data[i*2+1]));
-    	field [i] = ((float) (temp));// * counts_to_Tesla;
+        concatenated_field = (buf_data[(i*2)] << 8) | (buf_data[(i*2+1)]);
+        global_magno[i] = concatenated_field;
+    	field [i] = ((float)concatenated_field) * sensitivity;
     }
-    
+    /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
+    float temp;
+    temp = global_magno[2];
+    global_magno[2] = global_magno[3];
+    global_magno[3] = temp;
 }
 
 /* 
@@ -155,61 +142,42 @@ void hmc5883l_wakeup(EXTDriver *extp, expchannel_t channel)
 msg_t hmc5883l_thread(void *arg)
 {
     (void)arg;
-    const int bufsize_1 = 2;
-    const int bufsize_2 = 6;
-    
-    uint8_t buf[bufsize_1];
-    uint8_t buf_data[bufsize_2];
-    float field[3] ;
+
+    uint8_t buf_data[6];
+    float field[3];
 	
     chRegSetThreadName("HMC5883L");
-	
-/* 
- * Reset Magno so it's in a known state 
- * Uncomment afer pin allocation completed
- */
-
-    /* 
-     * palClearPad(GPIOB, GPIOB_GPS_RESET); 
-     * chThdSleepMilliseconds(100);
-     * palSetPad(GPIOB, GPIOB_GPS_RESET); 
-     * chThdSleepMilliseconds(500);
-     */
 
     i2cStart(&I2CD2, &i2cconfig);
     
-    hmc58831_identify(buf_data);
-
-    while(!hmc5883l_init(buf, buf_data)) {
-        chThdSleepMilliseconds(100);
+    while (!hmc58831_ID_check()) {
+        chThdSleepMilliseconds(500);
     }
     
-    while(TRUE)
-    {   
-        if (hmc5883l_receive(buf_data))
-        {
-            /*hmc5883l_field_convert(buf_data, field);*/
-            /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
-            global_magno[0] = ((uint16_t)buf[0] << 8) | (uint16_t)buf[1];
-            global_magno[1] = ((uint16_t)buf[4] << 8) | (uint16_t)buf[5];
-            global_magno[2] = ((uint16_t)buf[2] << 8) | (uint16_t)buf[3];
-            /* microsd_log_s16(CHAN_IMU_MAGNO , 
-                field[0], field[1], field[2], 0); */
-            /*define this state estimation function 
-            state_estimation_new_magno(field[0], 
-			       field[1], field[2]); */
-        }
-
-        else
-        {   
-            chThdSleepMilliseconds(20);
-        }
-
+    /* Initialise the settings. */
+    while (!hmc5883l_init()) {
+        chThdSleepMilliseconds(500);
+    }
+    
+    while (TRUE)
+    {
         /* Sleep until DRDY */
         chSysLock();
         tpHMC5883L = chThdSelf();
         chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
         chSysUnlock();
+        
+        /* Pull data from magno into buf_data. */
+        if (hmc5883l_receive(buf_data)) {
+            hmc5883l_field_convert(buf_data, field);
+            /* microsd_log_s16(CHAN_IMU_MAGNO , 
+                field[0], field[1], field[2], 0); */
+            /*define this state estimation function 
+            state_estimation_new_magno(field[0], 
+			       field[1], field[2]); */
+        } else {
+            chThdSleepMilliseconds(20);
+        }
     }
 
     return (msg_t)NULL;
