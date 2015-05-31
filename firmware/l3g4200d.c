@@ -142,7 +142,7 @@ static bool_t l3g4200d_init(void)
   
     /* CTRL_REG1: Datarate, Filter Bandwidth, Enable each axis
        Send 11111111 [11 = 800Hz samp][11 = 110Hz filter][1111 = enable all axis] */
-    success = l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0xFF);
+    success &= l3g4200d_writeRegister(L3G4200D_RA_CTRL_REG1, 0xFF);
 
     return success;
 }
