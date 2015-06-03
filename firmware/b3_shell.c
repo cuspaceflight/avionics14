@@ -7,7 +7,7 @@
 #include "ms5611.h"
 #include "pyro.h"
 #include "board.h"
-
+#include "microsd.h"
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -275,6 +275,43 @@ static void cmd_test_all(BaseSequentialStream *chp, int argc, char *argv[]){
 
 
 
+static void cmd_microsd(BaseSequentialStream* chp, int argc, char* argv[])
+{
+    (void)argv;
+    (void)argc;
+    SDFILE file;
+    SDFS sd;
+    SDRESULT res;
+
+    static const SDMODE mode = FA_CREATE_ALWAYS | FA_READ | FA_WRITE;
+    static const int len = 90;
+    static const char* test_string = "\n\tHere is a string.\n\tIt tests the \
+functionality\n\tof the micro sd card\n\tOne two three test\n";
+    char result[len];
+
+    chprintf(chp, "Opening file ...\n");
+    res = microsd_open_file(&file, "testfile", mode, &sd);
+    if (res != FR_OK) goto error;
+
+    chprintf(chp, "Writing test string to SD card ...\n");
+    res = microsd_write(&file, test_string, len);
+    if (res != FR_OK) goto error;
+
+    chprintf(chp, "Reading the following from SD card ...\n");
+    res = microsd_read(&file, result, len);
+    if (res != FR_OK) goto error;
+    chprintf(chp, "%s\n", result);
+
+    chprintf(chp, "Closing file ...\n");
+    res = microsd_close_file(&file);
+    if (res != FR_OK) goto error;
+
+    return;
+
+    error:
+        chprintf(chp, "SD result error!!! SDRESULT: %d\n", res);
+}
+
 void b3_shell_run()
 {
     static const ShellCommand commands[] = {
@@ -290,6 +327,7 @@ void b3_shell_run()
         {"barotest", cmd_barotest},
 		{"test_all", cmd_test_all},
         {"pyro", cmd_pyro},
+        {"microsd", cmd_microsd},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
