@@ -74,11 +74,16 @@ include $(CHIBIOS)/os/hal/platforms/STM32F4xx/platform.mk
 include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/ports/GCC/ARMCMx/STM32F4xx/port.mk
 include $(CHIBIOS)/os/kernel/kernel.mk
-include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 include $(CHIBIOS)/test/test.mk
 
 # Define linker script file here
 LDSCRIPT= STM32F407xG_CCM.ld
+
+# Override fatfs.mk to use local (in-repository) fatfs source
+FATFSSRC = ${CHIBIOS}/os/various/fatfs_bindings/fatfs_diskio.c \
+		   ${CHIBIOS}/os/various/fatfs_bindings/fatfs_syscall.c \
+		   fatfs/src/ff.c fatfs/src/option/ccsbcs.c
+FATFSINC = fatfs/src
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
