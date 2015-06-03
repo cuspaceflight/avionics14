@@ -15,7 +15,7 @@ static bool read_bool(SDFILE* file, const char* name, bool* attribute);
 
 /* External config */
 config_t conf = {
-    .stage = 1,
+    .stage = BOARD_LOCATION,
     .ignition_velocity = 10.5,
     .burnout_acceleration = 2.0,
     .burnout_timer = 5200,

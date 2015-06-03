@@ -26,12 +26,16 @@
  
 #include <math.h>
 #include "mission_control_top.h"
-/* #include "state_estimation.h" */
+#include "state_estimation.h"
 #include "pyro.h"
+#include "config.h"
 /* #include "microsd.h" */
 
 
-/* #define AGREED_TIME_DELAY = 1 second ?? NEEDS CLARIFICATION */
+#define AGREED_TIME_DELAY 1
+
+
+
 
 
 /* function prototypes for the different states.
@@ -69,7 +73,6 @@ state_t run_state(state_t cur_state, instance_data_t *data)
 
 static state_t do_state_standby(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     if(chTimeNow() < 10000)
         return STATE_STANDBY;
     else if(data->state.v > IGNITION_VELOCITY)
@@ -92,7 +95,6 @@ static state_t do_state_standby(instance_data_t *data)
 
 static state_t do_state_first_stage_fired(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 0;
     if(data->state.a < BURNOUT_ACCELERATION)
     {
         data->t_separation = chTimeNow() ; /* to sort out time delay later */
@@ -110,6 +112,7 @@ static state_t do_state_first_stage_fired(instance_data_t *data)
 
 static state_t do_state_separated(instance_data_t *data)
 {
+    (void) data;
     return STATE_TIME_DELAY;
 }
 
@@ -119,7 +122,7 @@ static state_t do_state_time_delay(instance_data_t *data)
     /* AGREED_TIME_DELAY will need defining properly. Included at top of file.*/   
     if(chTimeElapsedSince(data->t_separation) > AGREED_TIME_DELAY) 
     {
-	 pyro_fire_second_stage(); /* THIS FUNCTION IS NOT YET DEFINED */
+	 pyro_fire_second_stage(); 
 	 return STATE_SECOND_STAGE_FIRED;
     }
     else
@@ -128,14 +131,13 @@ static state_t do_state_time_delay(instance_data_t *data)
 
 static state_t do_state_second_stage_fired(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     /* Will need to define GRAVITATIONAL_ACCELERATION and will need to 
      * free on error tolerance in its value */
     /* May be better to use a range of values and an inequality instead. */
     if((data->state.a) == GRAVITATIONAL_ACCELERATION ) 
-	return STATE_COASTING;						   
+	    return STATE_COASTING;						   
     else
-	return STATE_SECOND_STAGE_FIRED ;
+	    return STATE_SECOND_STAGE_FIRED ;
 }
 
 static state_t do_state_coasting(instance_data_t *data)
@@ -148,7 +150,6 @@ static state_t do_state_coasting(instance_data_t *data)
 
 static state_t do_state_apogee(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     data->t_apogee = chTimeNow();
     pyro_fire_drogue(); 					/* check this is functional */
     return STATE_DROGUE_PARACHUTE_FIRED;
@@ -156,9 +157,6 @@ static state_t do_state_apogee(instance_data_t *data)
 
 static state_t do_state_drogue_parachute_fired(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;   /* Must check all of these symbolic 
-                                               constants- may not be applicable 
-                                               for our rocket */
     if(data->state.h < MAIN_DEPLOY_ALTITUDE) /* edit this constant */
     {
 	pyro_fire_main();                     /* check this is functional */
@@ -175,7 +173,6 @@ static state_t do_state_drogue_parachute_fired(instance_data_t *data)
 
 static state_t do_state_main_parachute_fired_top(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     /* May be better to use an altitude/velocity check for this rather 
      * than a time check */
     if(chTimeElapsedSince(data->t_apogee) > LANDED_TIMER) 
@@ -187,7 +184,6 @@ static state_t do_state_main_parachute_fired_top(instance_data_t *data)
 
 static state_t do_state_landed_top(instance_data_t *data)
 {
-    state_estimation_trust_barometer = 1;
     (void)data;
     return STATE_LANDED_TOP;
 }
@@ -213,10 +209,10 @@ msg_t mission_thread(void* arg)
 
         /* Log changes in state */
         if(new_state != cur_state) {
-            microsd_log_s32(CHAN_SM_MISSION,
-            (int32_t)cur_state, (int32_t)new_state);
+            /*microsd_log_s32(CHAN_SM_MISSION,
+            (int32_t)cur_state, (int32_t)new_state);*/
             cur_state = new_state;
-            SBP_SEND(0x30, new_state);
+           /* SBP_SEND(0x30, new_state);*/
         }
 
         /* Tick the state machine about every millisecond */
