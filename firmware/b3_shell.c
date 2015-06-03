@@ -8,6 +8,7 @@
 #include "pyro.h"
 #include "board.h"
 #include "microsd.h"
+#include "hmc5883l.h"
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -57,7 +58,6 @@ static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     palClearPad(GPIOA, GPIOA_BUZZER);
 }
 
-
 static WORKING_AREA(waRadio, 512);
 	
 static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -75,6 +75,18 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
         rfm69_log_c(8, msg2);
         chThdSleepMilliseconds(50);
 	}
+}
+
+static void cmd_magnotest(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    (void)argc;
+    for(;;) {
+        /* chprintf(chp, "Magno X: 0x%x %d\r\n", global_magno[0]);
+        chprintf(chp, "Magno Y: 0x%x %d\r\n", global_magno[1]);
+        chprintf(chp, "Magno Z: 0x%x %d\r\n", global_magno[2]); */
+        chprintf(chp,"%09d %09d %09d \n", global_magno[0], global_magno[1], global_magno[2]);
+        chThdSleepMilliseconds(1);
+    }
 }
 
 static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
@@ -328,6 +340,7 @@ void b3_shell_run()
 		{"test_all", cmd_test_all},
         {"pyro", cmd_pyro},
         {"microsd", cmd_microsd},
+        {"magnotest", cmd_magnotest},
         {NULL, NULL}
     };
     static const ShellConfig shell_cfg = {
