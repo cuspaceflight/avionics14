@@ -9,7 +9,7 @@
 #include "hmc5883l.h"  
 
 
-#define HMC5883L_I2C_ADDR   0x1E
+#define HMC5883L_I2C_ADDR       0x1E
 
 #define HMC5883L_RA_OUT         0x03
 #define HMC5883L_RA_CONFIG_A    0x00
@@ -23,10 +23,8 @@ static Thread *tpHMC5883L = NULL;
 
 uint16_t global_magno[3];
 
-/* TODO: Validate timings against AN4235 */
-/* Magic I2C timing numbers. Computed via reference manual. */
 static const I2CConfig i2cconfig = {
-	OPMODE_I2C, 10000, STD_DUTY_CYCLE
+	OPMODE_I2C, 100000, STD_DUTY_CYCLE
 };
 
 
