@@ -12,9 +12,10 @@
 
 typedef enum {
     STATE_PAD = 0, STATE_IGNITION, STATE_POWERED_ASCENT, STATE_BURNOUT,
-    STATE_FREE_ASCENT, STATE_IGNITE, STATE_SEPARATE, STATE_SEPARATED_ASCENT,
-    STATE_APOGEE, STATE_DROGUE_DEPLOY, STATE_DROGUE_DESCENT, STATE_MAIN_DEPLOY,
-    STATE_MAIN_DESCENT, STATE_TOUCHDOWN, STATE_LANDED, NUM_STATES
+    STATE_FREE_ASCENT, STATE_IGNITE, STATE_wait_ignition, STATE_SEPARATE,
+    STATE_SEPARATED_ASCENT, STATE_APOGEE, STATE_DROGUE_DEPLOY,
+    STATE_DROGUE_DESCENT, STATE_MAIN_DEPLOY, STATE_MAIN_DESCENT,
+    STATE_TOUCHDOWN, STATE_LANDED, NUM_STATES
 } state_t;
 
 typedef struct instance_data {
@@ -31,6 +32,7 @@ static state_t do_state_powered_ascent(instance_data_t *data);
 static state_t do_state_burnout(instance_data_t *data);
 static state_t do_state_free_ascent(instance_data_t *data);
 static state_t do_state_ignite(instance_data_t *data);
+static state_t do_state_wait_ignition(instance_data_t *data);
 static state_t do_state_separate(instance_data_t *data);
 static state_t do_state_separated_ascent(instance_data_t *data);
 static state_t do_state_apogee(instance_data_t *data);
@@ -44,10 +46,10 @@ static state_t do_state_landed(instance_data_t *data);
 state_func_t* const state_table[NUM_STATES] =
 {
     do_state_pad, do_state_ignition, do_state_powered_ascent, do_state_burnout,
-    do_state_free_ascent, do_state_ignite, do_state_separate,
-    do_state_separated_ascent, do_state_apogee, do_state_drogue_deploy,
-    do_state_drogue_descent, do_state_main_deploy, do_state_main_descent,
-    do_state_touchdown, do_state_landed
+    do_state_free_ascent, do_state_ignite, do_state_wait_ignition,
+    do_state_separate, do_state_separated_ascent, do_state_apogee,
+    do_state_drogue_deploy, do_state_drogue_descent, do_state_main_deploy,
+    do_state_main_descent, do_state_touchdown, do_state_landed
 };
 
 state_t run_state(state_t cur_state, instance_data_t *data)
@@ -82,6 +84,10 @@ static state_t do_state_free_ascent(instance_data_t *data)
 }
 
 static state_t do_state_ignite(instance_data_t *data)
+{
+}
+
+static state_t do_state_wait_ignition(instance_data_t *data)
 {
 }
 
