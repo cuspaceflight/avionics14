@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <stdbool.h>
+
 /* Exposes functions for reading config file from sd card.
  * Usage: config MUST be initialised with config_init, then macros can be used
  * to access config.

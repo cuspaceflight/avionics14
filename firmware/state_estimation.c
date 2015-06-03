@@ -8,7 +8,6 @@
 #include "state_estimation.h"
 #include "microsd.h"
 #include "time_utils.h"
-#include "sbp_io.h"
 
 /* Kalman filter state and covariance storage */
 static float x[3]    = {1180.0f, 0.0f, 0.0f};
