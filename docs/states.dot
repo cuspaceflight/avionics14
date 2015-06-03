@@ -1,0 +1,37 @@
+digraph {
+    PAD -> IGNITION [label=" Time Since Boot > 10s and\n Accel > IGNITION_ACCEL"];
+    PAD -> PAD;
+    IGNITION -> POWERED_ASCENT;
+    POWERED_ASCENT -> BURNOUT [label=" Accel < 0 or\n Time Since Ignition > BURNOUT_TIME"];
+    POWERED_ASCENT -> POWERED_ASCENT;
+    BURNOUT -> "Current Bottom Stage?";
+    "Current Bottom Stage?" [shape=diamond];
+    "Current Bottom Stage?" -> "Got Separation?" [label="YES"];
+    "Current Bottom Stage?" -> FREE_ASCENT [label="NO"];
+    "Got Separation?" [shape=diamond];
+    "Got Separation?" -> SEPARATED_ASCENT [label="NO"];
+    "Got Separation?" -> SEPARATE [label="YES"];
+    SEPARATE -> SEPARATED_ASCENT;
+    SEPARATED_ASCENT -> SEPARATED_ASCENT;
+    SEPARATED_ASCENT -> APOGEE [label=" Velocity < 0 or\n Time Since Burnout > APOGEE_TIME"];
+    FREE_ASCENT -> IGNITE [label=" Altitude > IGNITE_ALTITUDE or\n Time Since Burnout > IGNITE_TIME"];
+    FREE_ASCENT -> FREE_ASCENT;
+    IGNITE -> IGNITION [label=" Accel > IGNITION_ACCEL"];
+    IGNITE -> SEPARATED_ASCENT [label= " Time In Ignite > IGNITE_TIMEOUT"];
+    IGNITE -> IGNITE;
+    APOGEE -> "Got Drogue?";
+    "Got Drogue?" [shape=diamond];
+    "Got Drogue?" -> DROGUE_DEPLOY [label="YES"];
+    "Got Drogue?" -> DROGUE_DESCENT [label="NO"];
+    DROGUE_DEPLOY -> DROGUE_DESCENT;
+    DROGUE_DESCENT -> "Got Main?" [label=" Altitude < MAIN_ALTITUDE\n or Time Since Apogee > MAIN_TIME"];
+    DROGUE_DESCENT -> DROGUE_DESCENT;
+    "Got Main?" [shape=diamond];
+    "Got Main?" -> MAIN_DEPLOY [label="YES"];
+    "Got Main?" -> MAIN_DESCENT [label="NO"];
+    MAIN_DEPLOY -> MAIN_DESCENT;
+    MAIN_DESCENT -> TOUCHDOWN [label=" Velocity near zero or\n Time Since Apogee > LANDING_TIME"];
+    MAIN_DESCENT -> MAIN_DESCENT;
+    TOUCHDOWN -> LANDED;
+    LANDED -> LANDED;
+}
