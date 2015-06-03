@@ -13,7 +13,8 @@
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
     (void)argv;
-    static const SerialConfig sc = {9600};
+    static const SerialConfig sc = {
+        9600, 0, USART_CR2_STOP1_BITS | USART_CR2_LINEN, 0};
     sdStart(&SD1, &sc);
     EventListener elSerData;
     flagsmask_t flags;
@@ -58,8 +59,6 @@ static void cmd_beep(BaseSequentialStream *chp, int argc, char *argv[]) {
     palClearPad(GPIOA, GPIOA_BUZZER);
 }
 
-static WORKING_AREA(waRadio, 512);
-	
 static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
 	(void)chp;
 	(void)argv;
@@ -68,7 +67,6 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
     char* msg1 = "a234567a";
     char* msg2 = "b765432b";
 	
-	int i;
     while(1) {
         rfm69_log_c(8, msg1);
         chThdSleepMilliseconds(50);

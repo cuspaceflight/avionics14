@@ -18,7 +18,7 @@
 /*
  * RFM69 register configuration for packet operation on 433MHz
  */
-extern const uint8_t RFM69_CONFIG[][2] = {
+const uint8_t RFM69_CONFIG[][2] = {
 	{ RFM69_OPMODE,
 			RFM69_OPMODE_Mode_VALUE(RFM69_OPMODE_Mode_RX)
 	},

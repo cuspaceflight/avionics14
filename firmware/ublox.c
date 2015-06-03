@@ -230,7 +230,6 @@ static bool_t ublox_transmit(uint8_t *buf)
 {
     size_t n;
     systime_t timeout;
-    msg_t rv;
 
     /* Add checksum to outgoing message */
     ublox_checksum(buf);
@@ -325,6 +324,8 @@ static void ublox_state_machine(uint8_t *buf, size_t num_new_bytes)
 
             case STATE_CK_A:
                 ck_b = b;
+                (void)ck_a;
+                (void)ck_b;
                 /* TODO check checksum */
                 state = STATE_IDLE;
                 switch(class) {
@@ -384,7 +385,7 @@ static void ublox_state_machine(uint8_t *buf, size_t num_new_bytes)
     }
 }
 
-static bool_t ublox_init(uint8_t *buf, size_t bufsize)
+static bool_t ublox_init(void)
 {
     ubx_cfg_nav5_t nav5;
     ubx_cfg_msg_t msg;
@@ -454,9 +455,6 @@ static bool_t ublox_init(uint8_t *buf, size_t bufsize)
     success &= ublox_transmit(&msg.data);
     if(!success) return FALSE;
 
-    /* Clear the current serial buffer */
-    /*while(ublox_receive(buf, bufsize));*/
-
     return success;
 }
 
@@ -475,10 +473,11 @@ msg_t ublox_thread(void* arg)
     palSetPad(GPIOA, GPIOA_GPS_RESET);
     chThdSleepMilliseconds(500);
 
-    static const SerialConfig sc = {9600};
+    static const SerialConfig sc = {
+        9600, 0, USART_CR2_STOP1_BITS | USART_CR2_LINEN, 0};
     sdStart(&SD1, &sc);
 
-    if(!ublox_init(buf, bufsize)) {
+    if(!ublox_init()) {
         ublox_error(5);
     }
 

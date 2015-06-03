@@ -100,6 +100,7 @@ static bool_t l3g4200d_writeRegister(uint8_t address, uint8_t data) {
         return TRUE;
     } else {
         i2cflags_t errs = i2cGetErrors(&I2CD1);
+        (void)errs;
         return FALSE;
     }
 }
@@ -118,7 +119,7 @@ static bool_t l3g4200d_receive(uint8_t *buf_data)
 /* Initialise the settings for the gyro. */
 static bool_t l3g4200d_init(void)
 {
-    bool_t success;
+    bool_t success = true;
 
     /* CTRL_REG2: Highpass filter mode, cut-off freq.
        Send 00100000 [00][10 = normal mode][0000 = highest cut-off] */

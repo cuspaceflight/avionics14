@@ -260,7 +260,9 @@ msg_t adxl345_thread(void *arg)
         adxl3x5_read_accel(&ADXL345_SPID, accels);
         for (j = 0; j < 3; j++){
             global_accel[j] = accels[j];
-            }
+        }
+
+        (void)adxl3x5_accels_to_axis(accels, 0, 9.81f);
 
         /*microsd_log_s16(CHAN_IMU_LGA, accels[0], accels[1], accels[2], 0);*/
         /*state_estimation_new_lg_accel(*/

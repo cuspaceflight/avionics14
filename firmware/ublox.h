@@ -32,7 +32,7 @@ typedef struct {
     uint32_t reserved3;
     int32_t head_veh;
     uint32_t reserved4;
-} ublox_pvt_t __attribute__((packed));
+} __attribute__((packed)) ublox_pvt_t;
 
 msg_t ublox_thread(void* arg);
 

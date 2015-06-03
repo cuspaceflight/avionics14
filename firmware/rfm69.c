@@ -16,6 +16,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 #include "rfm69.h"
 #include "err.h" 
 #include "hal.h"

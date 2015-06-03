@@ -18,8 +18,6 @@ static WORKING_AREA(waL3G4200D, 1024);
 static WORKING_AREA(waGPS, 4096);
 static WORKING_AREA(waRadio, 512);
 
-static WORKING_AREA(waRadioTest, 512);
-
 /*
  * Set up pin change interrupts for the various sensors that react to them.
  */

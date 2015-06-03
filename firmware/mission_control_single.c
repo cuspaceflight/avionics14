@@ -65,7 +65,7 @@ static single_state_t do_state_single_stage_fired(instance_data_t *data)
         return SINGLE_STATE_COASTING;
     }
     
-    else if(chTimeElapsedSince(data->t_launch) > BURNOUT_TIMER) 
+    else if(chTimeElapsedSince(data->t_launch) > (uint32_t)BURNOUT_TIMER) 
     {
         return SINGLE_STATE_COASTING;          
     }
@@ -96,7 +96,7 @@ static single_state_t do_state_drogue_parachute_fired(instance_data_t *data)
 	pyro_fire_main();                     /* check this is functional */
         return SINGLE_STATE_MAIN_PARACHUTE_FIRED;
     }
-    else if(chTimeElapsedSince(data->t_apogee) > MAIN_DEPLOY_TIMER)
+    else if(chTimeElapsedSince(data->t_apogee) > (uint32_t)MAIN_DEPLOY_TIMER)
     {    
 	pyro_fire_main();					   /* check this is functional */
 	return SINGLE_STATE_MAIN_PARACHUTE_FIRED;
@@ -109,7 +109,7 @@ static single_state_t do_state_main_parachute_fired_single(instance_data_t *data
 {
     /* May be better to use an altitude/velocity check for this rather 
      * than a time check */
-    if(chTimeElapsedSince(data->t_apogee) > LANDED_TIMER) 
+    if(chTimeElapsedSince(data->t_apogee) > (uint32_t)LANDED_TIMER) 
         return SINGLE_STATE_LANDED;
     else
         return SINGLE_STATE_MAIN_PARACHUTE_FIRED;
