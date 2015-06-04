@@ -36,18 +36,26 @@ bool_t pyro_continuity_check()
 
     if(PYRO_1) {
         ok &= pyro_continuity(GPIOE_PY1_CHK);
+    } else {
+        ok &= !pyro_continuity(GPIOE_PY1_CHK);
     }
     
     if(PYRO_2) {
         ok &= pyro_continuity(GPIOE_PY2_CHK);
+    } else {
+        ok &= !pyro_continuity(GPIOE_PY2_CHK);
     }
 
     if(PYRO_3) {
         ok &= pyro_continuity(GPIOE_PY3_CHK);
+    } else {
+        ok &= !pyro_continuity(GPIOE_PY3_CHK);
     }
 
     if(PYRO_4) {
         ok &= pyro_continuity(GPIOE_PY4_CHK);
+    } else {
+        ok &= !pyro_continuity(GPIOE_PY4_CHK);
     }
 
     return ok;
