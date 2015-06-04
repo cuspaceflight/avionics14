@@ -26,8 +26,8 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms);
  */
 void pyro_fire_drogue(void);
 void pyro_fire_main(void);
-void pyro_fire_separation(void) ;
-void pyro_fire_second_stage(void);
+void pyro_fire_separation(void);
+void pyro_fire_ignite(void);
 
 
 /* Checks pyro continuities continuously */
