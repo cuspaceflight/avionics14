@@ -20,12 +20,12 @@ pyro_1           | Int   | Pyro channel 1 usage: 0=unused 1=ignition 2=separatio
 pyro_2           | Int   | Pyro channel 2 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
 pyro_3           | Int   | Pyro channel 3 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
 pyro_4           | Int   | Pyro channel 4 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
-ignition_accel   | Float | Acceleration threshold for detecting motor ignition
-burnout_time     | Float | Time limit on motor burn duration
-ignite_altitude  | Float | Altitude above which to fire this stage's motor
-ignite_time      | Float | Time since burnout at which to fire this stage's motor
-ignite_timeout   | Float | Time to spend trying to ignite before giving up
-apogee_time      | Float | Time since burnout after which apogee is considered to have been reached
-main_altitude    | Float | Altitude below which to release the main parachute
-main_time        | Float | Time since apogee at which to release the main parachute
-landing_time     | Float | Time since apogee at which to consider the rocket landed
+ignition_accel   | Float | Acceleration threshold for detecting motor ignition, in m/s/s
+burnout_time     | Float | Time limit on motor burn duration, in seconds
+ignite_altitude  | Float | Altitude above which to fire this stage's motor, in metres ASL
+ignite_time      | Float | Time since burnout at which to fire this stage's motor, in seconds
+ignite_timeout   | Float | Time to spend trying to ignite before giving up, in seconds
+apogee_time      | Float | Time since burnout after which apogee is considered to have been reached, in seconds
+main_altitude    | Float | Altitude below which to release the main parachute, in metres ASL
+main_time        | Float | Time since apogee at which to release the main parachute, in seconds
+landing_time     | Float | Time since apogee at which to consider the rocket landed, in seconds
