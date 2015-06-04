@@ -48,7 +48,7 @@ void rfm69_log_c(uint8_t channel, const char* data)
     msg[5] = (char)channel;
     memcpy((void*)msg, (void*)&halGetCounterValue(), 4);
     memcpy((void*)&msg[8], data, 8);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 void rfm69_log_s64(uint8_t channel, int64_t data)
@@ -59,7 +59,7 @@ void rfm69_log_s64(uint8_t channel, int64_t data)
     msg[5] = (char)channel;
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8], &data, 8);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b)
@@ -71,7 +71,7 @@ void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b)
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 4);
     memcpy(&msg[12], &data_b, 4);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
@@ -86,7 +86,7 @@ void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
     memcpy(&msg[10], &data_b, 2);
     memcpy(&msg[12], &data_c, 2);
     memcpy(&msg[14], &data_d, 2);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
@@ -101,7 +101,7 @@ void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
     memcpy(&msg[10], &data_b, 2);
     memcpy(&msg[12], &data_c, 2);
     memcpy(&msg[14], &data_d, 2);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 void rfm69_log_f(uint8_t channel, float data_a, float data_b)
@@ -113,7 +113,15 @@ void rfm69_log_f(uint8_t channel, float data_a, float data_b)
     memcpy(msg, (void*)&halGetCounterValue(), 4);
     memcpy(&msg[8],  &data_a, 4);
     memcpy(&msg[12], &data_b, 4);
-    chMBPost(&rfm69_mb, (msg_t)msg, TIME_IMMEDIATE);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
+}
+
+void rfm69_log_packet(uint8_t* packet)
+{
+    char *msg;
+    msg = (void*)chPoolAlloc(&rfm69_mp);
+    memcpy(msg, (void*)packet, 16);
+    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
 }
 
 static void rfm69_mem_init()
@@ -243,8 +251,10 @@ void rfm69_frame_tx(SPIDriver* SPID, uint8_t *buf, int len) {
 
 msg_t rfm69_thread(void *arg) {
 	
-	msg_t status, msgp;
+	msg_t status;
+    intptr_t msgp;
 	uint8_t *msg;
+    int i;
 	
 	(void) arg;
 	chRegSetThreadName("RFM69");
@@ -262,10 +272,9 @@ msg_t rfm69_thread(void *arg) {
 	
 	rfm69_mem_init();
 	
-		int i;
 	
 	if(rfm69_test(&RFM69_SPID) == 0) {
-		//two blinks to show correct initialisation:
+		//two blinks to show correct initialisation
 		for(i = 0; i<2; i++) {
 			palClearPad(GPIOD, GPIOD_RADIO_GRN);
 			chThdSleepMilliseconds(500);
@@ -282,13 +291,8 @@ msg_t rfm69_thread(void *arg) {
 		}
 	}
 	
-	if(conf.stage == 1)
-		rfm69_log_c(0, "BOTTOM");
-	else if(conf.stage == 2)
-		rfm69_log_c(0, "TOP");
-
 	while(TRUE) {
-		status = chMBFetch(&rfm69_mb, &msgp, TIME_INFINITE);
+		status = chMBFetch(&rfm69_mb, (msg_t*)&msgp, TIME_INFINITE);
 		if(status != RDY_OK || msgp == 0) {
             chThdSleepMilliseconds(1);
 			continue;
@@ -300,59 +304,4 @@ msg_t rfm69_thread(void *arg) {
 		chPoolFree(&rfm69_mp, (void*)msg);
         chThdSleepMilliseconds(50);
 	}
-	return (msg_t)NULL;
 }
-
-
-//Test thread: for the moment just try and send a string
-	
-msg_t rfm69_test_thread(void *arg) {
-
-	(void) arg;
-	chRegSetThreadName("RFM69");
-	
-	//setup SPI: CPHA = 0, CPOL = 0;
-	const SPIConfig spi_cfg = { 
-		NULL,
-		RFM69_SPI_CS_PORT,
-		RFM69_SPI_CS_PIN,
-		SPI_CR1_BR_2 | 0 | 0
-	};
-	
-	spiStart(&RFM69_SPID, &spi_cfg);
-	rfm69_config(&RFM69_SPID);
-	
-	int i;
-	
-	if(rfm69_test(&RFM69_SPID) == 0) {
-		//five blinks to show correct initialisation:
-		for(i = 0; i<5; i++) {
-			palClearPad(GPIOD, GPIOD_RADIO_GRN);
-			chThdSleepMilliseconds(500);
-			palSetPad(GPIOD, GPIOD_RADIO_GRN);
-			chThdSleepMilliseconds(500);
-		}
-	} else {
-		//five blinks red to show incorrect initialisation
-		for(i = 0; i<5; i++) {
-			palClearPad(GPIOD, GPIOD_RADIO_RED);
-			chThdSleepMilliseconds(500);
-			palSetPad(GPIOD, GPIOD_RADIO_RED);
-			chThdSleepMilliseconds(500);
-		}
-	}
-	
-	/*test if the rfm69 registers are actually being set*/
-		
-	/*test data*/
-	uint8_t data[] = "Hello World";
-
-	while(TRUE) { 
-		
-		rfm69_frame_tx(&RFM69_SPID, data, sizeof(data));
-		chThdSleepMilliseconds(300);
-	}
-	return (msg_t)NULL;
-}
-
-

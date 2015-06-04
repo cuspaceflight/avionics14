@@ -6,6 +6,7 @@
 #include "datalogging.h"
 #include "config.h"
 #include "chprintf.h"
+#include "rfm69.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -335,7 +336,7 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
         counter[channel]++;
         if (counter[channel] == log_counter[channel]) {
 
-            // TODO: send packet to radio transmission
+            rfm69_log_packet((uint8_t*)&packet);
             counter[channel] = 0;
         }
     }
