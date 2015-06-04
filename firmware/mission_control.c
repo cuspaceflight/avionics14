@@ -115,6 +115,7 @@ static state_t do_state_free_ascent(instance_data_t *data)
 
 static state_t do_state_ignite(instance_data_t *data)
 {
+    (void)data;
     pyro_fire_ignite();
     return STATE_WAIT_IGNITION;
 }
@@ -134,6 +135,7 @@ static state_t do_state_wait_ignition(instance_data_t *data)
 
 static state_t do_state_separate(instance_data_t *data)
 {
+    (void)data;
     pyro_fire_separation();
     return STATE_SEPARATED_ASCENT;
 }
@@ -160,6 +162,7 @@ static state_t do_state_apogee(instance_data_t *data)
 
 static state_t do_state_drogue_deploy(instance_data_t *data)
 {
+    (void)data;
     pyro_fire_drogue();
     return STATE_DROGUE_DESCENT;
 }
@@ -180,6 +183,7 @@ static state_t do_state_drogue_descent(instance_data_t *data)
 
 static state_t do_state_main_deploy(instance_data_t *data)
 {
+    (void)data;
     pyro_fire_main();
     return STATE_MAIN_DESCENT;
 }
@@ -196,11 +200,13 @@ static state_t do_state_main_descent(instance_data_t *data)
 
 static state_t do_state_touchdown(instance_data_t *data)
 {
+    (void)data;
     return STATE_LANDED;
 }
 
 static state_t do_state_landed(instance_data_t *data)
 {
+    (void)data;
     return STATE_LANDED;
 }
 

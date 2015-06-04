@@ -204,7 +204,7 @@ static void cmd_rt(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argv;
-    bool p1, p2, p3, p4 ;
+    bool p1, p2, p3, p4;
     
     /* Continuity Check */
 
@@ -213,34 +213,29 @@ static void cmd_pyro(BaseSequentialStream *chp, int argc, char *argv[]) {
     p3 = pyro_continuity(GPIOE_PY3_CHK);
     p4 = pyro_continuity(GPIOE_PY4_CHK);
     
-    chprintf(chp, "Results of Continuity Check: %u, %u, %u, %u\n", p1,
-                                                    p2, p3, p4);
-    chprintf(chp,"Argument Code:\n1 for Main: Channel 1\n2 for Separation: Channels 2 and 3\n");
-    chprintf(chp,"3 for Second Stage Fire: Channel 3\n4 for Drogue: Channel 4\n");
+    chprintf(chp, "Results of Continuity Check: 1:%u, 2:%u, 3:%u, 4:%u\n",
+             p1, p2, p3, p4);
                                                     
     if (argc > 0) 
     {
         if (argv[0][0] == '1') 
         {
-            pyro_fire_main(); 
+            pyro_fire(1, 1000);
         }
         
         else if (argv[0][0] == '2') 
         {
-            pyro_fire_separation();
-        
+            pyro_fire(2, 1000);
         }
         
         if (argv[0][0] == '3') 
         {
-            pyro_fire_second_stage();
-          
+            pyro_fire(3, 1000);
         }  
       
         if (argv[0][0] == '4') 
         {
-            pyro_fire_drogue();    
-                  
+            pyro_fire(4, 1000);
         }
     }
 }

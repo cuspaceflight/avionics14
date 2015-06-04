@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 128 // aka estimated max line length in config
 
 static bool read_int(SDFILE* file, const char* name, int* attribute);
-static bool read_double(SDFILE* file, const char* name, double* attribute);
+static bool read_float(SDFILE* file, const char* name, float* attribute);
 static bool read_bool(SDFILE* file, const char* name, bool* attribute);
 
 /* ------------------------------------------------------------------------- */
@@ -73,7 +73,7 @@ static bool read_float(SDFILE* file, const char* name, float* attribute)
     if (status != FR_OK) return false;
 
     sprintf(format, "%s=%%lf", name);
-    n_matched = sscanf(buffer, format, placeholder);
+    n_matched = sscanf(buffer, format, &placeholder);
     *attribute = (float)placeholder;
     return n_matched == 1;
 }

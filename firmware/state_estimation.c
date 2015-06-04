@@ -6,7 +6,7 @@
 
 #include <math.h>
 #include "state_estimation.h"
-#include "microsd.h"
+#include "datalogging.h"
 #include "time_utils.h"
 
 /* Kalman filter state and covariance storage */
@@ -129,7 +129,6 @@ void state_estimation_update_accel(float accel, float r);
 state_estimate_t state_estimation_get_state()
 {
     float q, dt, dt2, dt3, dt4, dt5, dt6, dt2_2;
-    static uint8_t sbp_counter = 0;
     state_estimate_t x_out;
 
     /* TODO Determine this q-value */
@@ -201,14 +200,8 @@ state_estimate_t state_estimation_get_state()
     chBSemSignal(&kalman_lock);
 
     /* Log the newly predicted state */
-    microsd_log_f(CHAN_SE_P1, dt, x_out.h);
-    microsd_log_f(CHAN_SE_P2, x_out.v, x_out.a);
-
-    sbp_counter++;
-    if(sbp_counter == 100) {
-        SBP_SEND(0x22, x_out);
-        sbp_counter = 0;
-    }
+    log_f(CHAN_SE_P1, dt, x_out.h);
+    log_f(CHAN_SE_P2, x_out.v, x_out.a);
 
     return x_out;
 }
@@ -309,7 +302,7 @@ void state_estimation_new_pressure(float pressure)
     p[2][2] -= k[2] * p[0][2];
 
     /* Log new pressure reading and the consequent new state altitude */
-    microsd_log_f(CHAN_SE_U_P, pressure, x[0]);
+    log_f(CHAN_SE_U_P, pressure, x[0]);
 
     /* Release lock */
     chBSemSignal(&kalman_lock);
@@ -464,7 +457,7 @@ void state_estimation_update_accel(float a, float r)
     p[2][2] -= k[2] * p[2][2];
 
     /* Log new acceleration value the consequent new state acceleration */
-    microsd_log_f(CHAN_SE_U_A, a, x[2]);
+    log_f(CHAN_SE_U_A, a, x[2]);
 
     /* Release lock */
     chBSemSignal(&kalman_lock);

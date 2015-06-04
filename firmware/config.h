@@ -48,6 +48,10 @@
  */
 bool config_init(const char* path);
 
+/* Sanity check the loaded config.
+ */
+bool check_config(void);
+
 //-----------------------------------------------------------------------------
 
 typedef struct config_ {

@@ -32,7 +32,6 @@ bool_t pyro_continuity(uint8_t pad)
  */
 bool_t pyro_continuity_check()
 {
-    int16_t p1, p2, p3 = 0;
     bool ok = true;
 
     if(PYRO_1) {
