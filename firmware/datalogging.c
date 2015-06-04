@@ -9,7 +9,7 @@
 
 /* ------------------------------------------------------------------------- */
 
-#define LOG_MEMPOOL_ITEMS 1024  // 1KB
+#define LOG_MEMPOOL_ITEMS 1024  // 1K
 #define LOG_CACHE_SIZE 16384    // 16KB
 #define CHANNEL_NUM 256         // 1-byte channel number -> 256 channel numbers
 
@@ -38,7 +38,7 @@ typedef struct packet_ {
 } packet_t;
 
 static void mem_init(void);
-static uint16_t checksum(data_t data);
+static uint16_t checksum(packet_t packet);
 static void _log(uint8_t channel, uint8_t type, data_t data);
 
 /* ------------------------------------------------------------------------- */
@@ -67,25 +67,29 @@ static uint16_t counter[CHANNEL_NUM];
 
 /* contains the counter numbers that decide when we sample the data */
 static const uint16_t log_counter[CHANNEL_NUM] = {
-    LOG_INIT,
-    LOG_CAL_TFREQ,
-    LOG_CAL_LGA,
-    LOG_CAL_HGA,
-    LOG_CAL_BARO1,
-    LOG_CAL_BARO2,
-    LOG_IMU_LGA,
-    LOG_IMU_HGA,
-    LOG_IMU_BARO,
-    LOG_SENS_BAT,
-    LOG_SENS_SG,
-    LOG_SENS_TC,
-    LOG_SM_MISSION,
-    LOG_SE_P1,
-    LOG_SE_P2,
-    LOG_SE_U_P,
-    LOG_SE_U_A,
-    LOG_PYRO_C,
-    LOG_PYRO_F
+    [CHAN_INIT] = LOG_INIT,
+    [CHAN_CAL_TFREQ] = LOG_CAL_TFREQ,
+    [CHAN_CAL_LGA] = LOG_CAL_LGA,
+    [CHAN_CAL_HGA] = LOG_CAL_HGA,
+    [CHAN_CAL_BARO1] = LOG_CAL_BARO1,
+    [CHAN_CAL_BARO2] = LOG_CAL_BARO2,
+    [CHAN_IMU_LGA] = LOG_IMU_LGA,
+    [CHAN_IMU_HGA] = LOG_IMU_HGA,
+    [CHAN_IMU_BARO] = LOG_IMU_BARO,
+    [CHAN_SENS_BAT] = LOG_SENS_BAT,
+    [CHAN_SENS_SG] = LOG_SENS_SG,
+    [CHAN_SENS_TC] = LOG_SENS_TC,
+    [CHAN_SM_MISSION] = LOG_SM_MISSION,
+    [CHAN_SE_P1] = LOG_SE_P1,
+    [CHAN_SE_P2] = LOG_SE_P2,
+    [CHAN_SE_U_P] = LOG_SE_U_P,
+    [CHAN_SE_U_A] = LOG_SE_U_A,
+    [CHAN_PYRO_C] = LOG_PYRO_C,
+    [CHAN_PYRO_F] = LOG_PYRO_F,
+    [CHAN_GPS_TIME] = LOG_GPS_TIME,
+    [CHAN_GPS_POS] = LOG_GPS_POS,
+    [CHAN_GPS_ALT] = LOG_GPS_ALT,
+    [CHAN_GPS_STATUS] = LOG_GPS_STATUS
 };
 
 /* ------------------------------------------------------------------------- */
@@ -103,7 +107,7 @@ msg_t microsd_thread(void* arg)
     SDFS file_system;        // struct that encapsulates file system state
     SDFILE file;             // file struct thing
     msg_t mailbox_res;       // mailbox fetch result
-    msg_t data_msg;          // buffer to store the fetched mailbox item
+    intptr_t data_msg;       // buffer to store the fetched mailbox item
     char* packet_msg;        // data_msg to be logged cast to char*
     SDRESULT write_res;      // result of writing data to file system
     bool cache_not_full;     // true if still space in cache (write when full)
@@ -115,22 +119,22 @@ msg_t microsd_thread(void* arg)
     while (microsd_open_file_inc(&file, "log", "bin", &file_system) != FR_OK) ;
 
     if (STAGE == 1) {
-        log_c(CHAN_INIT, "STAGEONE");
+        log_c(CHAN_INIT, "B3STAGE1");
     } else if (STAGE == 2) {
-        log_c(CHAN_INIT, "STAGETWO");
+        log_c(CHAN_INIT, "B3STAGE2");
     }
 
     while (true) {
 
-        mailbox_res = chMBFetch(&log_mailbox, &data_msg, TIME_INFINITE);
+        mailbox_res = chMBFetch(&log_mailbox, (msg_t*)&data_msg, TIME_INFINITE);
 
         // mailbox was reset while waiting/fetch failed ... try again!
         if (mailbox_res != RDY_OK || data_msg == 0) continue;
 
         // put packet in the static cache and free it from the memory pool
-        packet_msg = (char*) data_msg;
-        memcpy((void*) cache_ptr, packet_msg, packet_size);
-        chPoolFree(&log_mempool, (void*) data_msg);
+        packet_msg = (char*)data_msg;
+        memcpy((void*)cache_ptr, packet_msg, packet_size);
+        chPoolFree(&log_mempool, (void*)data_msg);
 
         // if the cache is full, write it all to the sd card
         cache_not_full = cache_ptr + packet_size < log_cache + LOG_CACHE_SIZE;
@@ -273,12 +277,24 @@ void log_error(uint8_t channel, const char* data)
 }
 
 /* CRC16-CCCITT checksum. 64 bits to 16 bits.
+ * Initial value 0x0000, polynomial 0x1021.
  */
-static uint16_t checksum(data_t data)
+static uint16_t checksum(packet_t packet)
 {
-   // TODO: http://en.wikipedia.org/wiki/Cyclic_redundancy_check
-    data = data;
-    return 1;
+    uint16_t checksum = 0x0000;
+    uint8_t* p = (uint8_t*)&packet;
+    int i, j;
+    for(i=0; i<16; i++) {
+        checksum ^= ((uint16_t)*p << 8);
+        for(j=0; j<8; j++) {
+            if(checksum & 0x8000) {
+                checksum = (checksum << 1) ^ 0x1021;
+            } else {
+                checksum <<= 1;
+            }
+        }
+    }
+    return checksum;
 }
 
 /* Allocate and post a formatted packet containing metadata + data to mailbox.
@@ -292,11 +308,13 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
 
     packet_t packet = {
         .timestamp = halGetCounterValue(),
-        .type = type | STAGE << 4,
+        .type = type | (STAGE + 4) << 4,
         .channel = channel,
-        .checksum = checksum(data),
+        .checksum = 0,
         .data = data
     };
+
+    packet.checksum = checksum(packet);
 
     // allocate space for the packet and copy it into a mailbox message
     msg = chPoolAlloc(&log_mempool);
@@ -304,7 +322,7 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
     memcpy(msg, (void*)&packet, sizeof(packet_t));
 
     // put it in the mailbox buffer
-    retval = chMBPost(&log_mailbox, (msg_t)msg, TIME_IMMEDIATE);
+    retval = chMBPost(&log_mailbox, (intptr_t)msg, TIME_IMMEDIATE);
     if (retval != RDY_OK) {
         chPoolFree(&log_mempool, msg);
         return;

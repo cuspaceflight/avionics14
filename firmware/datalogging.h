@@ -23,31 +23,39 @@
 #define CHAN_SE_U_A     0x53
 #define CHAN_PYRO_C     0x60
 #define CHAN_PYRO_F     0x61
+#define CHAN_GPS_TIME   0x70
+#define CHAN_GPS_POS    0x71
+#define CHAN_GPS_ALT    0x72
+#define CHAN_GPS_STATUS 0x73
 
 /* max log counters before we draw a sample for radio transmission.
  * 0 means that it is not sampled for radio.
  * 1 means that it is sampled every time data is logged.
  * 2 means every second time, etc.
  */
-#define LOG_INIT           0
-#define LOG_CAL_TFREQ      0
-#define LOG_CAL_LGA        0
-#define LOG_CAL_HGA        0
-#define LOG_CAL_BARO1      0
-#define LOG_CAL_BARO2      0
-#define LOG_IMU_LGA        0
-#define LOG_IMU_HGA        0
-#define LOG_IMU_BARO       0
+#define LOG_INIT           1
+#define LOG_CAL_TFREQ      1
+#define LOG_CAL_LGA        1
+#define LOG_CAL_HGA        1
+#define LOG_CAL_BARO1      1
+#define LOG_CAL_BARO2      1
+#define LOG_IMU_LGA        400
+#define LOG_IMU_HGA        400
+#define LOG_IMU_BARO       100
 #define LOG_SENS_BAT       0
 #define LOG_SENS_SG        0
 #define LOG_SENS_TC        0
-#define LOG_SM_MISSION     0
-#define LOG_SE_P1          0
-#define LOG_SE_P2          0
-#define LOG_SE_U_P         0
-#define LOG_SE_U_A         0
-#define LOG_PYRO_C         0
-#define LOG_PYRO_F         0
+#define LOG_SM_MISSION     1
+#define LOG_SE_P1          200
+#define LOG_SE_P2          200
+#define LOG_SE_U_P         200
+#define LOG_SE_U_A         200
+#define LOG_PYRO_C         1
+#define LOG_PYRO_F         1
+#define LOG_GPS_TIME       1
+#define LOG_GPS_POS        1
+#define LOG_GPS_ALT        1
+#define LOG_GPS_STATUS     1
 
 /* logging codes to determine format of the data payload.
  * (not relevant for calling a logging function, this is just to make the
