@@ -9,6 +9,9 @@
 #include "hal.h"
 #include "chprintf.h"
 
+#include "state_estimation.h"
+#include "datalogging.h"
+
 #define MS5611_SPID        SPID2
 #define MS5611_SPI_CS_PORT GPIOB
 #define MS5611_SPI_CS_PIN  GPIOB_BARO_CS
@@ -102,10 +105,8 @@ static void ms5611_read_cal(MS5611CalData* cal_data)
     ms5611_read_u16(0xAC, &(cal_data->c6));
     ms5611_read_u16(0xAE, &d7);
 
-    /*microsd_log_u16(CHAN_CAL_BARO1,*/
-                    /*d0, cal_data->c1, cal_data->c2, cal_data->c3);*/
-    /*microsd_log_u16(CHAN_CAL_BARO2,*/
-                    /*cal_data->c4, cal_data->c5, cal_data->c6, d7);*/
+    log_u16(CHAN_CAL_BARO1, d0, cal_data->c1, cal_data->c2, cal_data->c3);
+    log_u16(CHAN_CAL_BARO2, cal_data->c4, cal_data->c5, cal_data->c6, d7);
 }
 
 /*
@@ -154,7 +155,7 @@ static void ms5611_read(MS5611CalData* cal_data,
     global_pressure = *pressure;
     global_temperature = *temperature;
 
-    /*microsd_log_s32(CHAN_IMU_BARO, *pressure, *temperature);*/
+    log_s32(CHAN_IMU_BARO, *pressure, *temperature);
 }
 
 /*
@@ -183,7 +184,7 @@ msg_t ms5611_thread(void *arg)
 
     while (TRUE) {
         ms5611_read(&cal_data, &temperature, &pressure);
-        /*state_estimation_new_pressure((float)pressure);*/
+        state_estimation_new_pressure((float)pressure);
     }
 
     return (msg_t)NULL;

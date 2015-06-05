@@ -20,6 +20,7 @@
 #include <string.h>
 #include "ublox.h"
 #include "hal.h"
+#include "datalogging.h"
 
 /* UBX sync bytes */
 #define UBX_SYNC1 0xB5
@@ -350,6 +351,15 @@ static void ublox_state_machine(uint8_t *buf, size_t num_new_bytes)
                             palSetPad(GPIOD, GPIOD_RADIO_GRN);
                             chThdSleepMilliseconds(100);
                             palClearPad(GPIOD, GPIOD_RADIO_GRN);
+                            log_u8(CHAN_GPS_TIME,
+                                   (uint8_t)(pvt.year & 0xFF),
+                                   (uint8_t)(pvt.year>>8 & 0xFF),
+                                   pvt.month, pvt.day, pvt.hour, pvt.minute,
+                                   pvt.second, pvt.valid);
+                            log_s32(CHAN_GPS_POS, pvt.lat, pvt.lon);
+                            log_s32(CHAN_GPS_ALT, pvt.height, pvt.h_msl);
+                            log_s8(CHAN_GPS_STATUS, pvt.fix_type, pvt.flags,
+                                   pvt.num_sv, 0, 0, 0, 0, 0);
                             /* Send the PVT to dispatch */
                             /*dispatch_pvt(pvt);*/
                         } else {

@@ -6,7 +6,8 @@
 #include <stdlib.h>
 
 #include "hal.h"
-#include "hmc5883l.h"  
+#include "datalogging.h"
+#include "hmc5883l.h"
 
 
 #define HMC5883L_I2C_ADDR       0x1E
@@ -168,8 +169,7 @@ msg_t hmc5883l_thread(void *arg)
         /* Pull data from magno into buf_data. */
         if (hmc5883l_receive(buf_data)) {
             hmc5883l_field_convert(buf_data, field);
-            /* microsd_log_s16(CHAN_IMU_MAGNO , 
-                field[0], field[1], field[2], 0); */
+            log_s16(CHAN_IMU_MAGNO, field[0], field[1], field[2], 0); 
             /*define this state estimation function 
             state_estimation_new_magno(field[0], 
 			       field[1], field[2]); */
@@ -177,6 +177,4 @@ msg_t hmc5883l_thread(void *arg)
             chThdSleepMilliseconds(20);
         }
     }
-
-    return (msg_t)NULL;
 }

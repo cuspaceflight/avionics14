@@ -201,7 +201,7 @@ void log_s64(uint8_t channel, int64_t data)
 }
 
 /* log one unsigned 64-bit integer */
-void log_uint64(uint8_t channel, uint64_t data)
+void log_u64(uint8_t channel, uint64_t data)
 {
     data_t datatype = { .u64 = { data } };
     _log(channel, (uint8_t)L_UINT64, datatype);
@@ -215,7 +215,7 @@ void log_s32(uint8_t channel, int32_t a, int32_t b)
 }
 
 /* log two unsigned 32-bit integers */
-void log_uint32(uint8_t channel, uint32_t a, uint32_t b)
+void log_u32(uint8_t channel, uint32_t a, uint32_t b)
 {
     data_t datatype = { .u32 = { a, b } };
     _log(channel, (uint8_t)L_UINT32, datatype);
@@ -238,7 +238,7 @@ void log_u16(uint8_t channel,
 }
 
 /* log eight signed 8-bit integers */
-void log_sint8(uint8_t channel,
+void log_s8(uint8_t channel,
     int8_t a, int8_t b, int8_t c, int8_t d,
     int8_t e, int8_t f, int8_t g, int8_t h)
 {
@@ -247,7 +247,7 @@ void log_sint8(uint8_t channel,
 }
 
 /* log eight unsigned 8-bit integers */
-void log_uint8(uint8_t channel,
+void log_u8(uint8_t channel,
     uint8_t a, uint8_t b, uint8_t c, uint8_t d,
     uint8_t e, uint8_t f, uint8_t g, uint8_t h)
 {
@@ -263,14 +263,14 @@ void log_f(uint8_t channel, float a, float b)
 }
 
 /* log one 64-bit double precision float */
-void log_double(uint8_t channel, double data)
+void log_d(uint8_t channel, double data)
 {
     data_t datatype = { .d = { data } };
     _log(channel, (uint8_t)L_DOUBLE, datatype);
 }
 
 /* log tiny error msg of 8 chars. might make more sense to have error codes. */
-void log_error(uint8_t channel, const char* data)
+void log_err(uint8_t channel, const char* data)
 {
     data_t datatype;
     memcpy((void*)&datatype.c, data, 8);

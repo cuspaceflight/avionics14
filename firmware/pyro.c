@@ -5,6 +5,7 @@
 #include <hal.h>
 #include "pyro.h" 
 #include "config.h"
+#include "datalogging.h"
 
 
 void pyro_off_1(void* arg);
@@ -33,30 +34,19 @@ bool_t pyro_continuity(uint8_t pad)
 bool_t pyro_continuity_check()
 {
     bool ok = true;
+    uint16_t ch1, ch2, ch3, ch4;
 
-    if(PYRO_1) {
-        ok &= pyro_continuity(GPIOE_PY1_CHK);
-    } else {
-        ok &= !pyro_continuity(GPIOE_PY1_CHK);
-    }
-    
-    if(PYRO_2) {
-        ok &= pyro_continuity(GPIOE_PY2_CHK);
-    } else {
-        ok &= !pyro_continuity(GPIOE_PY2_CHK);
-    }
+    ch1 = pyro_continuity(GPIOE_PY1_CHK);
+    ch2 = pyro_continuity(GPIOE_PY2_CHK);
+    ch3 = pyro_continuity(GPIOE_PY3_CHK);
+    ch4 = pyro_continuity(GPIOE_PY4_CHK);
 
-    if(PYRO_3) {
-        ok &= pyro_continuity(GPIOE_PY3_CHK);
-    } else {
-        ok &= !pyro_continuity(GPIOE_PY3_CHK);
-    }
+    ok &= (PYRO_1 && ch1) || (!PYRO_1 && !ch1);
+    ok &= (PYRO_2 && ch2) || (!PYRO_2 && !ch2);
+    ok &= (PYRO_3 && ch3) || (!PYRO_3 && !ch3);
+    ok &= (PYRO_4 && ch4) || (!PYRO_4 && !ch4);
 
-    if(PYRO_4) {
-        ok &= pyro_continuity(GPIOE_PY4_CHK);
-    } else {
-        ok &= !pyro_continuity(GPIOE_PY4_CHK);
-    }
+    log_s16(CHAN_PYRO_C, ch1, ch2, ch3, ch4);
 
     return ok;
 }
@@ -75,25 +65,24 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
         pad = GPIOE_PY1_TRG;
         chVTReset(&vt1);
         chVTSet(&vt1, MS2ST(duration_ms), pyro_off_1, NULL);
-        /* microsd_log_s16(GPIOE_PYRO_DROGUE_F, 1, 0, 0, 0); */
-        
+        log_s16(CHAN_PYRO_F, 1, 0, 0, 0);
     } else if(channel == 2) {
         pad = GPIOE_PY2_TRG;
         chVTReset(&vt2);
         chVTSet(&vt2, MS2ST(duration_ms), pyro_off_2, NULL);
-        /* microsd_log_s16(CHAN_PYRO_F, 0, 1, 0, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 1, 0, 0);
         
     } else if(channel == 3) {
         pad = GPIOE_PY3_TRG;
         chVTReset(&vt3);
         chVTSet(&vt3, MS2ST(duration_ms), pyro_off_3, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 0, 1, 0);
         
     } else if(channel == 4) {
         pad = GPIOE_PY4_TRG;
         chVTReset(&vt4);
         chVTSet(&vt4, MS2ST(duration_ms), pyro_off_4, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 0, 0, 1);
         
     } else {
         return;

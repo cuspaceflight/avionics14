@@ -93,8 +93,8 @@ bits) and the mode (last four bits).
 
 
     0x6           PYROTECHNICS
-       0     5      Continuity results [ch1 ch2 ch3 0]
-       1     5      Fired              [ch1 ch2 ch3 0]
+       0     5      Continuity results [ch1 ch2 ch3 ch4]
+       1     5      Fired              [ch1 ch2 ch3 ch4]
 
 
     0x7           LOCATION
