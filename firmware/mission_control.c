@@ -5,6 +5,7 @@
  */
 
 #include <math.h>
+#include "ch.h"
 #include "config.h"
 #include "state_estimation.h"
 #include "datalogging.h"
