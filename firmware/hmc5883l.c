@@ -130,11 +130,11 @@ void hmc5883l_wakeup(EXTDriver *extp, expchannel_t channel)
     (void)extp;
     (void)channel;
     chSysLockFromIsr();
-    if(tpHMC5883L != NULL) 
+    if(tpHMC5883L != NULL && tpHMC5883L->p_state != THD_STATE_READY) 
     {
         chSchReadyI(tpHMC5883L);
-        tpHMC5883L = NULL;
     }
+    tpHMC5883L = NULL;
     chSysUnlockFromIsr();
 }
 
@@ -164,6 +164,7 @@ msg_t hmc5883l_thread(void *arg)
         chSysLock();
         tpHMC5883L = chThdSelf();
         chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+        tpHMC5883L = NULL;
         chSysUnlock();
         
         /* Pull data from magno into buf_data. */
