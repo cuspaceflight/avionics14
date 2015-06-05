@@ -120,8 +120,12 @@ void rfm69_log_packet(uint8_t* packet)
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
+    if(msg == NULL) return;
     memcpy(msg, (void*)packet, 16);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
+    msg_t rv = chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
+    if(rv != RDY_OK) {
+        chPoolFree(&rfm69_mp, msg);
+    }
 }
 
 static void rfm69_mem_init()
