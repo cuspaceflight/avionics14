@@ -65,7 +65,7 @@ static bool_t hmc5883l_init(void) {
 
 /* Checks the ID of the Magno to ensure we're actually talking to the Magno and not some other component. */
 static bool_t hmc58831_ID_check(void) {
-    uint8_t buf[1];
+    uint8_t buf[3];
     uint8_t id_reg;
     bool_t success = TRUE;
     
@@ -116,9 +116,9 @@ static void hmc5883l_field_convert(uint8_t *buf_data, float *field) {
     }
     /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
     float temp;
-    temp = global_magno[2];
-    global_magno[2] = global_magno[3];
-    global_magno[3] = temp;
+    temp = global_magno[1];
+    global_magno[1] = global_magno[2];
+    global_magno[2] = temp;
 }
 
 /* 
