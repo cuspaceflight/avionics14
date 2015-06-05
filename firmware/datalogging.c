@@ -115,7 +115,7 @@ msg_t datalogging_thread(void* arg)
     (void)arg;
 
     // initialise stuff
-    chRegSetThreadName("datalogging");
+    chRegSetThreadName("Datalogging");
     mem_init();
     while (microsd_open_file_inc(&file, "log", "bin", &file_system) != FR_OK) ;
 
@@ -317,18 +317,6 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
 
     packet.checksum = checksum(packet);
 
-    // allocate space for the packet and copy it into a mailbox message
-    msg = chPoolAlloc(&log_mempool);
-    if (msg == NULL) return;
-    memcpy(msg, (void*)&packet, sizeof(packet_t));
-
-    // put it in the mailbox buffer
-    retval = chMBPost(&log_mailbox, (intptr_t)msg, TIME_IMMEDIATE);
-    if (retval != RDY_OK) {
-        chPoolFree(&log_mempool, msg);
-        return;
-    }
-
     // update counter; if reached max value, we sample this data for radio
     // assumption: only one thread per channel (otherwise needs lock)
     if (log_counter[channel] != 0) {
@@ -339,5 +327,17 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
             rfm69_log_packet((uint8_t*)&packet);
             counter[channel] = 0;
         }
+    }
+
+    // allocate space for the packet and copy it into a mailbox message
+    msg = chPoolAlloc(&log_mempool);
+    if (msg == NULL) return;
+    memcpy(msg, (void*)&packet, sizeof(packet_t));
+
+    // put it in the mailbox buffer
+    retval = chMBPost(&log_mailbox, (intptr_t)msg, TIME_IMMEDIATE);
+    if (retval != RDY_OK) {
+        chPoolFree(&log_mempool, msg);
+        return;
     }
 }
