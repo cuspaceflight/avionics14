@@ -31,6 +31,6 @@ void pyro_fire_ignite(void);
 
 
 /* Checks pyro continuities continuously */
-msg_t pyro_continuity_thread(void *arg);
+msg_t pyro_thread(void *arg);
 
 #endif /* PYRO_H */

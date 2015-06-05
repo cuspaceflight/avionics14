@@ -172,7 +172,7 @@ void pyro_fire_ignite()
 /* Continuously checks continuity
  * If at launch there's a problem, we should therefore know
  */
-msg_t pyro_continuity_thread(void *arg)
+msg_t pyro_thread(void *arg)
 {
     (void)arg;
     chRegSetThreadName("Pyros");
