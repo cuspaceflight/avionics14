@@ -6,7 +6,8 @@
 #include <stdlib.h>
 
 #include "hal.h"
-#include "hmc5883l.h"  
+#include "datalogging.h"
+#include "hmc5883l.h"
 
 
 #define HMC5883L_I2C_ADDR       0x1E
@@ -64,7 +65,7 @@ static bool_t hmc5883l_init(void) {
 
 /* Checks the ID of the Magno to ensure we're actually talking to the Magno and not some other component. */
 static bool_t hmc58831_ID_check(void) {
-    uint8_t buf[1];
+    uint8_t buf[3];
     uint8_t id_reg;
     bool_t success = TRUE;
     
@@ -115,9 +116,9 @@ static void hmc5883l_field_convert(uint8_t *buf_data, float *field) {
     }
     /* Note the order of received is X,Z,Y, so re-arrangement is done here. */
     float temp;
-    temp = global_magno[2];
-    global_magno[2] = global_magno[3];
-    global_magno[3] = temp;
+    temp = global_magno[1];
+    global_magno[1] = global_magno[2];
+    global_magno[2] = temp;
 }
 
 /* 
@@ -168,8 +169,7 @@ msg_t hmc5883l_thread(void *arg)
         /* Pull data from magno into buf_data. */
         if (hmc5883l_receive(buf_data)) {
             hmc5883l_field_convert(buf_data, field);
-            /* microsd_log_s16(CHAN_IMU_MAGNO , 
-                field[0], field[1], field[2], 0); */
+            log_s16(CHAN_IMU_MAGNO, field[0], field[1], field[2], 0); 
             /*define this state estimation function 
             state_estimation_new_magno(field[0], 
 			       field[1], field[2]); */
@@ -177,6 +177,4 @@ msg_t hmc5883l_thread(void *arg)
             chThdSleepMilliseconds(20);
         }
     }
-
-    return (msg_t)NULL;
 }

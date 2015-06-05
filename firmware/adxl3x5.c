@@ -5,8 +5,12 @@
  */
 
 #include <stdlib.h>
-#include "adxl3x5.h"
+#include "ch.h"
 #include "chprintf.h"
+#include "adxl3x5.h"
+#include "datalogging.h"
+#include "state_estimation.h"
+#include "config.h"
 
 #define ADXL345_SPID         SPID1
 #define ADXL345_SPI_CS_PORT  GPIOC
@@ -187,9 +191,8 @@ static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
      * because 1g on the high-g accel was not very
      * distinguished from the other axes.
      */
-#define ACCEL_THRUST_AXIS 0
-    *axis = ACCEL_THRUST_AXIS;
-    *g = accels_notest_avg[ACCEL_THRUST_AXIS];
+    *axis = ACCEL_AXIS;
+    *g = accels_notest_avg[ACCEL_AXIS];
 
     /* DATA_FORMAT: Full resolution, maximum range (no self test) */
     adxl3x5_write_u8(SPID, 0x31, (1<<3) | (1<<1) | (1<<0));
@@ -254,7 +257,7 @@ msg_t adxl345_thread(void *arg)
 
     spiStart(&ADXL345_SPID, &spi_cfg);
     adxl3x5_init(&ADXL345_SPID, 4, &axis, &g);
-    /*microsd_log_s16(CHAN_CAL_LGA, axis, g, 0, 0);*/
+    log_s16(CHAN_CAL_LGA, axis, g, 0, 0);
 
     while(TRUE) {
         adxl3x5_read_accel(&ADXL345_SPID, accels);
@@ -262,11 +265,9 @@ msg_t adxl345_thread(void *arg)
             global_accel[j] = accels[j];
         }
 
-        (void)adxl3x5_accels_to_axis(accels, 0, 9.81f);
-
-        /*microsd_log_s16(CHAN_IMU_LGA, accels[0], accels[1], accels[2], 0);*/
-        /*state_estimation_new_lg_accel(*/
-            /*adxl3x5_accels_to_axis(accels, axis, g));*/
+        log_s16(CHAN_IMU_LGA, accels[0], accels[1], accels[2], 0);
+        state_estimation_new_lg_accel(
+            adxl3x5_accels_to_axis(accels, axis, g));
 
         /* Sleep until DRDY */
         chSysLock();
@@ -274,7 +275,5 @@ msg_t adxl345_thread(void *arg)
         chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
         chSysUnlock();
     }
-
-    return (msg_t)NULL;
 }
 

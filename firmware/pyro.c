@@ -1,53 +1,17 @@
 /* Pyrotechnics Channel
- *
- * NOTE: Separation requires 2 channels 
- * (both input & output)
- *
- * Output Channels:
- * GPIOE_PYRO_MAIN_F : for parachute. 
- * GPIOE_PYRO_SEPARATION_1_F : for separation. 
- * GPIOE_PYRO_SEPARATION_2_F : for separation in bottom stage
- * GPIOE_PYRO_FIRE_SECOND_STAGE_F   : for launching second stage in top
- * GPIOE_PYRO_DROGUE_F : for drogue. 
- *
- * Input Channels:
- * GPIOE_PYRO_MAIN_C : for parachute. 
- * GPIOE_PYRO_SEPARATION_1_C : for separation.
- * GPIOE_PYRO_SEPARATION_2_F : for separation in bottom stage
- * GPIOE_PYRO_FIRE_SECOND_STAGE_F  : for launching second stage in top
- * GPIOE_PYRO_DROGUE_C : for drogue. 
  */
-
  
  
-/* Header files need defining */ 
-#include "pyro.h" 
-/* #include "microsd.h" */
-#include "config.h"
 #include <hal.h>
-#include "board.h"
+#include "pyro.h" 
+#include "config.h"
+#include "datalogging.h"
 
 
-#define GPIOE_PYRO_MAIN_C                 GPIOE_PY1_CHK              
-#define GPIOE_PYRO_MAIN_F                 GPIOE_PY1_TRG       
-#define GPIOE_PYRO_SEPARATION_1_F         GPIOE_PY2_TRG                
-#define GPIOE_PYRO_SEPARATION_1_C         GPIOE_PY2_CHK    
-#define GPIOE_PYRO_SEPARATION_2_C         GPIOE_PY3_CHK               
-#define GPIOE_PYRO_SEPARATION_2_F         GPIOE_PY3_TRG
-#define GPIOE_PYRO_FIRE_SECOND_STAGE_C    GPIOE_PY3_CHK               
-#define GPIOE_PYRO_FIRE_SECOND_STAGE_F    GPIOE_PY3_TRG                 
-#define GPIOE_PYRO_DROGUE_F               GPIOE_PY4_TRG               
-#define GPIOE_PYRO_DROGUE_C               GPIOE_PY4_CHK  
-
-
-/* TODO: Tidy this up and put into one function? */
 void pyro_off_1(void* arg);
 void pyro_off_2(void* arg);
 void pyro_off_3(void* arg);
 void pyro_off_4(void* arg);
-void pyro_off_5(void* arg);
-
-/*int board_location; */
 
 /* Checks the input channels for continuity.
  * The pad will be low if the e-match is intact
@@ -57,9 +21,9 @@ void pyro_off_5(void* arg);
 bool_t pyro_continuity(uint8_t pad)
 {
     if((palReadPad(GPIOE, pad)) == PAL_LOW)
-        return TRUE ;
+        return TRUE;
     else
-        return FALSE ;
+        return FALSE;
 }
 
 
@@ -67,33 +31,24 @@ bool_t pyro_continuity(uint8_t pad)
  * against the expected ones for the location of
  * the board
  */
- 
 bool_t pyro_continuity_check()
 {
-    int16_t p1, p2, p3 = 0;
-    
-    /* check continuity of expected connections */
-    if(board_location == TOP_BOARD)
-    {
-         p1 = (int16_t)pyro_continuity(GPIOE_PYRO_MAIN_C);
-         p2 = (int16_t)pyro_continuity(GPIOE_PYRO_DROGUE_C);
-         p3 = (int16_t)pyro_continuity(GPIOE_PYRO_FIRE_SECOND_STAGE_C);
-         /* log the results */
-         /* microsd_log_s16(CHAN_PYRO_C, p1, p2, p3, 0); */
-         /* return an indication of whether all of them are connected */
-         return (p1 && p2 && p3) ;
-    }
-    else if (board_location == BOTTOM_BOARD)
-    {
-         p1 = (int16_t)pyro_continuity(GPIOE_PYRO_MAIN_C);
-         p2 = (int16_t)pyro_continuity(GPIOE_PYRO_SEPARATION_1_C);
-         p3 = (int16_t)pyro_continuity(GPIOE_PYRO_SEPARATION_2_C);
-         /* log the results */
-         /* microsd_log_s16(CHAN_PYRO_C, p1, p2, p3, 0); */
-         /* return an indication of whether all of them are connected */
-         return (p1 && p2 && p3) ;
-    }
-    return false;
+    bool ok = true;
+    uint16_t ch1, ch2, ch3, ch4;
+
+    ch1 = pyro_continuity(GPIOE_PY1_CHK);
+    ch2 = pyro_continuity(GPIOE_PY2_CHK);
+    ch3 = pyro_continuity(GPIOE_PY3_CHK);
+    ch4 = pyro_continuity(GPIOE_PY4_CHK);
+
+    ok &= (PYRO_1 && ch1) || (!PYRO_1 && !ch1);
+    ok &= (PYRO_2 && ch2) || (!PYRO_2 && !ch2);
+    ok &= (PYRO_3 && ch3) || (!PYRO_3 && !ch3);
+    ok &= (PYRO_4 && ch4) || (!PYRO_4 && !ch4);
+
+    log_s16(CHAN_PYRO_C, ch1, ch2, ch3, ch4);
+
+    return ok;
 }
 
 /*
@@ -101,49 +56,34 @@ bool_t pyro_continuity_check()
  * NOTE: This is specifically for e-match channels, not metrons
  */
 
-void pyro_check(uint8_t channel, uint16_t duration_ms)
-{
-    palSetPad(GPIOE, channel);
-    chThdSleepMilliseconds(duration_ms);
-    palClearPad(GPIOE, channel);    
-}
-    
-
-static VirtualTimer vt1, vt2, vt3, vt4, vt5;
+static VirtualTimer vt1, vt2, vt3, vt4;
 void pyro_fire(uint8_t channel, uint16_t duration_ms)
 {
     uint8_t pad;
     
-    if(channel == GPIOE_PYRO_MAIN_F) {
-        pad = GPIOE_PYRO_MAIN_F;
+    if(channel == 1) {
+        pad = GPIOE_PY1_TRG;
         chVTReset(&vt1);
         chVTSet(&vt1, MS2ST(duration_ms), pyro_off_1, NULL);
-        /* microsd_log_s16(GPIOE_PYRO_DROGUE_F, 1, 0, 0, 0); */
-        
-    } else if(channel == GPIOE_PYRO_DROGUE_F) {
-        pad = GPIOE_PYRO_DROGUE_F;
+        log_s16(CHAN_PYRO_F, 1, 0, 0, 0);
+    } else if(channel == 2) {
+        pad = GPIOE_PY2_TRG;
         chVTReset(&vt2);
         chVTSet(&vt2, MS2ST(duration_ms), pyro_off_2, NULL);
-        /* microsd_log_s16(CHAN_PYRO_F, 0, 1, 0, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 1, 0, 0);
         
-    } else if(channel == GPIOE_PYRO_SEPARATION_1_F) {
-        pad = GPIOE_PYRO_SEPARATION_1_F;
+    } else if(channel == 3) {
+        pad = GPIOE_PY3_TRG;
         chVTReset(&vt3);
         chVTSet(&vt3, MS2ST(duration_ms), pyro_off_3, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 0, 1, 0);
         
-    } else if(channel == GPIOE_PYRO_SEPARATION_2_F) {
-        pad = GPIOE_PYRO_SEPARATION_2_F;
+    } else if(channel == 4) {
+        pad = GPIOE_PY4_TRG;
         chVTReset(&vt4);
         chVTSet(&vt4, MS2ST(duration_ms), pyro_off_4, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/
+        log_s16(CHAN_PYRO_F, 0, 0, 0, 1);
         
-    } else if(channel == GPIOE_PYRO_FIRE_SECOND_STAGE_F) {
-        pad = GPIOE_PYRO_FIRE_SECOND_STAGE_F;
-        chVTReset(&vt5);
-        chVTSet(&vt5, MS2ST(duration_ms), pyro_off_5, NULL);
-        /*microsd_log_s16(CHAN_PYRO_F, 0, 0, 1, 0);*/     
-       
     } else {
         return;
     }
@@ -159,74 +99,81 @@ void pyro_fire(uint8_t channel, uint16_t duration_ms)
 void pyro_off_1(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_MAIN_F);
+    palClearPad(GPIOE, GPIOE_PY1_TRG);
 }
 
 void pyro_off_2(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_DROGUE_F);
+    palClearPad(GPIOE, GPIOE_PY2_TRG);
 }
 
 void pyro_off_3(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_1_F);
+    palClearPad(GPIOE, GPIOE_PY3_TRG);
 }
 
 void pyro_off_4(void* arg)
 {
     (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_SEPARATION_2_F);
-}
-
-void pyro_off_5(void* arg)
-{
-    (void)arg;
-    palClearPad(GPIOE, GPIOE_PYRO_FIRE_SECOND_STAGE_F);
+    palClearPad(GPIOE, GPIOE_PY4_TRG);
 }
 
 
 
 /* SPECIFIC FIRING FUNCTIONS */
 
-/* Fire the drogue deployment pyros */
+/* Fire all `usage` pyros, 1=ignition 2=separation 3=drogue 4=main */
+static void pyro_fire_specific(uint8_t usage)
+{
+    if(PYRO_1 == usage) {
+        pyro_fire(1, PYRO_FIRETIME);
+    }
+    
+    if(PYRO_2 == usage) {
+        pyro_fire(2, PYRO_FIRETIME);
+    }
+    
+    if(PYRO_3 == 3) {
+        pyro_fire(3, PYRO_FIRETIME);
+    }
 
+    if(PYRO_4 == usage) {
+        pyro_fire(4, PYRO_FIRETIME);
+    }
+}
+
+/* Fire the drogue deployment pyros */
 void pyro_fire_drogue()
 {
-    pyro_fire(GPIOE_PYRO_DROGUE_F, 1000) ;
-
+    pyro_fire_specific(3);
 }
 
-/* Fire  main chute deployment pyro */
+/* Fire main chute deployment pyro */
 void pyro_fire_main()
 {
-    pyro_fire(GPIOE_PYRO_MAIN_F, 1000) ;
-
+    pyro_fire_specific(4);
 }
 
-/* Fire  separation pyro */
+/* Fire separation pyro */
 void pyro_fire_separation()
 {
-    pyro_fire(GPIOE_PYRO_SEPARATION_1_F, 1000);
-    pyro_fire(GPIOE_PYRO_SEPARATION_2_F, 1000);
-   
+    pyro_fire_specific(2);
 }
 
 
-/* Fire  second stage pyro */
-void pyro_fire_second_stage()
+/* Fire motor ignition pyro */
+void pyro_fire_ignite()
 {
-    pyro_fire(GPIOE_PYRO_FIRE_SECOND_STAGE_F, 1000) ;
-
+    pyro_fire_specific(1);
 }
 
 /* Continuously checks continuity
  * If at launch there's a problem, we should therefore know
  */
-
- msg_t pyro_continuity_thread(void *arg)
- {
+msg_t pyro_thread(void *arg)
+{
     (void)arg;
     chRegSetThreadName("Pyros");
  
@@ -235,20 +182,18 @@ void pyro_fire_second_stage()
         if(pyro_continuity_check()) 
         {
             palSetPad(GPIOD, GPIOD_PYRO_GRN);
-            chThdSleepMilliseconds(1000);
+            chThdSleepMilliseconds(100);
             palClearPad(GPIOD, GPIOD_PYRO_GRN);
-            chThdSleepMilliseconds(1000);
+            chThdSleepMilliseconds(400);
         } 
         else 
         {
             /* TODO: report sadness up the chain */
             palSetPad(GPIOD, GPIOD_PYRO_RED);
-            chThdSleepMilliseconds(1000);
+            chThdSleepMilliseconds(400);
             palClearPad(GPIOD, GPIOD_PYRO_RED);
-            chThdSleepMilliseconds(1000);
+            chThdSleepMilliseconds(100);
         }
         
     }
-    return (msg_t)NULL;
- }
-  
+}

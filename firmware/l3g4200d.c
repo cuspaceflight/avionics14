@@ -10,7 +10,8 @@
  */
 
 #include <stdlib.h>
-#include "l3g4200d.h"  
+#include "l3g4200d.h"
+#include "datalogging.h"
 
 
 #define L3G4200D_I2C_ADDR   0x69
@@ -225,11 +226,10 @@ msg_t l3g4200d_thread(void *arg)
         /* Pull data from the gyro into buf_data. */
 		if (l3g4200d_receive(buf_data)) {
             l3g4200d_rotation_convert(buf_data, rotation);
+            log_s16(CHAN_IMU_GYRO, rotation[0], rotation[1], rotation[2], 0);
 		} else {
 		    chThdSleepMilliseconds(20);
         }
 		
 	}
-	
-    return (msg_t)NULL;
 }

@@ -21,10 +21,13 @@ void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
 									uint16_t data_c, uint16_t data_d);
 void rfm69_log_f(uint8_t channel, float data_a, float data_b);
 
+/* Log a pre-made packet to the radio. Must be a pointer to 16 bytes of memory.
+ */
+void rfm69_log_packet(uint8_t* packet);
+
 
 /*RFM69 Thread*/
 msg_t rfm69_thread(void* arg);
-msg_t rfm69_test_thread(void* arg);
 
 
 #endif /* end __RFM69_H */

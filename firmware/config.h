@@ -1,6 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <stdbool.h>
+
 /* Exposes functions for reading config file from sd card.
  * Usage: config MUST be initialised with config_init, then macros can be used
  * to access config.
@@ -13,99 +15,65 @@
  *
  * TODO: perhaps some way of telling why it failed, if it fails?
  * TODO: perhaps some sanity check of the read values?
- * TODO: figure out the exact config fields
  */
 
 /* ------------------------------------------------------------------------- */
 
-#define STAGE                (conf.stage) // stage is 1 (bottom) or 2 (top)
-#define IGNITION_VELOCITY    (conf.ignition_velocity)
-#define BURNOUT_ACCELERATION (conf.burnout_acceleration)
-#define BURNOUT_TIMER        (conf.burnout_timer)
-#define APOGEE_TIMER         (conf.apogee_timer)
-#define MAIN_DEPLOY_ALTITUDE (conf.main_deploy_altitude)
-#define MAIN_DEPLOY_TIMER    (conf.main_deploy_timer)
-#define LANDED_TIMER         (conf.landed_timer)
-#define PYRO_FIRETIME        (conf.pyro_firetime)
-#define PYRO_DROGUE_BODY_1   (conf.pyro_drogue_body_1)
-#define PYRO_DROGUE_BODY_2   (conf.pyro_drogue_body_2)
-#define PYRO_DROGUE_BODY_3   (conf.pyro_drogue_body_3)
-#define PYRO_DROGUE_NOSE_1   (conf.pyro_drogue_nose_1)
-#define PYRO_DROGUE_NOSE_2   (conf.pyro_drogue_nose_2)
-#define PYRO_DROGUE_NOSE_3   (conf.pyro_drogue_nose_3)
-#define PYRO_MAIN_BODY_1     (conf.pyro_main_body_1)
-#define PYRO_MAIN_BODY_2     (conf.pyro_main_body_2)
-#define PYRO_MAIN_BODY_3     (conf.pyro_main_body_3)
-#define PYRO_MAIN_NOSE_1     (conf.pyro_main_nose_1)
-#define PYRO_MAIN_NOSE_2     (conf.pyro_main_nose_2)
-#define PYRO_MAIN_NOSE_3     (conf.pyro_main_nose_3)
-#define ACCEL_THRUST_AXIS    (conf.accel_thrust_axis)
+/* See docs/config.md for descriptions */
+
+#define STAGE                   (conf.stage)
+#define GOT_IGNITION            (conf.got_ignition)
+#define GOT_SEPARATION          (conf.got_separation)
+#define GOT_DROGUE              (conf.got_drogue)
+#define GOT_MAIN                (conf.got_main)
+#define ACCEL_AXIS              (conf.accel_axis)
+#define PYRO_FIRETIME           (conf.pyro_firetime)
+#define PYRO_1                  (conf.pyro_1)
+#define PYRO_2                  (conf.pyro_2)
+#define PYRO_3                  (conf.pyro_3)
+#define PYRO_4                  (conf.pyro_4)
+#define IGNITION_ACCEL          (conf.ignition_accel)
+#define BURNOUT_TIME            (conf.burnout_time)
+#define IGNITE_ALTITUDE         (conf.ignite_altitude)
+#define IGNITE_TIME             (conf.ignite_time)
+#define IGNITE_TIMEOUT          (conf.ignite_timeout)
+#define APOGEE_TIME             (conf.apogee_time)
+#define MAIN_ALTITUDE           (conf.main_altitude)
+#define MAIN_TIME               (conf.main_time)
+#define LANDING_TIME            (conf.landing_time)
+
 
 /* Read config from the file on the sd card specified by <path>.
  * If none/error occurred, return false, if succeeded return true.
  */
 bool config_init(const char* path);
 
+/* Sanity check the loaded config.
+ */
+bool check_config(void);
+
 //-----------------------------------------------------------------------------
 
 typedef struct config_ {
+    bool config_loaded;
     int stage;
-    double ignition_velocity;
-    double burnout_acceleration;
-    int burnout_timer;
-    int apogee_timer;
-    double main_deploy_altitude;
-    int main_deploy_timer;
-    int landed_timer;
-    int pyro_firetime;
-    bool pyro_drogue_body_1;
-    bool pyro_drogue_body_2;
-    bool pyro_drogue_body_3;
-    bool pyro_drogue_nose_1;
-    bool pyro_drogue_nose_2;
-    bool pyro_drogue_nose_3;
-    bool pyro_main_body_1;
-    bool pyro_main_body_2;
-    bool pyro_main_body_3;
-    bool pyro_main_nose_1;
-    bool pyro_main_nose_2;
-    bool pyro_main_nose_3;
-    int accel_thrust_axis;
+    bool got_ignition, got_separation, got_drogue, got_main;
+    int accel_axis;
+    int pyro_firetime, pyro_1, pyro_2, pyro_3, pyro_4;
+    float ignition_accel;
+    float burnout_time;
+    float ignite_altitude, ignite_time, ignite_timeout;
+    float apogee_time;
+    float main_altitude, main_time;
+    float landing_time;
 } config_t;
 
 /* This is the global configuration that can be accessed from any file.
  * In practice, it should ONLY be written to from config.c.
  * Use the macros above to get the config values.
  */
- extern config_t conf;
+extern config_t conf;
 
-#define TOP_BOARD  2 
-#define BOTTOM_BOARD  1 
+msg_t config_thread(void* arg);
 
-#define BOARD_LOCATION TOP_BOARD
-
- 
- extern int board_location;
-
-// /* Velocity (m/s) beyond which the rocket has left the pad */
-//#define IGNITION_VELOCITY 10.0f
-/* Acceleration (m/s/s) below which the motor has ceased burning */
-//#define BURNOUT_ACCELERATION 2.0f
-/* Time (ms) since launch beyond which the motor has ceased burning */
-//#define BURNOUT_TIMER 5200
-/* Time (ms) since launch beyond which apogee has been reached */
-//#define APOGEE_TIMER 55000
-/* Altitude (m ASL) below which to deploy main chute */
-//#define MAIN_DEPLOY_ALTITUDE 1450.0f
-/* Time (ms) since apogee beyond which to deploy the main chute */
-//#define MAIN_DEPLOY_TIMER 30000
-/* Time (ms) since apogee after which the rocket has landed */
-//#define LANDED_TIMER 300000
-/* Duration (ms) to fire pyros for */
-//#define PYRO_FIRETIME 5000
-
-#define GRAVITATIONAL_ACCELERATION 9.81f
-
-
- 
- #endif  /* CONFIG_H */
+#endif  /* CONFIG_H */

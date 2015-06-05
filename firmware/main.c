@@ -10,13 +10,20 @@
 #include "b3_shell.h"
 #include "ublox.h"
 #include "rfm69.h"
+#include "state_estimation.h"
+#include "datalogging.h"
+#include "config.h"
+#include "pyro.h"
 
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
-static WORKING_AREA(waHMC5883L, 512);
-static WORKING_AREA(waL3G4200D, 1024);
+/*static WORKING_AREA(waHMC5883L, 512);*/
+/*static WORKING_AREA(waL3G4200D, 1024);*/
 static WORKING_AREA(waGPS, 4096);
-static WORKING_AREA(waRadio, 512);
+static WORKING_AREA(waRadio, 1024);
+static WORKING_AREA(waDatalogging, 2048);
+static WORKING_AREA(waPyro, 2048);
+static WORKING_AREA(waConfig, 2048);
 
 /*
  * Set up pin change interrupts for the various sensors that react to them.
@@ -55,7 +62,15 @@ int main(void) {
     chSysInit();
     chRegSetThreadName("main");
 
-    extStart(&EXTD1, &extcfg);
+    state_estimation_init();
+
+    Thread* tp = chThdCreateStatic(waConfig, sizeof(waConfig), LOWPRIO,
+        config_thread, NULL);
+
+    chThdSleepMilliseconds(500);
+
+    chThdCreateStatic(waDatalogging, sizeof(waDatalogging), NORMALPRIO,
+                      datalogging_thread, NULL);
 
     chThdCreateStatic(waMS5611, sizeof(waMS5611), NORMALPRIO,
                       ms5611_thread, NULL);
@@ -63,23 +78,27 @@ int main(void) {
     chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,
                       adxl345_thread, NULL);
 
-    chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,
-                      hmc5883l_thread, NULL);
+    /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
+                      /*hmc5883l_thread, NULL);*/
 
     chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
     
-    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
-                      l3g4200d_thread,NULL);
+    /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
+                      /*l3g4200d_thread, NULL);*/
+
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
-    
+
+    chThdCreateStatic(waPyro, sizeof(waPyro), NORMALPRIO, pyro_thread, NULL);
+
+
+    extStart(&EXTD1, &extcfg);
 
     b3_shell_run();
 
     while (TRUE) {
-        palSetPad(GPIOD, GPIOD_PYRO_GRN);
-        palClearPad(GPIOD, GPIOD_PYRO_RED);
+        palSetPad(GPIOD, GPIOD_IMU_GRN);
         chThdSleepMilliseconds(500);
-        palClearPad(GPIOD, GPIOD_PYRO_GRN);
+        palClearPad(GPIOD, GPIOD_IMU_GRN);
         chThdSleepMilliseconds(500);
     }
 }
