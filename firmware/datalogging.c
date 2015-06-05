@@ -100,7 +100,7 @@ static const uint16_t log_counter[CHANNEL_NUM] = {
 /* Main datalogging thread. Continuously checks for data added through the
  * logging functions, and persists it to an SD card/sends some of it to radio.
  */
-msg_t microsd_thread(void* arg)
+msg_t datalogging_thread(void* arg)
 {
     static const int packet_size = sizeof(packet_t);
     volatile char* cache_ptr = log_cache; // pointer to keep track of cache
@@ -334,7 +334,7 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
     if (log_counter[channel] != 0) {
 
         counter[channel]++;
-        if (counter[channel] == log_counter[channel]) {
+        if (counter[channel] >= log_counter[channel]) {
 
             rfm69_log_packet((uint8_t*)&packet);
             counter[channel] = 0;

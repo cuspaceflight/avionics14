@@ -82,7 +82,7 @@
  * it periodically fetches the data that is being logged by the below functions
  * and saves them to the microsd card.
  */
-msg_t microsd_thread(void* arg);
+msg_t datalogging_thread(void* arg);
 
 /* log 8 characters */
 void log_c(uint8_t channel, const char* data);
