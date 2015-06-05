@@ -26,9 +26,44 @@ class FlightData():
         
         self.parachute_3 = False
         self.text = "CUSF"
-    """
-    TODO: add getters and setters
-    """
+        self.states = ["PAD", "IGNITION","POWERED_ASCENT","BURNOUT","FREE-ASCENT","IGNITE","WAIT_IGNITION","SEPARATE","SEPARATED_ASCENT","APOGEE","DROGUE_DEPLOY","DROGUE_DESCENT","MAIN_DEPLOY","MAIN_DESCENT","TOUCHDOWN","LANDED"]
+        self.state = 0
+
+
+
+        """State variables"""
+        self.status_launched = False
+        self.status_drogueDeployed = False
+        self.status_ignited = False
+        self.status_mainDeployed = False
+        self.status_touchdown = False
+
+    def launched(self):
+        return self.status_launched
+    def drogueDeployed(self):
+        return self.status_drogueDeployed
+    def ignited(self):
+        return self.status_ignited
+    def mainDeployed(self):
+        return self.status_mainDeployed
+    def touchdown(self):
+        return self.status_touchdown
+    def getNumState(self, state):
+        return self.states[state]
+    def getState(self):
+        return self.state
+    def setState(self,state):
+        if (state >=1):
+            self.status_launched = True
+        if (state==10):
+            self.status_drogueDeployed = True
+        if (state == 5):
+            self.status_ignited = True
+        if (state == 12):
+            self.status_mainDeployed = True
+        if (state == 14 or state == 15):
+            self.status_touchdown = True
+        self.state = state
     def getText(self):
         return self.text
 
@@ -81,6 +116,18 @@ class FlightData():
 
     def setAlt2(self,alt):
         self.altitude_2 = alt
+
+    def getVel2(self):
+        return self.velocity_2
+
+    def setVel2(self,vel):
+        self.velocity_2 = vel
+
+    def getAcc2(self):
+        return self.acceleration_2
+
+    def setAcc2(self,acc):
+        self.acceleration_2 = acc
 
     def par1(self):
         return self.parachute_1

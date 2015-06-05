@@ -30,6 +30,9 @@ import binascii
 
 
 
+
+
+
     
 class GroundstationApp(App):    
     debug = False
@@ -59,86 +62,98 @@ class GroundstationApp(App):
             try:
                 qsize -= 1
                 nextTask = self.queue.get()
-                self.fd.addText(nextTask)
+                #self.fd.addText(nextTask)
                 #self.gui.update(dt)
-                parse(nextTask)
+                self.parse(nextTask)
             except Queue.Empty:
 
                 break
             except ValueError:
-                self.fd.setText("Should have code! But anyways... " + nextTask)
-                self.gui.update(dt)
+                #self.fd.setText("Should have code! But anyways... " + nextTask)
+                #self.gui.update(dt)
                 continue 
-            except: ###TODO - bad
+            except Exception as e: ###TODO - bad
+                self.fd.addText("Exception " + str(e))
                 continue
             
 
         try:    
             self.gui.update(dt)
-        except:
+        except Exception as e:
+            self.fd.addText(str(e))
             return
 
         
-    def parse(packet):
+    def parse(self,hexpacket):
             #packet = packet.strip()
             #packet = binascii.unhexlify(packet)
-            if (len(packet)!=16):
-                #TODO: handle error
-                return packet 
+             
+
+            if (len(hexpacket)!=32):
+                #self.fd.addText(len(hexpacket))
+                return hexpacket 
+            #self.fd.addText(hexpacket)
+            packet = hexpacket.decode("hex")
             timestamp = struct.unpack("i", packet[:4])
             metadata, channel, cs1, cs2 = struct.unpack("BBBB", packet[4:8])
             origin = metadata >> 4
             mode = metadata & 15
 
+            if (origin != 4 and origin != 5):
+                self.fd.addText("Incorrect mode " + str(origin))
+                return
+  
+
+
             if mode == 0:
-                data = struct.unpack("8s", packet[8:])
+                data = struct.unpack(">8s", packet[8:])
             elif mode == 1:
-                data = struct.unpack("q", packet[8:])
+                data = struct.unpack(">q", packet[8:])
             elif mode == 2:
-                data = struct.unpack("Q", packet[8:])
+                data = struct.unpack(">Q", packet[8:])
             elif mode == 3:
-                data = struct.unpack("ii", packet[8:])
+                data = struct.unpack(">ii", packet[8:])
             elif mode == 4:
-                data = struct.unpack("II", packet[8:])
+                data = struct.unpack(">II", packet[8:])
             elif mode == 5:
-                data = struct.unpack("hhhh", packet[8:])
+                data = struct.unpack(">hhhh", packet[8:])
             elif mode == 6:
-                data = struct.unpack("HHHH", packet[8:])
+                data = struct.unpack(">HHHH", packet[8:])
             elif mode == 7:
-                data = struct.unpack("bbbbbbbb", packet[8:])
+                data = struct.unpack(">bbbbbbbb", packet[8:])
             elif mode == 8:
-                data = struct.unpack("BBBBBBBB", packet[8:])
+                data = struct.unpack(">BBBBBBBB", packet[8:])
             elif mode == 9:
-                data = struct.unpack("ff", packet[8:])
+                data = struct.unpack(">ff", packet[8:])
             elif mode == 10:
-                data = struct.unpack("d", packet[8:])
+                data = struct.unpack(">d", packet[8:])
 
             if channel == 0x00:
-                self.fd.addText("Initialisation message: " + data[0])
+                self.fd.addText("Initialisation message: " + str(data[0]))
                 return "Initialisation message", data[0]
             elif channel == 0x10:
-                self.fd.addText("Calibration - timestamp frequency " + data[0])
+                #self.fd.addText("Calibration - timestamp frequency " + str(data[0]))
                 return "Calibration - timestamp frequency ", data[0]
             elif channel == 0x11:
-                self.fd.addText("Calibration = lg_accel: axis, gravMag " + data[0] + " " + data[1])
+                #self.fd.addText("Calibration = lg_accel: axis, gravMag " + str(data[0]) + " " + str(data[1]))
                 return "Calibration - lg_accel: axis, gravMag", data[0], data[1]
             elif channel == 0x12:
-                self.fd.addText("Calibration - hg_accel: axis, gravMag " + data[0] + " " + data[1])
+                #self.fd.addText("Calibration - hg_accel: axis, gravMag " + str(data[0]) + " " + str(data[1]))
                 return "Calibration - hg_accel: axis, gravMag", data[0], data[1]
             elif channel == 0x13: 
-                self.fd.addText("Calibration - barometer: " + data[0] + " " + data[1] + " " + data[2] + " " + data[3])
+                #self.fd.addText("Calibration - barometer: " + str(data[0]) + " " + str(data[1]) + " " + str(data[2]) + " " + str(data[3]))
                 return "Calibration - barometer: d0, c1, c2, c3", data[0], data[1], data[2], data[3]
             elif channel == 0x14:
-                self.fd.addText("Calibration - barometer: " + data[0] + " " + data[1] + " " + data[2] + " " + data[3]) 
+                #self.fd.addText("Calibration - barometer: " + str(data[0]) + " " + str(data[1]) + " " + str(data[2]) + " " + str(data[3])) 
                 return "Calibration - barometer: c4, c5, c6, c7", data[0], data[1], data[2], data[3]
             elif channel == 0x20:
-                self.fd.addText("IM - lg_accel: x, y, z " + data[0] + " " + data[1] + " " + data[2])
-                return "IM - lg_accel: x, y, z", data[0], data[1], data[2]
+                #self.fd.addText("IM - lg_accel: x, y, z " + str(data[0]) + " " + str(data[1]) + " " + str(data[2]))
+                return "IM - lg_accel: x, y, z", str(data[0]), data[1], data[2]
             elif channel == 0x21:
-                self.fd.addText("IM - hg_accel: x y z " + data[0] + " " + data[1] + " " + data[2])
+                #self.fd.addText("IM - hg_accel: x y z " + str(data[0]) + " " + str(data[1]) + " " + str(data[2]))
                 return "IM - hg_accel: x, y, z", data[0], data[1], data[2]
             elif channel == 0x22:
-                self.fd.addText("IM - barom: pressure, temperature " + data[0] + " " + data[1])
+                #self.fd.addText("IM - barom: pressure, temperature " + str(data[0]) + " " + str(data[1]))
                 return "IM - barom: pressure, temperature", data[0], data[1]
             elif channel == 0x23:
                 ###TODO
@@ -156,30 +171,43 @@ class GroundstationApp(App):
                 ###TODO
                 return "External sensors - thermocouples: ch1, ch2, ch3", data[0], data[1], data[2]
             elif channel == 0x40:
-                self.fd,addText("Mission control: old_state, new_state " + data[0] + " " + data[1])
-                return "M2FC Mission Control: old_state, new_state", data[0], data[1]
+
+                self.fd.addText("Mission control: " + self.fd.getNumState(data[0])+ " to " + self.fd.getNumState(data[1]))
+                self.fd.setState(data[1])
+                return "Mission Control: old_state, new_state", data[0], data[1]
             elif channel == 0x50:
-    #            self.altitude_1 = data[1]
-    #            self.datascreen.ids.bar1.setCurVal(data[1])#update acceleration bar as desired
-                self.fd.addText("State est: I: dt, height " + data[0] + " " + data[1])
-                return "State estimation: pred output I: dt, height", data[0], data[1]
+
+                self.fd.addText("State est: dt, height " + str(data[0]) + " " + str(data[1]))
+                if (origin==4):
+                    self.fd.setAlt2(data[1])
+                elif (origin == 5):
+                    self.fd.setAlt1(data[1])
+                else: return
+                return "State est: dt, height", data[0], data[1]
             elif channel == 0x51:
-                self.fd.addText("State est II: vel, acc " + data[0] + " " + data[1])
+                if (origin==4):
+                    self.fd.setVel2(data[0])
+                    self.fd.setAcc2(data[1])
+                elif(origin==5):
+                    self.fd.setVel1(data[0])
+                    self.fd.setAcc1(data[1])
+                else: return
+                self.fd.addText("State est: vel, acc " + str(data[0]) + " " + str(data[1]))
                 return "State estimation: pred output II: vel, acc", data[0], data[1]
             elif channel == 0x52: 
-                self.fd.addText("State est: pressure: sensor,estimate " + data[0] + " " + data[1])
+                #self.fd.addText("State est: pressure: sensor,estimate " + str(data[0]) + " " + str(data[1]))
                 return "State estimation: pressure measurement: sensor, estimate", data[0], data[1]
             elif channel == 0x53:
-                self.fd.addText("State est: acc " + data[0] + " " + data[1])
+                #self.fd.addText("State est: acc " + str(data[0]) + " " + str(data[1]))
                 return "State estimation: acceleration measurement: sensor, estimate", data[0], data[1]
             elif channel == 0x60:
-                self.fd.addText("Pyrotechnics: continuity: ch1,ch2,ch3 " + data[0] + " " + data[1] + " " + data[2])
+                #self.fd.addText("Pyrotechnics: continuity: ch1,ch2,ch3 " + str(data[0]) + " " + str(data[1]) + " " + str(data[2]))
                 return "Pyrotechnics: continuity results: ch1, ch2, ch3", data[0], data[1], data[2]
             elif channel == 0x61:
-                self.fd.addtext("Pyro fired: ch1, ch2, ch3 " + data[0] + " "  +data[1] + " " + data[2])
+                #self.fd.addtext("Pyro fired: ch1, ch2, ch3 " + str(data[0]) + " "  +str(data[1]) + " " + str(data[2]))
                 return "Pyrotechnics: fired: ch1, ch2, ch3", data[0], data[1], data[2]
 
-            return packet 
+            return hexpacket 
 
     """
     List of all updates
@@ -245,13 +273,19 @@ class DataScreen(Screen):
         self.ids.bar1.setMaxVal(3500.0)
 
         self.ids.bar2.fd = self.fd
-        self.ids.bar2.setMaxVal(50.0)
+        self.ids.bar2.setMaxVal(330.0)
 
         self.ids.bar3.fd = self.fd
-        self.ids.bar3.setMaxVal(330.0)
+        self.ids.bar3.setMaxVal(50.0)
 
         self.ids.bar4.fd = self.fd
         self.ids.bar4.setMaxVal(3500.0)
+
+        self.ids.bar5.fd = self.fd
+        self.ids.bar5.setMaxVal(330.0)
+
+        self.ids.bar6.fd = self.fd
+        self.ids.bar6.setMaxVal(50.0)
         self.ids.status1.fd = self.fd
         self.ids.status2.fd = self.fd
         self.ids.status2.fd = self.fd
@@ -290,12 +324,16 @@ class DataScreen(Screen):
         self.ids.bar4.setCurVal(self.fd.getAlt2())
         #self.ids.bar4.update()
 
+        self.ids.bar5.setCurVal(self.fd.getVel2())
+        self.ids.bar6.setCurVal(self.fd.getAcc2())
+        
+        
 
-        self.ids.status1.update()
-        self.ids.status2.update()
-        self.ids.status3.update()
-        self.ids.status4.update()
-        self.ids.status5.update()
+        self.ids.status1.update(self.fd.launched())
+        self.ids.status2.update(self.fd.drogueDeployed())
+        self.ids.status3.update(self.fd.ignited())
+        self.ids.status4.update(self.fd.mainDeployed())
+        self.ids.status5.update(self.fd.touchdown())
 
 #        self.ids.graph.update()
 
@@ -313,8 +351,8 @@ class StatusBox(Button):
     def setStatus(self, stat):
         self.status = BooleanProperty(stat)
 
-    def update(self):
-        if(self.status):
+    def update(self,status):
+        if(status):
             self.background_color = (0, 1, 0 ,1)
             self.color = (255,255,255,1)
 
@@ -391,7 +429,7 @@ class LineGraph(Graph):
         self.yVal_1 = self.fd.getAlt1()
         self.plot_1.points.append((self.xVal, self.yVal_1))
         self.plot_2.points = [(1,50),(30,100)]
-        self.xMax = max(self.xMax, self.xVal + 5)
+        self.xMax = max(self.xMax, self.xVal + 5)http://vim.wikia.com/wiki/Search_and_replace
         self.yMax = max(self.yMax, self.yVal_1 + 30, self.yVal_2 + 30)
 
 
@@ -411,24 +449,25 @@ class LineGraph(Graph):
 if __name__=="__main__":
     q = multiprocessing.Queue()
 
-    app = GroundstationApp(q).run()
+    app = GroundstationApp(q)
     p = multiprocessing.Process(target = app.run)
     p.start()
     time.sleep(1)
 
     
-    """
+    """ 
     while(1):
         inputText = raw_input("Command")
         q.put(inputText)
-
-    
     """
-    ser = serial.Serial('/dev/ttyACM3',115200,timeout=1)
+    
+    
+    ser = serial.Serial('/dev/ttyACM0',115200,timeout=1)
     while True:
         try:
             data = ser.readline().strip()
-            print data
+            #print data
+
             q.put(data)
         except:
             continue
