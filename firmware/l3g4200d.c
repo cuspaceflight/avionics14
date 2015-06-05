@@ -185,10 +185,10 @@ void l3g4200d_wakeup(EXTDriver *extp, expchannel_t channel)
 {
     (void)extp;
     (void)channel;
-    palSetPad(GPIOD, GPIOD_IMU_GRN);
     chSysLockFromIsr();
     if(tpL3G4200D != NULL && tpL3G4200D->p_state != THD_STATE_READY) 
     {
+        palSetPad(GPIOD, GPIOD_IMU_GRN);
         chSchReadyI(tpL3G4200D);
     }
     tpL3G4200D = NULL;
@@ -219,8 +219,9 @@ msg_t l3g4200d_thread(void *arg)
 		/* Sleep until DRDY */
 		chSysLock();
         tpL3G4200D = chThdSelf();
-        palClearPad(GPIOD, GPIOD_IMU_GRN);
 		chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+        palClearPad(GPIOD, GPIOD_IMU_GRN);
+        tpL3G4200D = NULL;
 		chSysUnlock();
 
         /* Pull data from the gyro into buf_data. */

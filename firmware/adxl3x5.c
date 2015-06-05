@@ -20,7 +20,8 @@ static uint8_t adxl3x5_read_u8(SPIDriver* SPID, uint8_t adr);
 static void adxl3x5_write_u8(SPIDriver* SPID, uint8_t adr, uint8_t val);
 static void adxl3x5_read_accel(SPIDriver* SPID, int16_t* accels);
 static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g);
-static void adxl3x5_sad(const uint8_t n);
+static void adxl3x5_warn(const uint8_t n);
+static void adxl3x5_error(const uint8_t n);
 static float adxl3x5_accels_to_axis(int16_t *accels, int16_t axis, int16_t g);
 int16_t global_accel[3];
 
@@ -100,7 +101,6 @@ static void adxl3x5_read_accel(SPIDriver* SPID, int16_t* accels)
  */
 static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
 {
-    uint8_t devid;
     uint16_t i, j;
     int32_t accels_sum[3], accels_delta[3];
     int16_t accels_cur[3], accels_test_avg[3], accels_notest_avg[3];
@@ -226,10 +226,10 @@ void adxl345_wakeup(EXTDriver *extp, expchannel_t channel)
     (void)channel;
 
     chSysLockFromIsr();
-    if(tp345 != NULL) {
+    if(tp345 != NULL && tp345->p_state != THD_STATE_READY) {
         chSchReadyI(tp345);
-        tp345 = NULL;
     }
+    tp345 = NULL;
     chSysUnlockFromIsr();
 }
 
@@ -279,6 +279,7 @@ msg_t adxl345_thread(void *arg)
         chSysLock();
         tp345 = chThdSelf();
         chSchGoSleepTimeoutS(THD_STATE_SUSPENDED, 100);
+        tp345 = NULL;
         chSysUnlock();
     }
 }
