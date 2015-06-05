@@ -11,6 +11,7 @@
 #include "ublox.h"
 #include "rfm69.h"
 #include "state_estimation.h"
+#include "mission_control.h"
 #include "datalogging.h"
 #include "config.h"
 #include "pyro.h"
@@ -18,12 +19,13 @@
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
 /*static WORKING_AREA(waHMC5883L, 512);*/
-/*static WORKING_AREA(waL3G4200D, 1024);*/
+static WORKING_AREA(waL3G4200D, 1024);
 static WORKING_AREA(waGPS, 4096);
 static WORKING_AREA(waRadio, 1024);
 static WORKING_AREA(waDatalogging, 2048);
 static WORKING_AREA(waPyro, 2048);
-static WORKING_AREA(waConfig, 2048);
+static WORKING_AREA(waConfig, 4096);
+static WORKING_AREA(waMission, 1024);
 
 /*
  * Set up pin change interrupts for the various sensors that react to them.
@@ -60,12 +62,13 @@ static const EXTConfig extcfg = {{
 int main(void) {
     halInit();
     chSysInit();
-    chRegSetThreadName("main");
+    chRegSetThreadName("Main");
 
     state_estimation_init();
 
-    Thread* tp = chThdCreateStatic(waConfig, sizeof(waConfig), LOWPRIO,
-        config_thread, NULL);
+    b3_shell_run();
+
+    Thread* ctp = chThdCreateStatic(waConfig, sizeof(waConfig), LOWPRIO, config_thread, NULL);
 
     chThdSleepMilliseconds(500);
 
@@ -83,17 +86,19 @@ int main(void) {
 
     chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
     
-    /*chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,*/
-                      /*l3g4200d_thread, NULL);*/
+    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
+                      l3g4200d_thread, NULL);
 
     chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
 
     chThdCreateStatic(waPyro, sizeof(waPyro), NORMALPRIO, pyro_thread, NULL);
 
+    chThdCreateStatic(waMission, sizeof(waMission), NORMALPRIO,
+            mission_thread, NULL);
+
 
     extStart(&EXTD1, &extcfg);
 
-    b3_shell_run();
 
     while (TRUE) {
         palSetPad(GPIOD, GPIOD_IMU_GRN);
