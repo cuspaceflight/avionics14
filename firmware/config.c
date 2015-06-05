@@ -178,3 +178,11 @@ bool config_init(const char* path)
     microsd_close_file(&file);
     return success;
 }
+
+msg_t config_thread(void* arg)
+{
+    (void)arg;
+    config_init("config.txt");
+    chThdSetPriority(LOWPRIO);
+    chThdSleep(TIME_INFINITE);
+}

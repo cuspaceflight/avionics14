@@ -74,4 +74,6 @@ typedef struct config_ {
  */
 extern config_t conf;
 
+msg_t config_thread(void* arg);
+
 #endif  /* CONFIG_H */

@@ -94,7 +94,9 @@ CSRC = $(PORTSRC) \
        $(PLATFORMSRC) \
        $(BOARDSRC) \
        $(FATFSSRC) \
+	   $(CHIBIOS)/os/various/memstreams.c \
        $(CHIBIOS)/os/various/chprintf.c \
+       $(CHIBIOS)/os/various/syscalls.c \
        $(CHIBIOS)/os/various/shell.c \
        main.c microsd.c config.c datalogging.c ms5611.c adxl3x5.c hmc5883l.c \
        l3g4200d.c b3_shell.c rfm69.c ublox.c pyro.c mission_control.c \
