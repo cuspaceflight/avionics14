@@ -25,5 +25,7 @@ state_estimate_t state_estimation_get_state(void);
  * update or prediction steps above are called. */
 void state_estimation_init(void);
 
+extern volatile uint8_t state_estimation_trust_barometer;
+
 #endif /* STATE_ESTIMATION_H */
 
