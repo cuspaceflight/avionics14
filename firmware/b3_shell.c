@@ -172,11 +172,11 @@ static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
     return;
   }
 
-  chprintf(chp, "name          addr    stack prio refs     state   time\r\n");
-  chprintf(chp, "------------------------------------------------------\r\n");
+  chprintf(chp, "name            addr    stack prio refs     state   time\r\n");
+  chprintf(chp, "--------------------------------------------------------\r\n");
   tp = chRegFirstThread();
   do {
-    chprintf(chp, "%10s %.8lx %.8lx %4lu %4lu %9s %lu\r\n",
+    chprintf(chp, "%12s %.8lx %.8lx %4lu %4lu %9s %lu\r\n",
             chRegGetThreadName(tp),
             (uint32_t)tp, (uint32_t)tp->p_ctx.r13,
             (uint32_t)tp->p_prio, (uint32_t)(tp->p_refs - 1),
@@ -317,25 +317,26 @@ functionality\n\tof the micro sd card\n\tOne two three test\n";
         chprintf(chp, "SD result error!!! SDRESULT: %d\n", res);
 }
 
+static const ShellCommand commands[] = {
+    {"mem", cmd_mem},
+    {"threads", cmd_threads},
+    {"rt", cmd_rt},
+    {"beep", cmd_beep},
+    {"gps_passthrough", cmd_gps_passthrough},
+    {"radio_tx", cmd_radio_tx},
+    {"led", cmd_led},
+    {"accel", cmd_accel},
+    {"gyro", cmd_gyro},
+    {"barotest", cmd_barotest},
+    {"test_all", cmd_test_all},
+    {"pyro", cmd_pyro},
+    {"microsd", cmd_microsd},
+    {"magnotest", cmd_magnotest},
+    {NULL, NULL}
+};
+
 void b3_shell_run()
 {
-    static const ShellCommand commands[] = {
-        {"mem", cmd_mem},
-        {"threads", cmd_threads},
-        {"rt", cmd_rt},
-        {"beep", cmd_beep},
-        {"gps_passthrough", cmd_gps_passthrough},
-        {"radio_tx", cmd_radio_tx},
-        {"led", cmd_led},
-        {"accel", cmd_accel},
-        {"gyro", cmd_gyro},
-        {"barotest", cmd_barotest},
-		{"test_all", cmd_test_all},
-        {"pyro", cmd_pyro},
-        {"microsd", cmd_microsd},
-        {"magnotest", cmd_magnotest},
-        {NULL, NULL}
-    };
     static const ShellConfig shell_cfg = {
       (BaseSequentialStream *)&SD2,
       commands
