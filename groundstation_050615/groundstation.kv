@@ -2,8 +2,9 @@
 <BarLabel@Label>:
 	id: barlabel
 	size_hint: None, None
-	size: self.parent.width * 0.15, self.parent.height * 0.15
+	size: self.parent.width * 0.10, self.parent.height * 0.15
 	y: self.parent.y + self.parent.height * 0.80
+	font: 5
 	canvas:
 		Color: 
 			rgba: 0, 1, 0, 0.2
@@ -20,7 +21,7 @@
     #d1 = 0.075, d2=0.15, w = 0.15
 
 	size_hint: None, None
-	size: self.parent.width * 0.15, self.parent.height * 0.7
+	size: self.parent.width * 0.10, self.parent.height * 0.7
 	y: self.parent.y + self.parent.height * 0.075
     
     canvas:
@@ -48,21 +49,6 @@
         size: self.parent.width, self.parent.height
         font_size: 30
 
-<LineGraph>:
-    id: linegraph
-    y_ticks_major: 100
-    x_ticks_major: 10
-    x_ticks_minor: 5
-    y_ticks_minor: 5
-    xlabel: linegraph.xLabel
-    ylabel: linegraph.yLabel
-    padding: 5
-    xmin: linegraph.xMin
-    xmax: linegraph.xMax
-    ymin: linegraph.yMin
-    ymax: linegraph.yMax
-    y_grid_label: True
-    x_grid_label: True
 
 <changescreen>
  
@@ -79,7 +65,10 @@
         text: "Time to launch"
         font_size: 20
         backgroundcolor: (0,0,0,1)
-        on_release: app.root.current = 'third'        
+        on_release: app.root.current = 'third'     
+
+
+
 
 <MainScreen>:
     name: 'first'
@@ -141,13 +130,81 @@
 
             BoxLayout:
                 size_hint_x: None
-                width: 0.6 * self.parent.width
+                width: 0.7 * self.parent.width
                 
                 orientation: 'vertical'
-                LineGraph:        
-                    id: graph
+                Label:
+					
+					id: labels
                     size_hint_y: None
                     height: self.parent.height * 0.8
+					
+				    Bar:	
+                        id: bar1
+                        maxVal: 100.0
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 0
+					
+					BarLabel:
+						id: barlabel1
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 0
+						text: "Altitude \n    (top)"
+
+				    Bar:	
+                        id: bar2
+                        maxVal: 100.0
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 1
+
+					BarLabel:
+						id: barlabel2
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 1
+						text: "Velocity \n  (top)"
+
+
+					Bar:
+                        id: bar3
+                        maxVal: 100.0
+                        x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 2
+
+					BarLabel:
+						id: barlabel3
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 2
+						text: "Acceleration \n     (top)"
+
+							
+					Bar:
+                        id: bar4
+                        maxVal: 50.0
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 3
+
+					BarLabel:
+						id: barlabel4
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 3
+						text: " Altitude\n (Bottom)"
+						
+												
+					Bar:
+                        id: bar4
+                        maxVal: 50.0
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 4
+
+					BarLabel:
+						id: barlabel5
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 4
+						text: "Velocity\n (Bottom)"
+
+												
+					Bar:
+                        id: bar4
+                        maxVal: 50.0
+						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 5
+
+					BarLabel:
+						id: barlabel6
+						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/5 * 5
+						text: " Acceleration\n   (Bottom)"
+
+
+                 
 
                 ScrollView:
                     id: commandoutput
@@ -174,57 +231,19 @@
 
                 Label:
                     size_hint_y: None
+                    size_hint_x: None
                     height: self.parent.height * 0.5
-                    canvas:
-                        Color: 
-                            rgba: 0, 0, 1, 0.2
-                            
-                        Rectangle: 
-                            pos: self.pos
-                            size: self.size
+                    width: self.parent.width
+					Image:
+						source: "Badger_background.png"
+						size: self.parent.width, self.parent.height
+						keep_ratio: True
+						allow_stretch: True
+						center: self.parent.center
 
 
-				    Bar:	
-                        id: bar1
-                        maxVal: 100.0
-						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 0
-					
-					BarLabel:
-						id: barlabel1
-						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 0
-						text: "BarLabel1"
-
-				    Bar:	
-                        id: bar2
-                        maxVal: 100.0
-						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 1
-
-					BarLabel:
-						id: barlabel2
-						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 1
-						text: "BarLabel2"
 
 
-					Bar:
-                        id: bar3
-                        maxVal: 100.0
-                        x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 2
-
-					BarLabel:
-						id: barlabel3
-						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 2
-						text: "BarLabel3"
-
-							
-					Bar:
-                        id: bar4
-                        maxVal: 50.0
-						x: self.parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 3
-
-					BarLabel:
-						id: barlabel4
-						x: self. parent.x + self.parent.width * 0.075 + self.parent.width * 0.7/3 * 3
-						text: "BarLabel4"
 					
 
                 Label:    

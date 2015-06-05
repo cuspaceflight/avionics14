@@ -18,7 +18,7 @@ from kivy.clock import Clock
 from kivy.garden.graph import Graph, MeshLinePlot
 from functools import partial
 import multiprocessing
-#from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue
 from flightdata import FlightData
 from datetime import datetime
 import random
@@ -31,7 +31,7 @@ import binascii
 
 
     
-class GroundstationApp(App):	
+class GroundstationApp(App):    
     debug = False
     """
     args[0] is message queue
@@ -258,7 +258,7 @@ class DataScreen(Screen):
         self.ids.status3.fd = self.fd
         self.ids.status4.fd = self.fd
         self.ids.status5.fd = self.fd
-        self.ids.graph.fd = self.fd
+#        self.ids.graph.fd = self.fd
         self.ids.commandoutput.fd = self.fd
     
     def update(self):
@@ -297,7 +297,7 @@ class DataScreen(Screen):
         self.ids.status4.update()
         self.ids.status5.update()
 
-        self.ids.graph.update()
+#        self.ids.graph.update()
 
 
 class changescreen(BoxLayout):
@@ -360,6 +360,7 @@ class Bar(BoxLayout):
     def update(self):
         self.curVal = random.random() * self.maxVal
 
+"""
 
 class LineGraph(Graph):
     xMax = NumericProperty(60.0)
@@ -397,13 +398,14 @@ class LineGraph(Graph):
 
 
         """
-           
+"""           
         if(self.fd.par1()):
             self.yVal_2 = self.fd.getAlt2()
             self.plot_2.points.append((self.xVal, self.yVal_2))
-        """
+"""
+"""
 
- 
+"""
 
 
 if __name__=="__main__":
