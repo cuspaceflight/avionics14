@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include "hal.h"
 #include "microsd.h"
 #include "config.h"
 
@@ -182,7 +183,8 @@ bool config_init(const char* path)
 msg_t config_thread(void* arg)
 {
     (void)arg;
+    chRegSetThreadName("Config");
     config_init("config.txt");
-    chThdSetPriority(LOWPRIO);
     chThdSleep(TIME_INFINITE);
+    return RDY_OK;
 }
