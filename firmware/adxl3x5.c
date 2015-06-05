@@ -26,18 +26,23 @@ int16_t global_accel[3];
 
 static Thread *tp345 = NULL;
 
+static void adxl3x5_warn(const uint8_t n)
+{
+    uint8_t i;
+    for(i=0; i<n; i++) {
+        palSetPad(GPIOD, GPIOD_IMU_RED);
+        chThdSleepMilliseconds(100);
+        palClearPad(GPIOD, GPIOD_IMU_RED);
+        chThdSleepMilliseconds(200);
+    }
+}
+
 /* Helper for sad moments */
-static void adxl3x5_sad(const uint8_t n)
+static void adxl3x5_error(const uint8_t n)
 {
     /* TODO: report sadness up the chain */
-    uint8_t i;
     while(1) {
-        for(i=0; i<n; i++) {
-            palSetPad(GPIOD, GPIOD_IMU_RED);
-            chThdSleepMilliseconds(100);
-            palClearPad(GPIOD, GPIOD_IMU_RED);
-            chThdSleepMilliseconds(200);
-        }
+        adxl3x5_warn(n);
         chThdSleepMilliseconds(800);
     }
 }
@@ -102,9 +107,10 @@ static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
     const uint16_t n_discard_samples = 30;
     const uint16_t n_test_samples = 100;
 
-    devid = adxl3x5_read_u8(SPID, 0x00);
-    if(devid != 0xE5) {
-        adxl3x5_sad(2);
+    /* Seems to fail the first time so retry immediately */
+    (void)adxl3x5_read_u8(SPID, 0x00);
+    while(adxl3x5_read_u8(SPID, 0x00) != 0xE5) {
+        adxl3x5_warn(2);
     }
 
     /* BW_RATE: Set high power mode and 800Hz ODR */
@@ -173,7 +179,7 @@ static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
         if(accels_delta[0] < 93  ||
            accels_delta[1] > -93 ||
            accels_delta[2] < 112) {
-            adxl3x5_sad(3);
+            adxl3x5_error(3);
         }
     } else if(x == 7) {
         /* ADXL375 self test parameters:
@@ -183,7 +189,7 @@ static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
          * Let's be OK with anything above 100LSB.
          */
         if(accels_delta[2] < 100) {
-            adxl3x5_sad(4);
+            adxl3x5_error(4);
         }
     }
 
