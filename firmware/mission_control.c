@@ -62,6 +62,7 @@ state_t run_state(state_t cur_state, instance_data_t *data)
 
 static state_t do_state_pad(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     if(chTimeNow() > 10000 && data->state.a > IGNITION_ACCEL) {
         data->t_launch = chTimeNow();
         return STATE_IGNITION;
@@ -72,12 +73,14 @@ static state_t do_state_pad(instance_data_t *data)
 
 static state_t do_state_ignition(instance_data_t *data)
 {
+    state_estimation_trust_barometer = false;
     data->t_last_ignition = chTimeNow();
     return STATE_POWERED_ASCENT;
 }
 
 static state_t do_state_powered_ascent(instance_data_t *data)
 {
+    state_estimation_trust_barometer = false;
     systime_t time_since_ignition = chTimeElapsedSince(data->t_last_ignition);
     if(data->state.a < 0.0f || time_since_ignition > BURNOUT_TIME) {
         return STATE_BURNOUT;
@@ -88,6 +91,7 @@ static state_t do_state_powered_ascent(instance_data_t *data)
 
 static state_t do_state_burnout(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     data->t_last_burnout = chTimeNow();
     if(data->current_stage_position == 1) {
         if(GOT_SEPARATION) {
@@ -106,6 +110,7 @@ static state_t do_state_burnout(instance_data_t *data)
 
 static state_t do_state_free_ascent(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     systime_t time_since_burnout = chTimeElapsedSince(data->t_last_burnout);
     if(data->state.h > IGNITE_ALTITUDE || time_since_burnout > IGNITE_TIME) {
         return STATE_IGNITE;
@@ -117,12 +122,14 @@ static state_t do_state_free_ascent(instance_data_t *data)
 static state_t do_state_ignite(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     pyro_fire_ignite();
     return STATE_WAIT_IGNITION;
 }
 
 static state_t do_state_wait_ignition(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     systime_t time_in_state = chTimeElapsedSince(data->t_last_ignite_attempt);
     if(data->state.a > IGNITION_ACCEL) {
         data->current_stage_position--;
@@ -137,13 +144,16 @@ static state_t do_state_wait_ignition(instance_data_t *data)
 static state_t do_state_separate(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     pyro_fire_separation();
     return STATE_SEPARATED_ASCENT;
 }
 
 static state_t do_state_separated_ascent(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     systime_t time_since_burnout = chTimeElapsedSince(data->t_last_burnout);
+    state_estimation_trust_barometer = true;
     if(data->state.v < 0 || time_since_burnout > APOGEE_TIME) {
         return STATE_APOGEE;
     } else {
@@ -153,6 +163,7 @@ static state_t do_state_separated_ascent(instance_data_t *data)
 
 static state_t do_state_apogee(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     data->t_apogee = chTimeNow();
     if(GOT_DROGUE) {
         return STATE_DROGUE_DEPLOY;
@@ -164,12 +175,14 @@ static state_t do_state_apogee(instance_data_t *data)
 static state_t do_state_drogue_deploy(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     pyro_fire_drogue();
     return STATE_DROGUE_DESCENT;
 }
 
 static state_t do_state_drogue_descent(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     systime_t time_since_apogee = chTimeElapsedSince(data->t_apogee);
     if(data->state.h < MAIN_ALTITUDE || time_since_apogee > MAIN_TIME) {
         if(GOT_MAIN) {
@@ -185,12 +198,14 @@ static state_t do_state_drogue_descent(instance_data_t *data)
 static state_t do_state_main_deploy(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     pyro_fire_main();
     return STATE_MAIN_DESCENT;
 }
 
 static state_t do_state_main_descent(instance_data_t *data)
 {
+    state_estimation_trust_barometer = true;
     systime_t time_since_apogee = chTimeElapsedSince(data->t_apogee);
     if(fabs(data->state.v) < 1.0f || time_since_apogee > LANDING_TIME) {
         return STATE_TOUCHDOWN;
@@ -202,12 +217,14 @@ static state_t do_state_main_descent(instance_data_t *data)
 static state_t do_state_touchdown(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     return STATE_LANDED;
 }
 
 static state_t do_state_landed(instance_data_t *data)
 {
     (void)data;
+    state_estimation_trust_barometer = true;
     return STATE_LANDED;
 }
 
