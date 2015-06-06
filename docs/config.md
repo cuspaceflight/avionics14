@@ -2,7 +2,8 @@
 
 Configuration settings are saved in a file named `config.txt` in the root of 
 the SD card. Each line is one `key=value` pair, with values interpreted as 
-either integers or floating point numbers. Bools should be specified as 0 or 1.
+either integers or floating point numbers. Bools should be specified as 0 or 1. 
+Ints are all unsigned (in other words, non-negative, >= 0).
 
 Configuration keys must be *in order* and exactly as follows:
 
@@ -20,15 +21,15 @@ pyro_1           | Int   | Pyro channel 1 usage: 0=unused 1=ignition 2=separatio
 pyro_2           | Int   | Pyro channel 2 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
 pyro_3           | Int   | Pyro channel 3 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
 pyro_4           | Int   | Pyro channel 4 usage: 0=unused 1=ignition 2=separation 3=drogue 4=main
-ignition_accel   | Float | Acceleration threshold for detecting motor ignition, in m/s/s
-burnout_time     | Float | Time limit on motor burn duration, in seconds
-ignite_altitude  | Float | Altitude above which to fire this stage's motor, in metres ASL
-ignite_time      | Float | Time since burnout at which to fire this stage's motor, in seconds
-ignite_timeout   | Float | Time to spend trying to ignite before giving up, in seconds
-apogee_time      | Float | Time since burnout after which apogee is considered to have been reached, in seconds
-main_altitude    | Float | Altitude below which to release the main parachute, in metres ASL
-main_time        | Float | Time since apogee at which to release the main parachute, in seconds
-landing_time     | Float | Time since apogee at which to consider the rocket landed, in seconds
+ignition_accel   | Int   | Acceleration threshold for detecting motor ignition, in m/s/s
+burnout_time     | Int   | Time limit on motor burn duration, in milliseconds
+ignite_altitude  | Int   | Altitude above which to fire this stage's motor, in metres ASL
+ignite_time      | Int   | Time since burnout at which to fire this stage's motor, in milliseconds
+ignite_timeout   | Int   | Time to spend trying to ignite before giving up, in milliseconds
+apogee_time      | Int   | Time since burnout after which apogee is considered to have been reached, in milliseconds
+main_altitude    | Int   | Altitude below which to release the main parachute, in metres ASL
+main_time        | Int   | Time since apogee at which to release the main parachute, in milliseconds
+landing_time     | Int   | Time since apogee at which to consider the rocket landed, in milliseconds
 use_radio        | Bool  | 1 to use the radio, 0 to disable
 use_magno        | Bool  | 1 to use the magnetometer, 0 to disable
 use_gyro         | Bool  | 1 to use the gyroscope, 0 to disable

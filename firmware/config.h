@@ -61,16 +61,15 @@ bool check_config(void);
 
 typedef struct config_ {
     bool config_loaded;
-    int stage;
+    unsigned int stage;
     bool got_ignition, got_separation, got_drogue, got_main;
-    int accel_axis;
-    int pyro_firetime, pyro_1, pyro_2, pyro_3, pyro_4;
-    float ignition_accel;
-    float burnout_time;
-    float ignite_altitude, ignite_time, ignite_timeout;
-    float apogee_time;
-    float main_altitude, main_time;
-    float landing_time;
+    unsigned int accel_axis;
+    unsigned int pyro_firetime, pyro_1, pyro_2, pyro_3, pyro_4;
+    unsigned int ignition_accel;
+    unsigned int burnout_time;
+    unsigned int ignite_altitude, ignite_time, ignite_timeout;
+    unsigned int apogee_time;
+    unsigned int main_altitude, main_time, landing_time;
     bool use_radio, use_magno, use_gyro, use_gps;
 } config_t;
 

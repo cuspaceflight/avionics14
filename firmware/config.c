@@ -9,8 +9,9 @@
 
 #define BUFFER_SIZE 128 // aka estimated max line length in config
 
-static bool read_int(SDFILE* file, const char* name, int* attribute);
-static bool read_float(SDFILE* file, const char* name, float* attribute);
+static bool read_int(SDFILE* file, const char* name, unsigned int* attribute);
+static bool read_float(SDFILE* file, const char* name, float* attribute)
+                      __attribute__((unused));
 static bool read_bool(SDFILE* file, const char* name, bool* attribute);
 
 /* ------------------------------------------------------------------------- */
@@ -29,15 +30,15 @@ config_t conf = {
     .pyro_2 = 0,
     .pyro_3 = 0,
     .pyro_4 = 0,
-    .ignition_accel = 0.0f,
-    .burnout_time = 0.0f,
-    .ignite_altitude = 0.0f,
-    .ignite_time = 0.0f,
-    .ignite_timeout = 0.0f,
-    .apogee_time = 0.0f,
-    .main_altitude = 0.0f,
-    .main_time = 0.0f,
-    .landing_time = 0.0f,
+    .ignition_accel = 0,
+    .burnout_time = 0,
+    .ignite_altitude = 0,
+    .ignite_time = 0,
+    .ignite_timeout = 0,
+    .apogee_time = 0,
+    .main_altitude = 0,
+    .main_time = 0,
+    .landing_time = 0,
     .use_radio = 0,
     .use_magno = 0,
     .use_gyro = 0,
@@ -52,7 +53,7 @@ config_t conf = {
  * sprintf(format, "%s=%%lf", name);
  * sscanf(buffer, format, attribute) which returns 1 if succesful
  */
-static bool read_int(SDFILE* file, const char* name, int* attribute)
+static bool read_int(SDFILE* file, const char* name, unsigned int* attribute)
 {
     char buffer[BUFFER_SIZE];
     char format[BUFFER_SIZE];
@@ -61,7 +62,7 @@ static bool read_int(SDFILE* file, const char* name, int* attribute)
     status = microsd_gets(file, buffer, BUFFER_SIZE);
     if (status != FR_OK) return false;
 
-    sprintf(format, "%s=%%d", name);
+    sprintf(format, "%s=%%u", name);
     return sscanf(buffer, format, attribute) == 1;
 }
 
@@ -89,7 +90,7 @@ static bool read_float(SDFILE* file, const char* name, float* attribute)
  */
 static bool read_bool(SDFILE* file, const char* name, bool* attribute)
 {
-    int res = 0;
+    unsigned int res = 0;
     if (!read_int(file, name, &res)) return false;
     *attribute = res != 0;
     return true;
@@ -112,15 +113,15 @@ bool read_config(SDFILE* file)
         read_int(file, "pyro_2", &conf.pyro_2) &&
         read_int(file, "pyro_3", &conf.pyro_3) &&
         read_int(file, "pyro_4", &conf.pyro_4) &&
-        read_float(file, "ignition_accel", &conf.ignition_accel) &&
-        read_float(file, "burnout_time", &conf.burnout_time) &&
-        read_float(file, "ignite_altitude", &conf.ignite_altitude) &&
-        read_float(file, "ignite_time", &conf.ignite_time) &&
-        read_float(file, "ignite_timeout", &conf.ignite_timeout) &&
-        read_float(file, "apogee_time", &conf.apogee_time) &&
-        read_float(file, "main_altitude", &conf.main_altitude) &&
-        read_float(file, "main_time", &conf.main_time) &&
-        read_float(file, "landing_time", &conf.landing_time) &&
+        read_int(file, "ignition_accel", &conf.ignition_accel) &&
+        read_int(file, "burnout_time", &conf.burnout_time) &&
+        read_int(file, "ignite_altitude", &conf.ignite_altitude) &&
+        read_int(file, "ignite_time", &conf.ignite_time) &&
+        read_int(file, "ignite_timeout", &conf.ignite_timeout) &&
+        read_int(file, "apogee_time", &conf.apogee_time) &&
+        read_int(file, "main_altitude", &conf.main_altitude) &&
+        read_int(file, "main_time", &conf.main_time) &&
+        read_int(file, "landing_time", &conf.landing_time) &&
         read_bool(file, "use_radio", &conf.use_radio) &&
         read_bool(file, "use_magno", &conf.use_magno) &&
         read_bool(file, "use_gyro", &conf.use_gyro) &&
@@ -138,22 +139,22 @@ bool check_config()
     bool ok = true;
 
     /* Basic sanity checks */
-    ok &= conf.stage > 0 && conf.stage < 10;
-    ok &= conf.accel_axis > 0 && conf.accel_axis < 7;
-    ok &= conf.pyro_firetime > 0;
-    ok &= conf.pyro_1 >= 0 && conf.pyro_1 < 5;
-    ok &= conf.pyro_2 >= 0 && conf.pyro_2 < 5;
-    ok &= conf.pyro_3 >= 0 && conf.pyro_3 < 5;
-    ok &= conf.pyro_4 >= 0 && conf.pyro_4 < 5;
-    ok &= conf.ignition_accel >= 0.0f && conf.ignition_accel < 1000.0f;
-    ok &= conf.burnout_time >= 0.0f && conf.burnout_time < 1000.0f;
-    ok &= conf.ignite_altitude >= 0.0f && conf.ignite_altitude < 100000.0f;
-    ok &= conf.ignite_time >= 0.0f && conf.ignite_time < 10000.0f;
-    ok &= conf.ignite_timeout >= 0.0f && conf.ignite_timeout < 10000.0f;
-    ok &= conf.apogee_time >= 0.0f && conf.apogee_time < 10000.0f;
-    ok &= conf.main_altitude >= 0.0f && conf.main_altitude < 100000.0f;
-    ok &= conf.main_time >= 0.0f && conf.main_time < 10000.0f;
-    ok &= conf.landing_time >= 0.0f && conf.landing_time < 10000.0f;
+    ok &= conf.stage < 10;
+    ok &= conf.accel_axis < 7;
+    ok &= conf.pyro_firetime < 100000;
+    ok &= conf.pyro_1 < 5;
+    ok &= conf.pyro_2 < 5;
+    ok &= conf.pyro_3 < 5;
+    ok &= conf.pyro_4 < 5;
+    ok &= conf.ignition_accel < 1000;
+    ok &= conf.burnout_time < 1000000;
+    ok &= conf.ignite_altitude < 100000;
+    ok &= conf.ignite_time < 10000000;
+    ok &= conf.ignite_timeout < 10000000;
+    ok &= conf.apogee_time < 10000000;
+    ok &= conf.main_altitude < 100000;
+    ok &= conf.main_time < 10000000;
+    ok &= conf.landing_time < 10000000;
 
     /* Check pyro consistency */
     if(conf.got_ignition)
