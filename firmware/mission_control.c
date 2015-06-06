@@ -153,7 +153,6 @@ static state_t do_state_separated_ascent(instance_data_t *data)
 {
     state_estimation_trust_barometer = true;
     systime_t time_since_burnout = chTimeElapsedSince(data->t_last_burnout);
-    state_estimation_trust_barometer = true;
     if(data->state.v < 0 || time_since_burnout > APOGEE_TIME) {
         return STATE_APOGEE;
     } else {
