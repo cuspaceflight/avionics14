@@ -19,7 +19,7 @@
 
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
-/*static WORKING_AREA(waHMC5883L, 512);*/
+static WORKING_AREA(waHMC5883L, 512);
 static WORKING_AREA(waL3G4200D, 1024);
 static WORKING_AREA(waGPS, 4096);
 static WORKING_AREA(waRadio, 1024);
@@ -70,11 +70,20 @@ int main(void) {
 
     b3_shell_run();
 
-    chThdCreateStatic(waTweeter, sizeof(waTweeter), NORMALPRIO, tweeter_thread, NULL);
+    chThdCreateStatic(waTweeter, sizeof(waTweeter), NORMALPRIO,
+                      tweeter_thread, NULL);
 
-    chThdCreateStatic(waConfig, sizeof(waConfig), NORMALPRIO, config_thread, NULL);
-
-    chThdSleepMilliseconds(500);
+    /*
+     * Enable config error so if it is not read successfully,
+     * we'll know. The config thread turns off the error once
+     * the config is read and checked.
+     */
+    tweeter_set_error(ERROR_CONFIG, true);
+    chThdCreateStatic(waConfig, sizeof(waConfig), NORMALPRIO,
+                      config_thread, NULL);
+    while(!CONFIG_LOADED) {
+        chThdSleepMilliseconds(100);
+    }
 
     chThdCreateStatic(waDatalogging, sizeof(waDatalogging), NORMALPRIO,
                       datalogging_thread, NULL);
@@ -85,15 +94,28 @@ int main(void) {
     chThdCreateStatic(waADXL345, sizeof(waADXL345), NORMALPRIO,
                       adxl345_thread, NULL);
 
-    /*chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,*/
-                      /*hmc5883l_thread, NULL);*/
+    if(USE_RADIO) {
+        chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO,
+                          rfm69_thread, NULL);
+    }
 
-    chThdCreateStatic(waRadio, sizeof(waRadio), NORMALPRIO, rfm69_thread, NULL);                  
+    /* Cannot enable magno and radio at same time without resolving
+     * the DMA channel conflict with a lock etc
+     */
+    if(USE_MAGNO) {
+        chThdCreateStatic(waHMC5883L, sizeof(waHMC5883L), NORMALPRIO,
+                          hmc5883l_thread, NULL);
+    }
     
-    chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
-                      l3g4200d_thread, NULL);
+    if(USE_GYRO) {
+        chThdCreateStatic(waL3G4200D, sizeof(waL3G4200D), NORMALPRIO,
+                          l3g4200d_thread, NULL);
+    }
 
-    chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO, ublox_thread, NULL);
+    if(USE_GPS) {
+        chThdCreateStatic(waGPS, sizeof(waGPS), NORMALPRIO,
+                          ublox_thread, NULL);
+    }
 
     chThdCreateStatic(waPyro, sizeof(waPyro), NORMALPRIO, pyro_thread, NULL);
 

@@ -5,21 +5,8 @@
 #include "rfm69_rdl.h"
 #include "ch.h"
 
-/* Log data to the Radio.
-* The channel is 0 to 255.
-* Data is either char* (the first 8 bytes will be copied),
-* or a number of integers that add up to 64 bits.
-* The time the function is called is stored against the sample.
-*/
-
-void rfm69_log_c(uint8_t channel, const char* data);
-void rfm69_log_s64(uint8_t channel, int64_t data);
-void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b);
-void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
-									int16_t data_c, int16_t data_d);
-void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
-									uint16_t data_c, uint16_t data_d);
-void rfm69_log_f(uint8_t channel, float data_a, float data_b);
+/* Send a test packet with `data` in the last 8 bytes. */
+void rfm69_send_test_packet(const char* data);
 
 /* Log a pre-made packet to the radio. Must be a pointer to 16 bytes of memory.
  */

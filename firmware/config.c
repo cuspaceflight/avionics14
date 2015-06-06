@@ -18,7 +18,7 @@ static bool read_bool(SDFILE* file, const char* name, bool* attribute);
 /* External config */
 config_t conf = {
     .config_loaded = false,
-    .stage = 1,
+    .stage = 0,
     .got_ignition = false,
     .got_separation = false,
     .got_drogue = false,
@@ -38,6 +38,10 @@ config_t conf = {
     .main_altitude = 0.0f,
     .main_time = 0.0f,
     .landing_time = 0.0f,
+    .use_radio = 0,
+    .use_magno = 0,
+    .use_gyro = 0,
+    .use_gps = 0,
 };
 
 /* ------------------------------------------------------------------------- */
@@ -116,7 +120,11 @@ bool read_config(SDFILE* file)
         read_float(file, "apogee_time", &conf.apogee_time) &&
         read_float(file, "main_altitude", &conf.main_altitude) &&
         read_float(file, "main_time", &conf.main_time) &&
-        read_float(file, "landing_time", &conf.landing_time);
+        read_float(file, "landing_time", &conf.landing_time) &&
+        read_bool(file, "use_radio", &conf.use_radio) &&
+        read_bool(file, "use_magno", &conf.use_magno) &&
+        read_bool(file, "use_gyro", &conf.use_gyro) &&
+        read_bool(file, "use_gps", &conf.use_gps);
 
     tweeter_set_error(ERROR_CONFIG, !conf.config_loaded);
     return conf.config_loaded;
@@ -179,6 +187,7 @@ bool config_init(const char* path)
 
     if (open == FR_OK) {
         success = read_config(&file);
+        success &= check_config();
     }
 
     microsd_close_file(&file);

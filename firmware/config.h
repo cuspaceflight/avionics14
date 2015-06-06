@@ -41,6 +41,11 @@
 #define MAIN_ALTITUDE           (conf.main_altitude)
 #define MAIN_TIME               (conf.main_time)
 #define LANDING_TIME            (conf.landing_time)
+#define USE_RADIO               (conf.use_radio)
+#define USE_MAGNO               (conf.use_magno)
+#define USE_GYRO                (conf.use_gyro)
+#define USE_GPS                 (conf.use_gps)
+#define CONFIG_LOADED           (conf.config_loaded)
 
 
 /* Read config from the file on the sd card specified by <path>.
@@ -66,6 +71,7 @@ typedef struct config_ {
     float apogee_time;
     float main_altitude, main_time;
     float landing_time;
+    bool use_radio, use_magno, use_gyro, use_gps;
 } config_t;
 
 /* This is the global configuration that can be accessed from any file.

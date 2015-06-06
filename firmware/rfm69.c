@@ -39,87 +39,21 @@ static volatile msg_t rfm69_mb_q[RFM69_MEMPOOL_ITEMS];
 
 static void rfm69_mem_init(void);
 
-void rfm69_log_c(uint8_t channel, const char* data)
+void rfm69_send_test_packet(const char* data)
 {
-    volatile char *msg;
-    msg = (char*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (uint8_t)(0);
-    msg[5] = (char)channel;
-    memcpy((void*)msg, (void*)&halGetCounterValue(), 4);
-    memcpy((void*)&msg[8], data, 8);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
-}
-
-void rfm69_log_s64(uint8_t channel, int64_t data)
-{
-    char *msg;
-    msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(1 | conf.stage << 4);
-    msg[5] = (char)channel;
-    memcpy(msg, (void*)&halGetCounterValue(), 4);
-    memcpy(&msg[8], &data, 8);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
-}
-
-void rfm69_log_s32(uint8_t channel, int32_t data_a, int32_t data_b)
-{
-    char *msg;
-    msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(3 | conf.stage << 4);
-    msg[5] = (char)channel;
-    memcpy(msg, (void*)&halGetCounterValue(), 4);
-    memcpy(&msg[8],  &data_a, 4);
-    memcpy(&msg[12], &data_b, 4);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
-}
-
-void rfm69_log_s16(uint8_t channel, int16_t data_a, int16_t data_b,
-                                      int16_t data_c, int16_t data_d)
-{
-    char *msg;
-    msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(5 | conf.stage << 4);
-    msg[5] = (char)channel;
-    memcpy(msg, (void*)&halGetCounterValue(), 4);
-    memcpy(&msg[8],  &data_a, 2);
-    memcpy(&msg[10], &data_b, 2);
-    memcpy(&msg[12], &data_c, 2);
-    memcpy(&msg[14], &data_d, 2);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
-}
-
-void rfm69_log_u16(uint8_t channel, uint16_t data_a, uint16_t data_b,
-                                      uint16_t data_c, uint16_t data_d)
-{
-    char *msg;
-    msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(6 | conf.stage << 4);
-    msg[5] = (char)channel;
-    memcpy(msg, (void*)&halGetCounterValue(), 4);
-    memcpy(&msg[8],  &data_a, 2);
-    memcpy(&msg[10], &data_b, 2);
-    memcpy(&msg[12], &data_c, 2);
-    memcpy(&msg[14], &data_d, 2);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
-}
-
-void rfm69_log_f(uint8_t channel, float data_a, float data_b)
-{
-    char *msg;
-    msg = (void*)chPoolAlloc(&rfm69_mp);
-    msg[4] = (char)(9 | conf.stage << 4);
-    msg[5] = (char)channel;
-    memcpy(msg, (void*)&halGetCounterValue(), 4);
-    memcpy(&msg[8],  &data_a, 4);
-    memcpy(&msg[12], &data_b, 4);
-    chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
+    char pkt[16];
+    int i;
+    for(i=0; i<8; i++) pkt[i] = 0;
+    memcpy(pkt+8, data, 8);
+    rfm69_log_packet((uint8_t*)pkt);
 }
 
 void rfm69_log_packet(uint8_t* packet)
 {
     char *msg;
     msg = (void*)chPoolAlloc(&rfm69_mp);
-    if(msg == NULL) return;
+    if(msg == NULL)
+        return;
     memcpy(msg, (void*)packet, 16);
     msg_t rv = chMBPost(&rfm69_mb, (intptr_t)msg, TIME_IMMEDIATE);
     if(rv != RDY_OK) {
@@ -166,7 +100,7 @@ void rfm69_register_write (SPIDriver* SPID, uint8_t reg_addr, uint8_t reg_value)
 int rfm69_wait_for_bit_high (SPIDriver* SPID, uint8_t reg_addr, uint8_t mask) {
 	int niter=30;
 	while ( (rfm69_register_read(SPID, reg_addr) & mask) == 0) {
-        chThdSleepMilliseconds(55);
+        chThdSleepMilliseconds(60);
 		if (--niter == 0) {
             tweeter_set_error(ERROR_RADIO, true);
 			return E_TIMEOUT;
@@ -309,6 +243,6 @@ msg_t rfm69_thread(void *arg) {
 		rfm69_frame_tx(&RFM69_SPID, msg, 16);
 	    palClearPad(GPIOD, GPIOD_RADIO_GRN);	
 		chPoolFree(&rfm69_mp, (void*)msg);
-        chThdSleepMilliseconds(45);
+        chThdSleepMilliseconds(20);
 	}
 }

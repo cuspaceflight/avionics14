@@ -9,6 +9,7 @@
 #include "board.h"
 #include "microsd.h"
 #include "hmc5883l.h"
+#include "config.h"
 
 static void cmd_gps_passthrough(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)argc;
@@ -68,9 +69,9 @@ static void cmd_radio_tx(BaseSequentialStream *chp, int argc, char *argv[]) {
     char* msg2 = "b765432b";
 	
     while(1) {
-        rfm69_log_c(8, msg1);
+        rfm69_send_test_packet(msg1);
         chThdSleepMilliseconds(50);
-        rfm69_log_c(8, msg2);
+        rfm69_send_test_packet(msg2);
         chThdSleepMilliseconds(50);
 	}
 }
@@ -317,6 +318,39 @@ functionality\n\tof the micro sd card\n\tOne two three test\n";
         chprintf(chp, "SD result error!!! SDRESULT: %d\n", res);
 }
 
+static void cmd_config(BaseSequentialStream* chp, int argc, char* argv[])
+{
+    (void)argv;
+    (void)argc;
+
+
+    chprintf(chp, "stage           = %d\n", conf.stage          );
+    chprintf(chp, "got_ignition    = %d\n", conf.got_ignition   );
+    chprintf(chp, "got_separation  = %d\n", conf.got_separation );
+    chprintf(chp, "got_drogue      = %d\n", conf.got_drogue     );
+    chprintf(chp, "got_main        = %d\n", conf.got_main       );
+    chprintf(chp, "accel_axis      = %d\n", conf.accel_axis     );
+    chprintf(chp, "pyro_firetime   = %d ms\n", conf.pyro_firetime  );
+    chprintf(chp, "pyro_1          = %d\n", conf.pyro_1         );
+    chprintf(chp, "pyro_2          = %d\n", conf.pyro_2         );
+    chprintf(chp, "pyro_3          = %d\n", conf.pyro_3         );
+    chprintf(chp, "pyro_4          = %d\n", conf.pyro_4         );
+    chprintf(chp, "ignition_accel  = %d m/s/s\n", (int)conf.ignition_accel );
+    chprintf(chp, "burnout_time    = %d s\n", (int)conf.burnout_time   );
+    chprintf(chp, "ignite_altitude = %d m ASL\n", (int)conf.ignite_altitude);
+    chprintf(chp, "ignite_time     = %d s\n", (int)conf.ignite_time    );
+    chprintf(chp, "ignite_timeout  = %d s\n", (int)conf.ignite_timeout );
+    chprintf(chp, "apogee_time     = %d s\n", (int)conf.apogee_time    );
+    chprintf(chp, "main_altitude   = %d m ASL\n", (int)conf.main_altitude  );
+    chprintf(chp, "main_time       = %d s\n", (int)conf.main_time      );
+    chprintf(chp, "landing_time    = %d s\n", (int)conf.landing_time   );
+    chprintf(chp, "use_radio       = %d\n", conf.use_radio      );
+    chprintf(chp, "use_magno       = %d\n", conf.use_magno      );
+    chprintf(chp, "use_gyro        = %d\n", conf.use_gyro       );
+    chprintf(chp, "use_gps         = %d\n", conf.use_gps        );
+
+}
+
 static const ShellCommand commands[] = {
     {"mem", cmd_mem},
     {"threads", cmd_threads},
@@ -327,11 +361,12 @@ static const ShellCommand commands[] = {
     {"led", cmd_led},
     {"accel", cmd_accel},
     {"gyro", cmd_gyro},
-    {"barotest", cmd_barotest},
+    {"baro", cmd_barotest},
     {"test_all", cmd_test_all},
     {"pyro", cmd_pyro},
     {"microsd", cmd_microsd},
-    {"magnotest", cmd_magnotest},
+    {"magno", cmd_magnotest},
+    {"config", cmd_config},
     {NULL, NULL}
 };
 

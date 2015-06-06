@@ -29,3 +29,7 @@ apogee_time      | Float | Time since burnout after which apogee is considered t
 main_altitude    | Float | Altitude below which to release the main parachute, in metres ASL
 main_time        | Float | Time since apogee at which to release the main parachute, in seconds
 landing_time     | Float | Time since apogee at which to consider the rocket landed, in seconds
+use_radio        | Bool  | 1 to use the radio, 0 to disable
+use_magno        | Bool  | 1 to use the magnetometer, 0 to disable
+use_gyro         | Bool  | 1 to use the gyroscope, 0 to disable
+use_gps          | Bool  | 1 to use the GPS, 0 to disable
