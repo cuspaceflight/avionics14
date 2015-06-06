@@ -83,7 +83,7 @@ static void cmd_magnotest(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp, "Magno Y: 0x%x %d\r\n", global_magno[1]);
         chprintf(chp, "Magno Z: 0x%x %d\r\n", global_magno[2]); */
         chprintf(chp,"%09d %09d %09d \n", global_magno[0], global_magno[1], global_magno[2]);
-        chThdSleepMilliseconds(1);
+        chThdSleepMilliseconds(100);
     }
 }
 

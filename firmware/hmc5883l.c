@@ -8,6 +8,7 @@
 #include "hal.h"
 #include "datalogging.h"
 #include "hmc5883l.h"
+#include "tweeter.h"
 
 
 #define HMC5883L_I2C_ADDR       0x1E
@@ -22,7 +23,7 @@
 
 static Thread *tpHMC5883L = NULL;
 
-uint16_t global_magno[3];
+int16_t global_magno[3];
 
 static const I2CConfig i2cconfig = {
 	OPMODE_I2C, 100000, STD_DUTY_CYCLE
@@ -65,28 +66,28 @@ static bool_t hmc5883l_init(void) {
 
 /* Checks the ID of the Magno to ensure we're actually talking to the Magno and not some other component. */
 static bool_t hmc58831_ID_check(void) {
-    uint8_t buf[3];
+    uint8_t buf;
     uint8_t id_reg;
     bool_t success = TRUE;
     
     /* Forcefully try to read each ID register since it seems like they don't exist. */
     id_reg = HMC5883L_RA_ID_A;
-    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
-        success &= (buf[0] == 0x48);
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, &buf, 1, 1000) == RDY_OK) {
+        success &= (buf == 0x48);
     } else {
         return FALSE;
     }
     
     id_reg = HMC5883L_RA_ID_B;
-    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
-        success &= (buf[1] == 0x34);
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, &buf, 1, 1000) == RDY_OK) {
+        success &= (buf == 0x34);
     } else {
         return FALSE;
     }
     
     id_reg = HMC5883L_RA_ID_C;
-    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, buf, 1, 1000) == RDY_OK) {
-        success &= (buf[2] == 0x33);
+    if(i2cMasterTransmitTimeout(&I2CD2, HMC5883L_I2C_ADDR, &id_reg, 1, &buf, 1, 1000) == RDY_OK) {
+        success &= (buf == 0x33);
     } else {
         return FALSE;
     }
@@ -150,13 +151,17 @@ msg_t hmc5883l_thread(void *arg)
     i2cStart(&I2CD2, &i2cconfig);
     
     while (!hmc58831_ID_check()) {
+        tweeter_set_error(ERROR_MAGNO, true);
         chThdSleepMilliseconds(500);
     }
+    tweeter_set_error(ERROR_MAGNO, false);
     
     /* Initialise the settings. */
     while (!hmc5883l_init()) {
+        tweeter_set_error(ERROR_MAGNO, true);
         chThdSleepMilliseconds(500);
     }
+    tweeter_set_error(ERROR_MAGNO, false);
     
     while (TRUE)
     {
@@ -169,6 +174,7 @@ msg_t hmc5883l_thread(void *arg)
         
         /* Pull data from magno into buf_data. */
         if (hmc5883l_receive(buf_data)) {
+            tweeter_set_error(ERROR_MAGNO, false);
             hmc5883l_field_convert(buf_data, field);
             log_s16(CHAN_IMU_MAGNO, field[0], field[1], field[2], 0); 
             /*define this state estimation function 
@@ -176,6 +182,7 @@ msg_t hmc5883l_thread(void *arg)
 			       field[1], field[2]); */
         } else {
             chThdSleepMilliseconds(20);
+            tweeter_set_error(ERROR_MAGNO, true);
         }
     }
 }

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "l3g4200d.h"
 #include "datalogging.h"
+#include "tweeter.h"
 
 
 #define L3G4200D_I2C_ADDR   0x69
@@ -207,13 +208,17 @@ msg_t l3g4200d_thread(void *arg)
     i2cStart(&I2CD1, &i2cconfig);
     
     while (!l3g4200d_ID_check()) {
+        tweeter_set_error(ERROR_GYRO, true);
         chThdSleepMilliseconds(500);
     }
+    tweeter_set_error(ERROR_GYRO, false);
 
     /* Initialise the settings. */
 	while (!l3g4200d_init()) {
+        tweeter_set_error(ERROR_GYRO, true);
 		chThdSleepMilliseconds(500);
 	}
+    tweeter_set_error(ERROR_GYRO, false);
     
 	while (TRUE) {
 		/* Sleep until DRDY */
@@ -226,9 +231,11 @@ msg_t l3g4200d_thread(void *arg)
 
         /* Pull data from the gyro into buf_data. */
 		if (l3g4200d_receive(buf_data)) {
+            tweeter_set_error(ERROR_GYRO, false);
             l3g4200d_rotation_convert(buf_data, rotation);
             log_s16(CHAN_IMU_GYRO, rotation[0], rotation[1], rotation[2], 0);
 		} else {
+            tweeter_set_error(ERROR_GYRO, true);
 		    chThdSleepMilliseconds(20);
         }
 		

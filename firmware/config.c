@@ -3,6 +3,7 @@
 #include "hal.h"
 #include "microsd.h"
 #include "config.h"
+#include "tweeter.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -116,10 +117,12 @@ bool read_config(SDFILE* file)
         read_float(file, "main_altitude", &conf.main_altitude) &&
         read_float(file, "main_time", &conf.main_time) &&
         read_float(file, "landing_time", &conf.landing_time);
+
+    tweeter_set_error(ERROR_CONFIG, !conf.config_loaded);
     return conf.config_loaded;
 }
 
-/* Sanity check the config we read to ensure it's at least reasnoable and
+/* Sanity check the config we read to ensure it's at least reasonable and
  * consistent.
  */
 bool check_config()
@@ -157,6 +160,8 @@ bool check_config()
     if(conf.got_main)
         ok &= conf.pyro_1 == 4 || conf.pyro_2 == 4 ||
               conf.pyro_3 == 4 || conf.pyro_4 == 4;
+
+    tweeter_set_error(ERROR_CONFIG, !ok);
 
     return ok;
 }

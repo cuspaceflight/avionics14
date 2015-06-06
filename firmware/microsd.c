@@ -3,6 +3,7 @@
 #include "hal.h"
 #include "ff.h"
 #include "chprintf.h"
+#include "tweeter.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -22,20 +23,21 @@ static bool microsd_card_init(FATFS* fs)
     /* Attempt to connect to the SD card */
     int i = sdcConnect(&SDCD1);
     if (i) {
+        tweeter_set_error(ERROR_SD_CARD, true);
         return false;
     }
 
     /* Attempt to mount the filesystem */
     err = f_mount(0, fs);
+    tweeter_set_error(ERROR_SD_CARD, err != FR_OK);
     return err == FR_OK;
 }
 
 static void microsd_card_try_init(FATFS* fs)
 {
     while(!microsd_card_init(fs)) {
-        /* TODO: report sadness up the chain */
         microsd_card_deinit();
-        chThdSleepMilliseconds(200); // removed: led flash
+        chThdSleepMilliseconds(200);
     }
 }
 
@@ -65,6 +67,7 @@ SDRESULT microsd_open_file(SDFILE* fp, const char* path, SDMODE mode,
     SDRESULT err;
     microsd_card_try_init(sd);
     err = f_open(fp, path, mode);
+    tweeter_set_error(ERROR_SD_CARD, err != FR_OK);
     return err;
 }
 
@@ -90,12 +93,10 @@ SDRESULT microsd_open_file_inc(FIL* fp, const char* path, const char* ext,
         chsnprintf(fname, 25, "%s_%05d.%s", path, file_idx, ext);
         err = f_open(fp, fname, mode);
 
-        // if it doesn't exist, success! otherwise try the next, or return error
-        if (err == FR_OK) return FR_OK;
-        if (file_idx > 99999) return FR_INT_ERR; // internal error
+        tweeter_set_error(ERROR_SD_CARD,
+            (file_idx > 99998 || (err != FR_OK && err != FR_EXIST)));
         if (err == FR_EXIST) continue;
-
-        return err;
+        else return err;
     }
 }
 
@@ -120,6 +121,7 @@ SDRESULT microsd_write(SDFILE* fp, const char* buf, unsigned int btw)
     unsigned int bytes_written;
     err = f_write(fp, (void*) buf, btw, &bytes_written);
     f_sync(fp); // flush write buffer immediately to make sure it's written
+    tweeter_set_error(ERROR_SD_CARD, err != FR_OK);
     return err;
 }
 
@@ -135,6 +137,7 @@ SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr)
     if (err == FR_OK) {
         err = f_read(fp, (void*)buf, btr, &bytes_read);
     }
+    tweeter_set_error(ERROR_SD_CARD, err != FR_OK);
     return err;
 }
 
@@ -143,7 +146,8 @@ SDRESULT microsd_read(SDFILE* fp, char* buf, unsigned int btr)
 SDRESULT microsd_gets(SDFILE* fp, char* buf, int size)
 {
     TCHAR* res = f_gets(buf, size, fp);
-    return res != NULL ? FR_OK : FR_INT_ERR;
     // if res is null then either an error occurred (check with f_error(fp))
     // or it reached end of file (check with f_eof(fp))
+    tweeter_set_error(ERROR_SD_CARD, res == NULL);
+    return res == NULL ? FR_INT_ERR : FR_OK;
 }

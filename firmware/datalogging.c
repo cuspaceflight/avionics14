@@ -111,6 +111,7 @@ msg_t datalogging_thread(void* arg)
     intptr_t data_msg;       // buffer to store the fetched mailbox item
     char* packet_msg;        // data_msg to be logged cast to char*
     SDRESULT write_res;      // result of writing data to file system
+    SDRESULT open_res;       // result of re-opening the log file
     bool cache_not_full;     // true if still space in cache (write when full)
     (void)arg;
 
@@ -147,10 +148,16 @@ msg_t datalogging_thread(void* arg)
 
             write_res = microsd_write(&file, (char*)log_cache, LOG_CACHE_SIZE);
 
-            // if the microsd write fails, we just skip this data ...
-            if (write_res != FR_OK) {
+            // If the write failed, keep attempting to re-open the log file
+            // and write the data out when we succeed.
+            while (write_res != FR_OK) {
                 microsd_close_file(&file);
-                microsd_open_file_inc(&file, "log", "bin", &file_system);
+                open_res = microsd_open_file_inc(&file, "log", "bin",
+                                                 &file_system);
+                if(open_res == FR_OK) {
+                    write_res = microsd_write(&file, (char*)log_cache,
+                                              LOG_CACHE_SIZE);
+                }
             }
 
             // reset cache pointer to beginning of cache

@@ -11,6 +11,7 @@
 
 #include "state_estimation.h"
 #include "datalogging.h"
+#include "tweeter.h"
 
 #define MS5611_SPID        SPID2
 #define MS5611_SPI_CS_PORT GPIOB
@@ -155,6 +156,8 @@ static void ms5611_read(MS5611CalData* cal_data,
     global_pressure = *pressure;
     global_temperature = *temperature;
 
+    tweeter_set_error(ERROR_BARO, *pressure < 1000 || *pressure > 120000);
+
     log_s32(CHAN_IMU_BARO, *pressure, *temperature);
 }
 
@@ -186,6 +189,4 @@ msg_t ms5611_thread(void *arg)
         ms5611_read(&cal_data, &temperature, &pressure);
         state_estimation_new_pressure((float)pressure);
     }
-
-    return (msg_t)NULL;
 }

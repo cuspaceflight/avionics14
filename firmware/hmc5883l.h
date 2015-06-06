@@ -9,7 +9,7 @@
 #include "ch.h"
 #include "hal.h"
 
-extern uint16_t global_magno[3];
+extern int16_t global_magno[3];
 
 /* The main thread*/
 msg_t hmc5883l_thread(void *arg) ;

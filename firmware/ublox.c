@@ -21,6 +21,7 @@
 #include "ublox.h"
 #include "hal.h"
 #include "datalogging.h"
+#include "tweeter.h"
 
 /* UBX sync bytes */
 #define UBX_SYNC1 0xB5
@@ -192,6 +193,7 @@ static void ublox_warn(const uint8_t n)
 
 static void ublox_error(const uint8_t n)
 {
+    tweeter_set_error(ERROR_GPS, true);
     while(1) {
         ublox_warn(n);
     }

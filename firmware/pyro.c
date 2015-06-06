@@ -3,9 +3,11 @@
  
  
 #include <hal.h>
+#include <stdbool.h>
 #include "pyro.h" 
 #include "config.h"
 #include "datalogging.h"
+#include "tweeter.h"
 
 
 void pyro_off_1(void* arg);
@@ -31,24 +33,29 @@ bool_t pyro_continuity(uint8_t pad)
  * against the expected ones for the location of
  * the board
  */
-bool_t pyro_continuity_check()
+bool pyro_continuity_check()
 {
-    bool ok = true;
     uint16_t ch1, ch2, ch3, ch4;
+    bool ok1, ok2, ok3, ok4;
 
     ch1 = pyro_continuity(GPIOE_PY1_CHK);
     ch2 = pyro_continuity(GPIOE_PY2_CHK);
     ch3 = pyro_continuity(GPIOE_PY3_CHK);
     ch4 = pyro_continuity(GPIOE_PY4_CHK);
 
-    ok &= (PYRO_1 && ch1) || (!PYRO_1 && !ch1);
-    ok &= (PYRO_2 && ch2) || (!PYRO_2 && !ch2);
-    ok &= (PYRO_3 && ch3) || (!PYRO_3 && !ch3);
-    ok &= (PYRO_4 && ch4) || (!PYRO_4 && !ch4);
+    ok1 = (PYRO_1 && ch1) || (!PYRO_1 && !ch1);
+    ok2 = (PYRO_2 && ch2) || (!PYRO_2 && !ch2);
+    ok3 = (PYRO_3 && ch3) || (!PYRO_3 && !ch3);
+    ok4 = (PYRO_4 && ch4) || (!PYRO_4 && !ch4);
+
+    tweeter_set_error(ERROR_PYRO_1, !ok1);
+    tweeter_set_error(ERROR_PYRO_2, !ok2);
+    tweeter_set_error(ERROR_PYRO_3, !ok3);
+    tweeter_set_error(ERROR_PYRO_4, !ok4);
 
     log_s16(CHAN_PYRO_C, ch1, ch2, ch3, ch4);
 
-    return ok;
+    return ok1 && ok2 && ok3 && ok4;
 }
 
 /*
@@ -177,7 +184,7 @@ msg_t pyro_thread(void *arg)
     (void)arg;
     chRegSetThreadName("Pyros");
  
-    while(TRUE) 
+    while(true) 
     {
         if(pyro_continuity_check()) 
         {
@@ -188,7 +195,6 @@ msg_t pyro_thread(void *arg)
         } 
         else 
         {
-            /* TODO: report sadness up the chain */
             palSetPad(GPIOD, GPIOD_PYRO_RED);
             chThdSleepMilliseconds(400);
             palClearPad(GPIOD, GPIOD_PYRO_RED);

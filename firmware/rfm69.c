@@ -22,6 +22,7 @@
 #include "hal.h"
 #include "config.h"
 #include "rfm69_config.h"
+#include "tweeter.h"
 
 //change as needed
 #define RFM69_SPID SPID3
@@ -31,9 +32,7 @@
 #define RFM69_MEMPOOL_ITEMS 32
 
 static MemoryPool rfm69_mp;
-static volatile char rfm69_mp_b[RFM69_MEMPOOL_ITEMS * 16]
-					__attribute__((aligned(sizeof(stkalign_t))))
-					__attribute__((section(".ccm")));
+static volatile char rfm69_mp_b[RFM69_MEMPOOL_ITEMS * 16];
 
 static Mailbox rfm69_mb;
 static volatile msg_t rfm69_mb_q[RFM69_MEMPOOL_ITEMS];
@@ -165,12 +164,15 @@ void rfm69_register_write (SPIDriver* SPID, uint8_t reg_addr, uint8_t reg_value)
 }
 
 int rfm69_wait_for_bit_high (SPIDriver* SPID, uint8_t reg_addr, uint8_t mask) {
-	int niter=50000;
+	int niter=30;
 	while ( (rfm69_register_read(SPID, reg_addr) & mask) == 0) {
+        chThdSleepMilliseconds(55);
 		if (--niter == 0) {
+            tweeter_set_error(ERROR_RADIO, true);
 			return E_TIMEOUT;
 		}
 	}
+    tweeter_set_error(ERROR_RADIO, false);
 	return E_OK;
 }
 
@@ -287,6 +289,7 @@ msg_t rfm69_thread(void *arg) {
 		}
 	} else {
 		//two blinks red to show incorrect initialisation
+        tweeter_set_error(ERROR_RADIO, true);
 		for(i = 0; i<2; i++) {
 			palClearPad(GPIOD, GPIOD_RADIO_RED);
 			chThdSleepMilliseconds(500);
@@ -306,6 +309,6 @@ msg_t rfm69_thread(void *arg) {
 		rfm69_frame_tx(&RFM69_SPID, msg, 16);
 	    palClearPad(GPIOD, GPIOD_RADIO_GRN);	
 		chPoolFree(&rfm69_mp, (void*)msg);
-        chThdSleepMilliseconds(50);
+        chThdSleepMilliseconds(45);
 	}
 }

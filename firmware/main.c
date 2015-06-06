@@ -15,6 +15,7 @@
 #include "datalogging.h"
 #include "config.h"
 #include "pyro.h"
+#include "tweeter.h"
 
 static WORKING_AREA(waMS5611, 512);
 static WORKING_AREA(waADXL345, 512);
@@ -26,6 +27,7 @@ static WORKING_AREA(waDatalogging, 2048);
 static WORKING_AREA(waPyro, 2048);
 static WORKING_AREA(waConfig, 4096);
 static WORKING_AREA(waMission, 1024);
+static WORKING_AREA(waTweeter, 512);
 
 /*
  * Set up pin change interrupts for the various sensors that react to them.
@@ -68,7 +70,9 @@ int main(void) {
 
     b3_shell_run();
 
-    Thread* ctp = chThdCreateStatic(waConfig, sizeof(waConfig), LOWPRIO, config_thread, NULL);
+    chThdCreateStatic(waTweeter, sizeof(waTweeter), NORMALPRIO, tweeter_thread, NULL);
+
+    chThdCreateStatic(waConfig, sizeof(waConfig), NORMALPRIO, config_thread, NULL);
 
     chThdSleepMilliseconds(500);
 

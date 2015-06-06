@@ -11,6 +11,7 @@
 #include "datalogging.h"
 #include "state_estimation.h"
 #include "config.h"
+#include "tweeter.h"
 
 #define ADXL345_SPID         SPID1
 #define ADXL345_SPI_CS_PORT  GPIOC
@@ -41,7 +42,7 @@ static void adxl3x5_warn(const uint8_t n)
 /* Helper for sad moments */
 static void adxl3x5_error(const uint8_t n)
 {
-    /* TODO: report sadness up the chain */
+    tweeter_set_error(ERROR_ACCEL, true);
     while(1) {
         adxl3x5_warn(n);
         chThdSleepMilliseconds(800);
@@ -110,8 +111,10 @@ static void adxl3x5_init(SPIDriver* SPID, uint8_t x, int16_t *axis, int16_t *g)
     /* Seems to fail the first time so retry immediately */
     (void)adxl3x5_read_u8(SPID, 0x00);
     while(adxl3x5_read_u8(SPID, 0x00) != 0xE5) {
+        tweeter_set_error(ERROR_ACCEL, true);
         adxl3x5_warn(2);
     }
+    tweeter_set_error(ERROR_ACCEL, false);
 
     /* BW_RATE: Set high power mode and 800Hz ODR */
     adxl3x5_write_u8(SPID, 0x2C, 0x0D);
