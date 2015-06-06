@@ -32,24 +32,29 @@ class InstanceData(ctypes.Structure):
         ("state", StateEstimate)
     ]
 
-m0 = 3.0
-mm = 1.0
+mm1 = 1.0
+mm2 = 0.8
+m_first_stage = 1.0
+m_second_stage = 2.0
+
 t_ignite = 15.0
 t_burnout = 17.0
+t_ignite_2 = 18.0
+t_burnout_2 = 19.0
 
 t = np.linspace(0, 60, 60000)
 h = np.zeros(60000)
 v = np.zeros(60000)
 a = np.zeros(60000)
 m = np.zeros(60000)
-m[0] = m0
+m[0] = m_first_stage + m_second_stage + mm1 + mm2
 dt = t[1] - t[0]
 
 drogue = np.zeros(60000)
 main = np.zeros(60000)
 
 istate = StateEstimate(0.0, 0.0, 0.0)
-idata = InstanceData(0, 0, 0, 0, 0, 1, istate)
+idata = InstanceData(0, 0, 0, 0, 0, 2, istate)
 cur_state = 0
 states = [(0.0, 0)]
 
@@ -78,7 +83,14 @@ for i in range(1, len(t)):
 
     if t_ignite <= t[i] < t_burnout:
         a[i] += 170.0 / m[i]
-        m[i] -= (mm / (t_burnout - t_ignite)) * dt
+        m[i] -= (mm1 / (t_burnout - t_ignite)) * dt
+
+    if t[i] == t_burnout:
+        m[i] -= m_first_stage
+
+    if t_ignite_2 <= t[i] < t_burnout_2:
+        a[i] += 130.0 / m[i]
+        m[i] -= (mm2 / (t_burnout - t_ignite)) * dt
 
     v[i] = v[i-1] + (t[i] - t[i-1]) * a[i]
     h[i] = h[i-1] + (t[i] - t[i-1]) * v[i]

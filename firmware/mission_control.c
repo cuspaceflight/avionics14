@@ -103,6 +103,7 @@ static state_t do_state_burnout(instance_data_t *data)
         if(GOT_IGNITION) {
             return STATE_FREE_ASCENT;
         } else {
+            data->t_last_ignite_attempt = chTimeNow();
             return STATE_WAIT_IGNITION;
         }
     }
@@ -124,6 +125,7 @@ static state_t do_state_ignite(instance_data_t *data)
     (void)data;
     state_estimation_trust_barometer = true;
     pyro_fire_ignite();
+    data->t_last_ignite_attempt = chTimeNow();
     return STATE_WAIT_IGNITION;
 }
 
