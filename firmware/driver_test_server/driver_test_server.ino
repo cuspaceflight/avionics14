@@ -5,6 +5,7 @@
 #include "SPI.h"
 
 #define SS 10
+#define STAGE 1 //1 for bottom stage, 2 for top stage
 
 uint8_t expected_packet_length = 16;
 uint8_t maxPktLen = 66;
@@ -73,6 +74,13 @@ void rfm69_config() {
   int i;
   for (i = 0; RFM69_CONFIG[i][0] != 255; i++) {
     rfm69_register_write(RFM69_CONFIG[i][0], RFM69_CONFIG[i][1]);
+  }
+
+  //433MHz for bottom stage, 434MHz for top stage
+  if(STAGE == 1) {
+    rfm69_register_write(SPID, RFM69_FRFMID, 0x40);
+  } else {
+    rfm69_register_write(SPID, RFM69_FRFMID, 0x80);
   }
 }
 

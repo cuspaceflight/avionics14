@@ -138,7 +138,15 @@ void rfm69_config(SPIDriver* SPID) {
 	for (i = 0; RFM69_CONFIG[i][0] != 255; i++) {
 	    rfm69_register_write(SPID, RFM69_CONFIG[i][0], RFM69_CONFIG[i][1]);
 	}
+
+	//have 433MHz for bottom stage, 434 MHz for next stage
+	if(STAGE == 1) {
+		rfm69_register_write(SPID, RFM69_FRFMID, 0x40);
+	} else {
+		rfm69_register_write(SPID, RFM69_FRFMID, 0x80);
+	}
 }
+
 
 /**
  * Set RFM69 operating mode. Use macro values RFM69_OPMODE_Mode_xxxx as arg.
@@ -161,12 +169,9 @@ void rfm69_frame_tx(SPIDriver* SPID, uint8_t *buf, int len) {
 
 	// Turn off receiver before writing to FIFO
 	rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
-
 	// Write frame to FIFO
 	spiSelect(SPID);
-
 	rfm69_spi_transfer_byte(SPID, RFM69_FIFO | 0x80);
-
 	// packet length
 	rfm69_spi_transfer_byte(SPID, len);
 
@@ -174,15 +179,12 @@ void rfm69_frame_tx(SPIDriver* SPID, uint8_t *buf, int len) {
 	for (i = 0; i < len; i++) {
 		rfm69_spi_transfer_byte(SPID, buf[i]);
 	}
-
 	spiUnselect(SPID);
 
 	// Power up TX
 	rfm69_mode(SPID, RFM69_OPMODE_Mode_TX);
-
     // TX packet
 	rfm69_wait_for_bit_high(SPID, RFM69_IRQFLAGS2, RFM69_IRQFLAGS2_PacketSent);
-
     // Back to standby
 	rfm69_mode(SPID, RFM69_OPMODE_Mode_STDBY);
 }
@@ -231,7 +233,7 @@ msg_t rfm69_thread(void *arg) {
 			chThdSleepMilliseconds(500);
 		}
 	}
-	
+
 	while(TRUE) {
 		status = chMBFetch(&rfm69_mb, (msg_t*)&msgp, TIME_INFINITE);
 		if(status != RDY_OK || msgp == 0) {

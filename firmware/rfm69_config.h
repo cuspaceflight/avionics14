@@ -42,7 +42,7 @@ const uint8_t RFM69_CONFIG[][2] = {
 	{ RFM69_BITRATELSB, 0x0B},
 
 	// Carrier frequency (x3 registers for MSB 0x7, MID 0x8, LSB 0x9)
-	// 433MHz operation
+	// 433MHz operation 
 	{ RFM69_FRFMSB, 0x6C},
 	{ RFM69_FRFMID, 0x40},
 	{ RFM69_FRFLSB, 0} ,
