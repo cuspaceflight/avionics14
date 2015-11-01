@@ -65,6 +65,7 @@ bits) and the mode (last four bits).
        2     5      High-G accelerometer [axis gravity-magnitude 0 0]
        3     6      Barometer            [d0 c1 c2 c3]
        4     6      Barometer            [c4 c5 c6 d7]
+       5     9      Pad altitude ASL     [h_pad 0]
 
 
     0x2           INTERTIAL MEASUREMENT
