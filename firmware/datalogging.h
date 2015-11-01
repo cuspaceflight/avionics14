@@ -37,13 +37,13 @@
  */
 #define LOG_INIT           1
 #define LOG_CAL_TFREQ      1
-#define LOG_CAL_LGA        0
-#define LOG_CAL_HGA        0
-#define LOG_CAL_BARO1      0
-#define LOG_CAL_BARO2      0
-#define LOG_IMU_LGA        0
-#define LOG_IMU_HGA        0
-#define LOG_IMU_BARO       0
+#define LOG_CAL_LGA        1
+#define LOG_CAL_HGA        1
+#define LOG_CAL_BARO1      1
+#define LOG_CAL_BARO2      1
+#define LOG_IMU_LGA        3200
+#define LOG_IMU_HGA        3200
+#define LOG_IMU_BARO       3200
 #define LOG_SENS_BAT       0
 #define LOG_SENS_SG        0
 #define LOG_SENS_TC        0

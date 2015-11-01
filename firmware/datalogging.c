@@ -293,7 +293,7 @@ static uint16_t checksum(packet_t packet)
     uint8_t* p = (uint8_t*)&packet;
     int i, j;
     for(i=0; i<16; i++) {
-        checksum ^= ((uint16_t)*p << 8);
+        checksum ^= ((uint16_t)(p[i]) << 8);
         for(j=0; j<8; j++) {
             if(checksum & 0x8000) {
                 checksum = (checksum << 1) ^ 0x1021;
@@ -316,7 +316,7 @@ static void _log(uint8_t channel, uint8_t type, data_t data)
 
     packet_t packet = {
         .timestamp = halGetCounterValue(),
-        .type = type | (STAGE + 4) << 4,
+        .type = type | (STAGE + 3) << 4,
         .channel = channel,
         .checksum = 0,
         .data = data

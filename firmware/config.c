@@ -139,6 +139,7 @@ bool check_config()
     bool ok = true;
 
     /* Basic sanity checks */
+    ok &= conf.stage > 0;
     ok &= conf.stage < 10;
     ok &= conf.accel_axis < 7;
     ok &= conf.pyro_firetime < 100000;
