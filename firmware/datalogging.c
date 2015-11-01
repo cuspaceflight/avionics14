@@ -78,6 +78,7 @@ static const uint16_t log_counter[CHANNEL_NUM] = {
     [CHAN_IMU_LGA] = LOG_IMU_LGA,
     [CHAN_IMU_HGA] = LOG_IMU_HGA,
     [CHAN_IMU_BARO] = LOG_IMU_BARO,
+    [CHAN_IMU_GYRO] = LOG_IMU_GYRO,
     [CHAN_SENS_BAT] = LOG_SENS_BAT,
     [CHAN_SENS_SG] = LOG_SENS_SG,
     [CHAN_SENS_TC] = LOG_SENS_TC,

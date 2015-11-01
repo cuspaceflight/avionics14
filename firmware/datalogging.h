@@ -46,6 +46,7 @@
 #define LOG_IMU_LGA        3200
 #define LOG_IMU_HGA        3200
 #define LOG_IMU_BARO       3200
+#define LOG_IMU_GYRO       3200
 #define LOG_SENS_BAT       0
 #define LOG_SENS_SG        0
 #define LOG_SENS_TC        0
