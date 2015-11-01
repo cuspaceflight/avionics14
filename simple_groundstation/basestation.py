@@ -91,6 +91,10 @@ def cal_baro_2(data):
             .format(*data))
 
 
+def cal_pad_alt(data):
+    return "Calibration: Pad Altitude: {}m ASL".format(data[0])
+
+
 def imu_lga(data):
     return "IMU: Low-G Accel: x={} y={} z={}".format(data[0], data[1], data[2])
 
@@ -174,7 +178,7 @@ def loc_gps_status(data):
 packet_functions = {
     0x00: sys_init,
     0x10: cal_tf, 0x11: cal_lga, 0x12: cal_hga,
-    0x13: cal_baro_1, 0x14: cal_baro_2,
+    0x13: cal_baro_1, 0x14: cal_baro_2, 0x15: cal_pad_alt,
     0x20: imu_lga, 0x21: imu_hga, 0x22: imu_baro,
     0x23: imu_gyro, 0x24: imu_magno,
     0x30: ext_batt, 0x31: ext_sg, 0x32: ext_tc,

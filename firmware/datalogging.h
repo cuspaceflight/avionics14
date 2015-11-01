@@ -10,6 +10,7 @@
 #define CHAN_CAL_HGA    0x12
 #define CHAN_CAL_BARO1  0x13
 #define CHAN_CAL_BARO2  0x14
+#define CHAN_CAL_PAD    0x15
 #define CHAN_IMU_LGA    0x20
 #define CHAN_IMU_HGA    0x21
 #define CHAN_IMU_BARO   0x22
@@ -41,6 +42,7 @@
 #define LOG_CAL_HGA        1
 #define LOG_CAL_BARO1      1
 #define LOG_CAL_BARO2      1
+#define LOG_CAL_PAD        1
 #define LOG_IMU_LGA        3200
 #define LOG_IMU_HGA        3200
 #define LOG_IMU_BARO       3200

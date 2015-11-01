@@ -119,12 +119,15 @@ int main(void) {
 
     chThdCreateStatic(waPyro, sizeof(waPyro), NORMALPRIO, pyro_thread, NULL);
 
-    chThdCreateStatic(waMission, sizeof(waMission), NORMALPRIO,
-            mission_thread, NULL);
-
-
     extStart(&EXTD1, &extcfg);
 
+    /* Wait a while before starting mission,
+     * a) to give the operator time to withdraw hands etc
+     * b) to give the state estimation time to settle on a pad altitude
+     */
+    chThdSleepMilliseconds(3000);
+    chThdCreateStatic(waMission, sizeof(waMission), NORMALPRIO,
+            mission_thread, NULL);
 
     while (TRUE) {
         palSetPad(GPIOD, GPIOD_IMU_GRN);

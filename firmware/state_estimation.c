@@ -10,7 +10,7 @@
 #include "time_utils.h"
 
 /* Kalman filter state and covariance storage */
-static float x[3]    = {1180.0f, 0.0f, 0.0f};
+static float x[3]    = {0.0f, 0.0f, 0.0f};
 static float p[3][3] = {{250.0f, 0.0f, 0.0f},
                         {  0.0f, 0.1f, 0.0f},
                         {  0.0f, 0.0f, 0.1f}};
@@ -211,7 +211,7 @@ state_estimate_t state_estimation_get_state()
  */
 void state_estimation_init()
 {
-    state_estimation_trust_barometer = 0;
+    state_estimation_trust_barometer = 1;
     chBSemInit(&kalman_lock, FALSE);
 }
 

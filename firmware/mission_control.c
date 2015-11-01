@@ -24,6 +24,7 @@ typedef struct instance_data {
               t_apogee;
     int current_stage_position;
     state_estimate_t state;
+    float h_pad;
 } instance_data_t;
 
 typedef state_t state_func_t(instance_data_t *data);
@@ -113,7 +114,8 @@ static state_t do_state_free_ascent(instance_data_t *data)
 {
     state_estimation_trust_barometer = true;
     systime_t time_since_burnout = chTimeElapsedSince(data->t_last_burnout);
-    if(data->state.h > IGNITE_ALTITUDE || time_since_burnout > IGNITE_TIME) {
+    if((data->state.h - data->h_pad) > IGNITE_ALTITUDE ||
+       time_since_burnout > IGNITE_TIME) {
         return STATE_IGNITE;
     } else {
         return STATE_FREE_ASCENT;
@@ -185,7 +187,8 @@ static state_t do_state_drogue_descent(instance_data_t *data)
 {
     state_estimation_trust_barometer = true;
     systime_t time_since_apogee = chTimeElapsedSince(data->t_apogee);
-    if(data->state.h < MAIN_ALTITUDE || time_since_apogee > MAIN_TIME) {
+    if((data->state.h - data->h_pad) < MAIN_ALTITUDE ||
+       time_since_apogee > MAIN_TIME) {
         if(GOT_MAIN) {
             return STATE_MAIN_DEPLOY;
         } else {
@@ -238,6 +241,10 @@ msg_t mission_thread(void* arg)
     instance_data_t data;
     data.t_launch = data.t_last_ignition = data.t_last_burnout = 0;
     data.current_stage_position = STAGE;
+    data.state = state_estimation_get_state();
+    data.h_pad = data.state.h;
+    log_f(CHAN_CAL_PAD, data.h_pad, 0.0f);
+    log_s32(CHAN_SM_MISSION, cur_state, cur_state);
 
     chRegSetThreadName("Mission");
 

@@ -74,6 +74,7 @@ static const uint16_t log_counter[CHANNEL_NUM] = {
     [CHAN_CAL_HGA] = LOG_CAL_HGA,
     [CHAN_CAL_BARO1] = LOG_CAL_BARO1,
     [CHAN_CAL_BARO2] = LOG_CAL_BARO2,
+    [CHAN_CAL_PAD] = LOG_CAL_PAD,
     [CHAN_IMU_LGA] = LOG_IMU_LGA,
     [CHAN_IMU_HGA] = LOG_IMU_HGA,
     [CHAN_IMU_BARO] = LOG_IMU_BARO,
@@ -125,6 +126,8 @@ msg_t datalogging_thread(void* arg)
     } else if (STAGE == 2) {
         log_c(CHAN_INIT, "B3STAGE2");
     }
+
+    log_u32(CHAN_CAL_TFREQ, halGetCounterFrequency(), 0);
 
     while (true) {
 
