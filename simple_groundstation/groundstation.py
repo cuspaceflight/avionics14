@@ -215,7 +215,7 @@ def update_loc_alt(alt):
     last_t = time_since('loc_alt')
     loc_alt_wid.set_text([
         ('title', "Altitude"),
-        "\n{}\n({}s ago)".format(alt, last_t)])
+        "\n{}m\n({}s ago)".format(alt, last_t)])
 
 
 def update_loc_stat(lock, svs):
@@ -397,8 +397,8 @@ def loc_gps_time(data):
 
 
 def loc_gps_pos(data):
-    lat = "{:8.5f}".format(data[0])
-    lng = "{:8.5f}".format(data[1])
+    lat = "{:8.5f}".format(data[0]/1e7)
+    lng = "{:8.5f}".format(data[1]/1e7)
     logger.info("Location: GPS Position: lat={} lng={}".format(lat, lng))
     update_loc_pos(lat, lng)
 
@@ -406,7 +406,8 @@ def loc_gps_pos(data):
 def loc_gps_alt(data):
     logger.info("Location: GPS Altitude: height={} height_msl={}"
                 .format(*data))
-    update_loc_alt(int(data[0]))
+    alt_m = int(data[0] / 1000)
+    update_loc_alt(alt_m)
 
 
 def loc_gps_status(data):
